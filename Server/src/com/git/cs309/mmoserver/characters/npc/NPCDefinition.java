@@ -18,6 +18,7 @@ public final class NPCDefinition {
 		this.accuracy = accuracy;
 		this.defence = defence;
 		this.level = level;
+		assert (id >= 0) && (maxHealth > 0) && (strength >= 0) && (accuracy >= 0 && accuracy <= 100) && (defence >= 0) && (level > 0);
 	}
 
 	public int getAccuracy() {

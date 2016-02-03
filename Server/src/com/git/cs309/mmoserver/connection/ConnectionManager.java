@@ -15,14 +15,14 @@ import com.git.cs309.mmoserver.util.TickProcess;
  * 
  * @author Clownvin
  *
- *         ConnectionManager object, which extends TickReliant. Houses all
+ *         ConnectionManager object, which extends TickProcess. Houses all
  *         connections, and, each tick, collects the single most recent packet
  *         from each connection And processes them with the help of
  *         PacketHandler. This is, probably, going to be the slowest of all the
  *         tick reliants, aside from NPCManager, which may turn out to be
  *         slower. Another added functionality of this class is that it has
  *         methods to obtain a connection based on connection IP. A neat feature
- *         about the design of this (due to TickReliant) is that whenever this
+ *         about the design of this (due to TickProcess) is that whenever this
  *         fails, the connections do NOT get removed, and all the methods still
  *         work, so it can still take on new connections.
  */

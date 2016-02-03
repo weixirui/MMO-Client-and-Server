@@ -1,5 +1,7 @@
 package com.git.cs309.mmoclient.gui;
 
+import java.awt.GridLayout;
+
 import javax.swing.JFrame;
 
 import com.engine.graphics.Engine;
@@ -26,8 +28,9 @@ public class GameGUI extends JFrame {
 	}
 
 	private GameGUI() {
+		setLayout(new GridLayout(2, 1));
 		add(Engine.getSingleton());
-		setSize(3000, 3000);
+		setSize(4000, 3000);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 

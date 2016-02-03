@@ -3,8 +3,12 @@ package com.git.cs309.mmoserver;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.git.cs309.mmoserver.characters.CharacterManager;
+import com.git.cs309.mmoserver.characters.npc.NPCManager;
 import com.git.cs309.mmoserver.characters.user.UserManager;
 import com.git.cs309.mmoserver.connection.ConnectionAcceptor;
+import com.git.cs309.mmoserver.connection.ConnectionManager;
+import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.gui.ServerGUI;
 import com.git.cs309.mmoserver.io.Logger;
 import com.git.cs309.mmoserver.util.TickProcess;
@@ -18,21 +22,21 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *
  *         <p>
  *         A tick in this server framework is simply a notification to all the
- *         threads running TickReliant objects telling them to wake up from
+ *         threads running TickProcess objects telling them to wake up from
  *         their wait call. All tick reliants invoke <code>wait()</code> on the
- *         TICK_LOCK object, which they retrieve from this class. When a "tick"
- *         is sent out, <code>notifyAll()</code> is called on TICK_LOCK, which
+ *         TICK_NOTIFIER object, which they retrieve from this class. When a "tick"
+ *         is sent out, <code>notifyAll()</code> is called on TICK_NOTIFIER, which
  *         in turn allows threads to exit wait and begin execution of their tick
  *         procedures. Once a tick begins, the main thread (the one used during
  *         entry into this class, which also handles ticking) waits until all
- *         TickReliant objects have finished their tick procedures. The main
+ *         TickProcess objects have finished their tick procedures. The main
  *         thread then waits out any remaining time, then notifies all the
- *         threads waiting on TICK_LOCK to start a new tick cycle, infinitely
+ *         threads waiting on TICK_NOTIFIER to start a new tick cycle, infinitely
  *         repeating.
  *         </p>
  * 
  *         <p>
- *         Another neat feature is that whenever a TickReliant thread fails
+ *         Another neat feature is that whenever a TickProcess thread fails
  *         because of an uncaught exception, the whole server pauses (after the
  *         current tick) so that debugging may commence. From there, the thread
  *         can actually be restarted from a button in the GUI.
@@ -40,7 +44,7 @@ import com.git.cs309.mmoserver.util.TickProcess;
  */
 public final class Main {
 
-	//List of TickReliant objects currently running. They add themselves to this list when instantiated.
+	//List of TickProcess objects currently running. They add themselves to this list when instantiated.
 	private static final List<TickProcess> TICK_RELIANT_LIST = new ArrayList<>();
 
 	//Is server running.
@@ -49,23 +53,23 @@ public final class Main {
 	private static volatile boolean paused = false;
 	//Pause timer remaing. (Mainly exists so that Connection objects wont disconnect their clients due to the rapid influx of packets from being paused.)
 	private static volatile int pauseTimerRemaining = 0;
-	//Object that all TickReliant objects wait on for tick notification.
-	private static final Object TICK_LOCK = new Object(); // To notify threads of new tick.
+	//Object that all TickProcess objects wait on for tick notification.
+	private static final Object TICK_NOTIFIER = new Object(); // To notify threads of new tick.
 	//Object that Main thread waits on for notification of error resolution.
-	private static final Object FAILURE_RESOLUTION_LOCK = new Object();
+	private static final Object FAILURE_RESOLUTION_NOTIFIER = new Object();
 	//Current server ticks count.
 	private static volatile long tickCount = 0; // Tick count.
 
 	/**
 	 * Can be used to register tick reliants so that server will know to wait
-	 * until theyre finished. Automatically invoked from TickReliant contructor.
+	 * until theyre finished. Automatically invoked from TickProcess contructor.
 	 * 
-	 * @param tickReliant
+	 * @param TickProcess
 	 *            new object to register in list.
 	 */
-	public static void addTickReliant(final TickProcess tickReliant) {
+	public static void addTickProcess(final TickProcess TickProcess) {
 		synchronized (TICK_RELIANT_LIST) { // Synchronize block to obtain TICK_RELIANT_LIST lock
-			TICK_RELIANT_LIST.add(tickReliant);
+			TICK_RELIANT_LIST.add(TickProcess);
 		}
 	}
 
@@ -79,12 +83,12 @@ public final class Main {
 	}
 
 	/**
-	 * Getter method for TICK_LOCK.
+	 * Getter method for TICK_NOTIFIER.
 	 * 
-	 * @return the TICK_LOCK object.
+	 * @return the TICK_NOTIFIER object.
 	 */
-	public static Object getTickLock() {
-		return TICK_LOCK;
+	public static Object getTickNotifier() {
+		return TICK_NOTIFIER;
 	}
 
 	/**
@@ -104,6 +108,17 @@ public final class Main {
 	public static boolean wasPaused() {
 		return paused;
 	}
+	
+	/**
+	 * Initializes handler and managers, to ensure they're ready to handle activity.
+	 */
+	private static void initialize() {
+		NPCManager.initialize();
+		//These next few lines are just making reference to the classes. They handle initialization on first reference.
+		ConnectionManager.getSingleton();
+		CycleProcessManager.getSingleton();
+		CharacterManager.getSingleton();
+	}
 
 	/**
 	 * Main method, duh.
@@ -121,6 +136,7 @@ public final class Main {
 				System.out.println("Saved all users before going down.");
 			}
 		});
+		initialize(); // Call initialize block, which will initialize things that should be initialized before starting server.
 		System.out.println("Starting server...");
 		ConnectionAcceptor.startAcceptor(6667); // TODO Replace with actual port.
 		int ticks = 0;
@@ -130,8 +146,8 @@ public final class Main {
 				paused = false;
 			}
 			long start = System.currentTimeMillis();
-			synchronized (TICK_LOCK) { // Obtain intrinsic lock and notify all waiting threads. This starts the tick.
-				TICK_LOCK.notifyAll();
+			synchronized (TICK_NOTIFIER) { // Obtain intrinsic lock and notify all waiting threads. This starts the tick.
+				TICK_NOTIFIER.notifyAll();
 			}
 			boolean allFinished;
 			do { // This block keeps looping until all tick reliant threads are finished with their tick.
@@ -145,9 +161,9 @@ public final class Main {
 					if (t.isStopped()) { // Uncaught exception or SOMETHING caused thread to stop.
 						paused = true;
 						pauseTimerRemaining = Config.PAUSE_TIMER_TICKS;
-						synchronized (FAILURE_RESOLUTION_LOCK) {
+						synchronized (FAILURE_RESOLUTION_NOTIFIER) {
 							try {
-								FAILURE_RESOLUTION_LOCK.wait(); // Wait for debugging or error resolution.
+								FAILURE_RESOLUTION_NOTIFIER.wait(); // Wait for debugging or error resolution.
 							} catch (InterruptedException e) {
 							}
 						}
@@ -168,9 +184,11 @@ public final class Main {
 				ticks = 0;
 				tickTimes = 0L;
 			}
-			if (timeLeft < 0) {
-				System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
-				timeLeft = 5; // It must wait at least a little bit, to allow TickReliants to ready themselves for new tick.
+			if (timeLeft < 2) {
+				if (timeLeft < 0) {
+					System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
+				}
+				timeLeft = 2; // Must wait at least a little bit, so that threads can catch up and wait.
 			}
 			try {
 				Thread.sleep(timeLeft);
@@ -182,11 +200,11 @@ public final class Main {
 	}
 
 	/**
-	 * Notify all threads waiting on the FAILURE_RESOLUTION_LOCK
+	 * Notify all threads waiting on the FAILURE_RESOLUTION_NOTIFIER
 	 */
 	public static void notifyFailureResolution() {
-		synchronized (FAILURE_RESOLUTION_LOCK) {
-			FAILURE_RESOLUTION_LOCK.notifyAll();
+		synchronized (FAILURE_RESOLUTION_NOTIFIER) {
+			FAILURE_RESOLUTION_NOTIFIER.notifyAll();
 		}
 	}
 

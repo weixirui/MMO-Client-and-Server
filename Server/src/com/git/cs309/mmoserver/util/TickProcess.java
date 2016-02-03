@@ -16,7 +16,7 @@ import com.git.cs309.mmoserver.gui.TickProcessStatusComponent;
  * 
  *         <p>
  *         TickProcess is the skeleton of the Server, or rather it's
- *         implementations are. TickReliant is a class which executes every tick
+ *         implementations are. TickProcess is a class which executes every tick
  *         and performs a task. Ideally, this class is to be used for processes
  *         which will happen throughout the duration of the server's lifetime.
  *         If not, consider using CycleProcesses, as they're much less resource
@@ -31,7 +31,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 	protected volatile long cumulative = 0;
 	protected volatile int count = 0;
 	protected volatile long average = 0;
-	protected volatile Thread tickReliantThread = null;
+	protected volatile Thread TickProcessThread = null;
 	protected final JButton restartButton = new JButton("Restart");
 
 	public TickProcess(final String name) {
@@ -48,7 +48,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 		});
 		component.add(restartButton);
 		ServerGUI.addComponentToStatusPanel(component);
-		Main.addTickReliant(this);
+		Main.addTickProcess(this);
 		start();
 	}
 
@@ -97,13 +97,13 @@ public abstract class TickProcess extends Observable implements Runnable {
 
 	@Override
 	public final void run() { // Final to ensure that this can't be overriden, to ensure that all extending classes follow the rules.
-		final Object tickLock = Main.getTickLock(); // Acquire the tickLock object from Main.
+		final Object tickNotifier = Main.getTickNotifier(); // Acquire the tickNotifier object from Main.
 		isStopped = false;
 		while (Main.isRunning()) { // While server is running...
 			try {
-				synchronized (tickLock) {
+				synchronized (tickNotifier) {
 					try {
-						tickLock.wait(); // Wait for tick notification.
+						tickNotifier.wait(); // Wait for tick notification.
 					} catch (InterruptedException e) {
 						// We don't care too much if it gets interrupted.
 					}
@@ -129,10 +129,10 @@ public abstract class TickProcess extends Observable implements Runnable {
 	}
 
 	protected final void start() {
-		if (tickReliantThread == null || !tickReliantThread.isAlive()) {
-			tickReliantThread = new Thread(this);
-			tickReliantThread.setName(name);
-			tickReliantThread.start();
+		if (TickProcessThread == null || !TickProcessThread.isAlive()) {
+			TickProcessThread = new Thread(this);
+			TickProcessThread.setName(name);
+			TickProcessThread.start();
 		}
 	}
 

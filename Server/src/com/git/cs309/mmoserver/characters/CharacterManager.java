@@ -11,7 +11,7 @@ import com.git.cs309.mmoserver.util.TickProcess;
  * 
  * @author Clownvin
  *
- *         TickReliant implementation that manages all Character objects.
+ *         TickProcess implementation that manages all Character objects.
  */
 public final class CharacterManager extends TickProcess {
 

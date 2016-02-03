@@ -23,7 +23,7 @@ public abstract class AbstractConnection extends Thread {
 		@Override
 		public void run() {
 			while (!disconnected && !socket.isClosed()) {
-				while (outgoingPackets.size() > 0) {
+				while (!disconnected && outgoingPackets.size() > 0) {
 					try {
 						StreamUtils.writeBlockToStream(output, outgoingPackets.remove(0).toBytes());
 					} catch (IOException e) {

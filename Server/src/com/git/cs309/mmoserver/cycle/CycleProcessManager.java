@@ -13,7 +13,7 @@ import com.git.cs309.mmoserver.util.TickProcess;
  * 
  *         Handles all CycleProcesses. A CycleProcess is simply a task that
  *         needs to be executed per tick, but doesn't need or can't implement
- *         TickReliant themselves. Good uses for CycleProcesses are: Events,
+ *         TickProcess themselves. Good uses for CycleProcesses are: Events,
  *         Walking, Buffs, things like that. CycleProcesses can also terminate
  *         if a condition is met.
  */
