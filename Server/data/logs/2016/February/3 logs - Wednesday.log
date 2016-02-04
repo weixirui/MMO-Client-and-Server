@@ -2,3 +2,357 @@
 [00:52:45] Starting server...
 [00:52:45] Acceptor running on port: 6667
 [00:52:52] Saved all users before going down.
+
+[02:28:16] Starting server...
+[02:28:16] Acceptor running on port: 6667
+[02:29:16] Average tick consumption over 5 minutes: 8.89ms.
+[02:30:16] Average tick consumption over 5 minutes: 8.76ms.
+[02:31:16] Average tick consumption over 5 minutes: 8.37ms.
+[02:32:16] Average tick consumption over 5 minutes: 8.7ms.
+[02:33:16] Average tick consumption over 5 minutes: 8.55ms.
+[02:34:17] Average tick consumption over 5 minutes: 8.79ms.
+[02:35:17] Average tick consumption over 5 minutes: 8.64ms.
+[02:36:17] Average tick consumption over 5 minutes: 8.69ms.
+[02:37:17] Average tick consumption over 5 minutes: 8.58ms.
+[02:38:17] Average tick consumption over 5 minutes: 8.84ms.
+
+[02:38:33] Starting server...
+[02:38:33] Acceptor running on port: 6667
+[02:39:33] Average tick consumption over 5 minutes: 8.860%.
+[02:40:26] Connection joined: 127.0.0.1
+[02:40:27] User Clowbn:0 logged in.
+[02:40:33] Average tick consumption over 5 minutes: 8.960%.
+[02:40:37] java.lang.RuntimeException: Just a test.
+[02:40:37] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:40:37] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:40:37] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:40:37] 	at java.lang.Thread.run(Unknown Source)
+[02:40:38] Warning: Server is lagging behind desired tick time 618ms.
+[02:40:47] java.lang.RuntimeException: Just a test.
+[02:40:47] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:40:47] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:40:47] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:40:47] 	at java.lang.Thread.run(Unknown Source)
+[02:40:48] Warning: Server is lagging behind desired tick time 331ms.
+[02:40:52] java.lang.RuntimeException: Just a test.
+[02:40:52] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:40:52] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:40:52] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:40:52] 	at java.lang.Thread.run(Unknown Source)
+[02:40:53] Warning: Server is lagging behind desired tick time 212ms.
+[02:41:02] java.lang.RuntimeException: Just a test.
+[02:41:02] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:41:02] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:41:02] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:41:02] 	at java.lang.Thread.run(Unknown Source)
+[02:41:03] Warning: Server is lagging behind desired tick time 230ms.
+[02:41:07] java.lang.RuntimeException: Just a test.
+[02:41:07] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:41:07] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:41:07] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:41:07] 	at java.lang.Thread.run(Unknown Source)
+[02:41:08] Warning: Server is lagging behind desired tick time 281ms.
+[02:41:13] java.lang.RuntimeException: Just a test.
+[02:41:13] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:41:13] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:41:13] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:41:13] 	at java.lang.Thread.run(Unknown Source)
+[02:41:13] Warning: Server is lagging behind desired tick time 219ms.
+[02:41:18] java.lang.RuntimeException: Just a test.
+[02:41:18] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:41:18] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:41:18] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:41:18] 	at java.lang.Thread.run(Unknown Source)
+[02:41:18] Warning: Server is lagging behind desired tick time 184ms.
+[02:41:23] java.lang.RuntimeException: Just a test.
+[02:41:23] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:41:23] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:41:23] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:41:23] 	at java.lang.Thread.run(Unknown Source)
+[02:41:23] Warning: Server is lagging behind desired tick time 194ms.
+[02:41:29] Saved 1 users in 0ms.
+[02:41:33] java.lang.RuntimeException: Just a test.
+[02:41:33] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:41:33] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:41:33] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:41:33] 	at java.lang.Thread.run(Unknown Source)
+[02:41:33] Warning: Server is lagging behind desired tick time 220ms.
+[02:41:36] Average tick consumption over 5 minutes: 42.620%.
+[02:41:43] java.lang.RuntimeException: Just a test.
+[02:41:43] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:41:43] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:41:43] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:41:43] 	at java.lang.Thread.run(Unknown Source)
+[02:41:43] Warning: Server is lagging behind desired tick time 211ms.
+[02:41:53] java.lang.RuntimeException: Just a test.
+[02:41:53] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:41:53] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:41:53] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:41:53] 	at java.lang.Thread.run(Unknown Source)
+[02:42:04] Warning: Server is lagging behind desired tick time 10839ms.
+[02:42:08] java.lang.RuntimeException: Just a test.
+[02:42:08] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:42:08] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:42:08] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:42:08] 	at java.lang.Thread.run(Unknown Source)
+[02:42:09] Warning: Server is lagging behind desired tick time 446ms.
+[02:42:13] java.lang.RuntimeException: Just a test.
+[02:42:13] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:42:13] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:42:13] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:42:13] 	at java.lang.Thread.run(Unknown Source)
+[02:42:14] Warning: Server is lagging behind desired tick time 225ms.
+[02:42:23] java.lang.RuntimeException: Just a test.
+[02:42:23] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:42:23] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:42:23] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:42:23] 	at java.lang.Thread.run(Unknown Source)
+[02:42:39] Warning: Server is lagging behind desired tick time 15447ms.
+[02:42:44] java.lang.RuntimeException: Just a test.
+[02:42:44] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:42:44] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:42:44] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:42:44] 	at java.lang.Thread.run(Unknown Source)
+[02:43:46] Warning: Server is lagging behind desired tick time 62729ms.
+[02:43:50] java.lang.RuntimeException: Just a test.
+[02:43:50] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:43:50] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:43:50] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:43:50] 	at java.lang.Thread.run(Unknown Source)
+[02:43:50] Warning: Server is lagging behind desired tick time 211ms.
+[02:43:59] Saved 1 users in 0ms.
+[02:44:05] java.lang.RuntimeException: Just a test.
+[02:44:05] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:44:05] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:44:05] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:44:05] 	at java.lang.Thread.run(Unknown Source)
+[02:44:05] Warning: Server is lagging behind desired tick time 254ms.
+[02:44:06] Average tick consumption over 5 minutes: 921.070%.
+[02:44:10] java.lang.RuntimeException: Just a test.
+[02:44:10] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:44:10] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:44:10] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:44:10] 	at java.lang.Thread.run(Unknown Source)
+[02:44:10] Warning: Server is lagging behind desired tick time 293ms.
+[02:44:15] java.lang.RuntimeException: Just a test.
+[02:44:15] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:44:15] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:44:15] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:44:15] 	at java.lang.Thread.run(Unknown Source)
+[02:44:15] Warning: Server is lagging behind desired tick time 203ms.
+[02:44:25] java.lang.RuntimeException: Just a test.
+[02:44:25] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:44:25] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:44:25] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:44:25] 	at java.lang.Thread.run(Unknown Source)
+[02:44:25] Warning: Server is lagging behind desired tick time 225ms.
+[02:44:40] java.lang.RuntimeException: Just a test.
+[02:44:40] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:44:40] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:44:40] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:44:40] 	at java.lang.Thread.run(Unknown Source)
+[02:44:41] Warning: Server is lagging behind desired tick time 213ms.
+[02:44:46] java.lang.RuntimeException: Just a test.
+[02:44:46] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:44:46] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:44:46] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:44:46] 	at java.lang.Thread.run(Unknown Source)
+[02:44:47] Warning: Server is lagging behind desired tick time 977ms.
+[02:44:51] java.lang.RuntimeException: Just a test.
+[02:44:51] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:44:51] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:44:51] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:44:51] 	at java.lang.Thread.run(Unknown Source)
+[02:46:53] Warning: Server is lagging behind desired tick time 122209ms.
+[02:47:03] java.lang.RuntimeException: Just a test.
+[02:47:03] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:47:03] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:47:03] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:47:03] 	at java.lang.Thread.run(Unknown Source)
+[02:47:03] Warning: Server is lagging behind desired tick time 208ms.
+[02:47:04] Saved 1 users in 0ms.
+[02:47:08] java.lang.RuntimeException: Just a test.
+[02:47:08] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:47:08] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:47:08] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:47:08] 	at java.lang.Thread.run(Unknown Source)
+[02:47:09] Warning: Server is lagging behind desired tick time 543ms.
+[02:47:12] Average tick consumption over 5 minutes: 1266.890%.
+[02:47:13] java.lang.RuntimeException: Just a test.
+[02:47:13] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:47:13] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:47:13] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:47:13] 	at java.lang.Thread.run(Unknown Source)
+[02:49:34] Warning: Server is lagging behind desired tick time 140333ms.
+[02:49:36] java.lang.RuntimeException: Just a test.
+[02:49:36] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[02:49:36] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[02:49:36] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[02:49:36] 	at java.lang.Thread.run(Unknown Source)
+
+[02:49:52] Starting server...
+[02:49:52] Acceptor running on port: 6667
+[02:54:53] Average tick consumption over 5 minutes: 45.530%.
+
+[02:56:36] Starting server...
+[02:56:36] Acceptor running on port: 6667
+[02:59:37] Average tick consumption over 5 minutes: 49896.000%.
+
+[03:01:08] Starting server...
+[03:01:08] Acceptor running on port: 6667
+[03:04:09] Average tick consumption over 5 minutes: 50040.000%.
+
+[03:05:46] Starting server...
+[03:05:46] Acceptor running on port: 6667
+[03:08:47] Average tick consumption over 5 minutes: 0.015%.
+[03:11:48] Average tick consumption over 5 minutes: 0.016%.
+[03:14:48] Average tick consumption over 5 minutes: 0.015%.
+[03:15:15] Connection joined: 127.0.0.1
+[03:15:15] User Clowbn:0 logged in.
+[03:15:21] java.lang.RuntimeException: Just a test.
+[03:15:21] 	at com.git.cs309.mmoserver.packets.PacketHandler.handlePacket(PacketHandler.java:54)
+[03:15:21] 	at com.git.cs309.mmoserver.connection.ConnectionManager.tickTask(ConnectionManager.java:178)
+[03:15:21] 	at com.git.cs309.mmoserver.util.TickProcess.run(TickProcess.java:115)
+[03:15:21] 	at java.lang.Thread.run(Unknown Source)
+[03:15:25] Warning: Server is lagging behind desired tick time 3819ms.
+[03:15:25] Saved all users before going down.
+
+[03:16:15] Starting server...
+[03:16:15] Acceptor running on port: 6667
+[03:16:17] Connection joined: 127.0.0.1
+[03:16:18] User Clowbn:0 logged in.
+[03:17:18] Saved 1 users in 0ms.
+[03:18:18] Saved 1 users in 0ms.
+[03:19:18] Saved 1 users in 0ms.
+[03:20:19] Saved 1 users in 0ms.
+[03:21:16] Average tick consumption over 5 minutes: 0.016%.
+[03:21:19] Saved 1 users in 0ms.
+[03:22:19] Saved 1 users in 0ms.
+[03:23:20] Saved 1 users in 0ms.
+[03:24:20] Saved 1 users in 0ms.
+[03:25:20] Saved 1 users in 0ms.
+[03:26:18] Average tick consumption over 5 minutes: 0.016%.
+[03:26:20] Saved 1 users in 0ms.
+[03:27:21] Saved 1 users in 0ms.
+[03:28:21] Saved 1 users in 0ms.
+[03:29:21] Saved 1 users in 0ms.
+[03:30:22] Saved 1 users in 0ms.
+[03:31:19] Average tick consumption over 5 minutes: 0.015%.
+[03:31:22] Saved 1 users in 0ms.
+[03:32:21] java.net.SocketException: Connection reset by peer: socket write error
+[03:32:21] 	at java.net.SocketOutputStream.socketWrite0(Native Method)
+[03:32:21] 	at java.net.SocketOutputStream.socketWrite(Unknown Source)
+[03:32:21] 	at java.net.SocketOutputStream.write(Unknown Source)
+[03:32:21] 	at com.git.cs309.mmoserver.util.StreamUtils.writeBlockToStream(StreamUtils.java:62)
+[03:32:21] 	at com.git.cs309.mmoserver.connection.AbstractConnection$1.run(AbstractConnection.java:28)
+[03:32:21] Connection reset
+[03:32:21] User Clowbn:0 logged out.
+[03:32:21] Connection disconnected: 127.0.0.1
+[03:32:22] Saved 0 users in 0ms.
+[03:33:22] Saved 0 users in 0ms.
+[03:34:23] Saved 0 users in 0ms.
+[03:35:23] Saved 0 users in 0ms.
+[03:36:21] Average tick consumption over 5 minutes: 0.016%.
+[03:36:23] Saved 0 users in 0ms.
+[03:37:23] Saved 0 users in 0ms.
+[03:38:24] Saved 0 users in 0ms.
+[03:39:24] Saved 0 users in 0ms.
+[03:40:24] Saved 0 users in 0ms.
+[03:41:22] Average tick consumption over 5 minutes: 0.016%.
+[03:41:25] Saved 0 users in 0ms.
+[03:42:25] Saved 0 users in 0ms.
+[03:43:25] Saved 0 users in 0ms.
+[03:44:25] Saved 0 users in 0ms.
+[03:45:26] Saved 0 users in 0ms.
+[03:46:23] Average tick consumption over 5 minutes: 0.017%.
+[03:46:26] Saved 0 users in 0ms.
+[03:47:26] Saved 0 users in 0ms.
+[03:48:26] Saved 0 users in 0ms.
+[03:49:27] Saved 0 users in 0ms.
+[03:50:27] Saved 0 users in 0ms.
+[03:51:24] Average tick consumption over 5 minutes: 0.016%.
+[03:51:27] Saved 0 users in 0ms.
+[03:52:27] Saved 0 users in 0ms.
+[03:53:27] Saved 0 users in 0ms.
+[03:54:28] Saved 0 users in 0ms.
+[03:55:28] Saved 0 users in 0ms.
+[03:56:26] Average tick consumption over 5 minutes: 0.017%.
+[03:56:28] Saved 0 users in 0ms.
+[03:57:29] Saved 0 users in 0ms.
+[03:58:29] Saved 0 users in 0ms.
+[03:59:29] Saved 0 users in 0ms.
+[04:00:29] Saved 0 users in 0ms.
+[04:01:27] Average tick consumption over 5 minutes: 0.017%.
+[04:01:30] Saved 0 users in 0ms.
+[04:02:30] Saved 0 users in 0ms.
+[04:03:30] Saved 0 users in 0ms.
+[04:04:30] Saved 0 users in 0ms.
+[04:05:31] Saved 0 users in 0ms.
+[04:06:28] Average tick consumption over 5 minutes: 0.016%.
+[04:06:31] Saved 0 users in 0ms.
+[04:07:31] Saved 0 users in 0ms.
+[04:08:32] Saved 0 users in 0ms.
+[04:09:32] Saved 0 users in 0ms.
+[04:10:32] Saved 0 users in 0ms.
+[04:11:30] Average tick consumption over 5 minutes: 0.016%.
+[04:11:32] Saved 0 users in 0ms.
+[04:12:33] Saved 0 users in 0ms.
+[04:13:33] Saved 0 users in 0ms.
+[04:14:33] Saved 0 users in 0ms.
+[04:15:34] Saved 0 users in 0ms.
+[04:16:31] Average tick consumption over 5 minutes: 0.016%.
+[04:16:34] Saved 0 users in 0ms.
+[04:17:34] Saved 0 users in 0ms.
+[04:18:34] Saved 0 users in 0ms.
+[04:19:35] Saved 0 users in 0ms.
+[04:20:35] Saved 0 users in 0ms.
+[04:21:33] Average tick consumption over 5 minutes: 0.016%.
+[04:21:35] Saved 0 users in 0ms.
+[04:22:36] Saved 0 users in 0ms.
+[04:23:36] Saved 0 users in 0ms.
+[04:24:36] Saved 0 users in 0ms.
+[04:25:36] Saved 0 users in 0ms.
+[04:26:34] Average tick consumption over 5 minutes: 0.016%.
+[04:26:37] Saved 0 users in 0ms.
+[04:27:37] Saved 0 users in 0ms.
+[04:28:37] Saved 0 users in 0ms.
+[04:29:38] Saved 0 users in 0ms.
+[04:30:38] Saved 0 users in 0ms.
+[04:31:35] Average tick consumption over 5 minutes: 0.016%.
+[04:31:38] Saved 0 users in 0ms.
+[04:32:38] Saved 0 users in 0ms.
+[04:33:39] Saved 0 users in 0ms.
+[04:34:39] Saved 0 users in 0ms.
+[04:35:39] Saved 0 users in 0ms.
+[04:36:37] Average tick consumption over 5 minutes: 0.016%.
+[04:36:39] Saved 0 users in 0ms.
+[04:37:40] Saved 0 users in 0ms.
+[04:38:40] Saved 0 users in 0ms.
+[04:39:40] Saved 0 users in 0ms.
+[04:40:41] Saved 0 users in 0ms.
+[04:41:38] Average tick consumption over 5 minutes: 0.016%.
+[04:41:41] Saved 0 users in 0ms.
+[04:42:41] Saved 0 users in 0ms.
+[04:43:41] Saved 0 users in 0ms.
+[04:44:42] Saved 0 users in 0ms.
+[04:45:42] Saved 0 users in 0ms.
+[04:46:40] Average tick consumption over 5 minutes: 0.016%.
+[04:46:42] Saved 0 users in 0ms.
+[04:47:43] Saved 0 users in 0ms.
+[04:48:43] Saved 0 users in 0ms.
+[04:49:43] Saved 0 users in 0ms.
+[04:50:43] Saved 0 users in 0ms.
+[04:51:41] Average tick consumption over 5 minutes: 0.017%.
+[04:51:44] Saved 0 users in 0ms.
+[04:52:44] Saved 0 users in 0ms.
+[04:53:44] Saved 0 users in 0ms.
+[04:54:18] Saved all users before going down.
+
+
+
+[05:11:14] Starting server...
+[05:11:14] Acceptor running on port: 6667
+[05:11:28] Connection joined: 127.0.0.1
+[05:11:28] User Clowbn:0 logged in.
+[05:11:31] User Clowbn:0 logged out.
+[05:11:31] Connection disconnected: 127.0.0.1

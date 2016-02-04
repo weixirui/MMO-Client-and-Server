@@ -127,8 +127,8 @@ public final class Main {
 	 */
 	public static void main(String[] args) {
 		ServerGUI.getSingleton().setVisible(true); //Display server gui
-		System.setOut(Logger.getPrintStream()); // Set System out to logger out
-		System.setErr(Logger.getPrintStream());
+		System.setOut(Logger.getOutPrintStream()); // Set System out to logger out
+		System.setErr(Logger.getErrPrintStream());
 		Runtime.getRuntime().addShutdownHook(new Thread() { // Add shutdown hook that autosaves users.
 			@Override
 			public void run() {
@@ -175,12 +175,12 @@ public final class Main {
 					}
 				}
 			} while (!allFinished);
-			long timeLeft = Config.TICK_DELAY - (System.currentTimeMillis() - start); // Calculate remaining time.
+			long timeLeft = Config.MILLISECONDS_PER_TICK - (System.currentTimeMillis() - start); // Calculate remaining time.
 			tickTimes += (System.currentTimeMillis() - start);
 			ticks++;
 			tickCount++;
-			if (ticks == Config.TICKS_PER_AUTO_SAVE) { // 5min / 400ms = 750 ticks
-				System.out.println("Average tick time since last autosave: " + (tickTimes / ticks) + "ms.");
+			if (ticks == Config.TICKS_PER_MINUTE * 5) {
+				System.out.println("Average tick consumption over 5 minutes: " + String.format("%.3f", (tickTimes / (float) (Config.MILLISECONDS_PER_TICK * ticks))) + "%.");
 				ticks = 0;
 				tickTimes = 0L;
 			}

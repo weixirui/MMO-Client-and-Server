@@ -23,17 +23,10 @@ public class Client {
 		LoginPacket packet = new LoginPacket(null, "Clowbn", "Clown");
 		StreamUtils.writeBlockToStream(socket.getOutputStream(), packet.toBytes());
 		Thread.sleep(500);
-		int wait = 0;
 		while (true) {
-			if (wait++ == 100) {
-				StreamUtils.writeBlockToStream(socket.getOutputStream(),
-						new TestPacket(null, TestPacket.EXCEPTION_TEST).toBytes());
-				wait = 0;
-			} else {
 				StreamUtils.writeBlockToStream(socket.getOutputStream(),
 						new MessagePacket(null, (byte) 0, "Lol....").toBytes());
-			}
-			Thread.sleep(50);
+			Thread.sleep(20);
 		}
 		//}
 

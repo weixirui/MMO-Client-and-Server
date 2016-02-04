@@ -49,26 +49,15 @@ public class Logger {
 	}
 
 	private static final class LoggerPrintStream extends PrintStream {
-		private static LoggerPrintStream SINGLETON; // Effectively final, just needs to not be final because of the try/catch in static.
-		private static final PrintStream defaultStream;
-		private static volatile String pendingMessage = "";
+		private final PrintStream defaultStream;
+		private volatile String pendingMessage = "";
 
-		static {
-			defaultStream = System.out;
-			try {
-				SINGLETON = new LoggerPrintStream();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				SINGLETON = (LoggerPrintStream) System.out;
-			}
-		}
-
-		private static String ensureFileExists() {
+		private static String ensureFileExists(boolean isErr) {
 			File logPathFile = new File(
 					Config.LOG_BASE_PATH + Calendar.getInstance().get(Calendar.YEAR) + "/" + getMonthAsString() + "/");
 			logPathFile.mkdirs();
 			File logFile = new File(Config.LOG_BASE_PATH + Calendar.getInstance().get(Calendar.YEAR) + "/"
-					+ getMonthAsString() + "/" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + " logs - "
+					+ getMonthAsString() + "/" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + (isErr ? " error " : "") + " logs - "
 					+ getDayAsString() + ".log");
 			try {
 				logFile.createNewFile();
@@ -128,13 +117,10 @@ public class Logger {
 			return "Null";
 		}
 
-		public static LoggerPrintStream getSingleton() {
-			return SINGLETON;
-		}
-
-		private LoggerPrintStream() throws FileNotFoundException {
-			super(new FileOutputStream(ensureFileExists(), true));
-			println();
+		private LoggerPrintStream(boolean isErr) throws FileNotFoundException {
+			super(new FileOutputStream(ensureFileExists(isErr), true));
+			defaultStream = isErr ? System.err : System.out;
+			//println();
 		}
 
 		@Override
@@ -294,13 +280,32 @@ public class Logger {
 	private static final CycleQueue<String> outputList = new CycleQueue<>(200, true);
 
 	private static final Logger SINGLETON = new Logger();
+	
+	private static LoggerPrintStream OUT; // Should be treated as final.
+	
+	private static LoggerPrintStream ERR; // Should be treated as final.
+	
+	static {
+		try {
+			OUT = new LoggerPrintStream(false);
+			ERR = new LoggerPrintStream(true);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			OUT = (LoggerPrintStream) System.out;
+			ERR = (LoggerPrintStream) System.err;
+		}
+	}
 
 	public static ListModel<String> getListModel() {
 		return LoggerListModel.getSingleton();
 	}
 
-	public static PrintStream getPrintStream() {
-		return LoggerPrintStream.getSingleton();
+	public static PrintStream getOutPrintStream() {
+		return OUT;
+	}
+	
+	public static PrintStream getErrPrintStream() {
+		return ERR;
 	}
 
 	public static Logger getSingleton() {
