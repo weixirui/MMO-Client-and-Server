@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import com.git.cs309.mmoserver.Config;
+import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.characters.user.User;
 import com.git.cs309.mmoserver.characters.user.UserManager;
 import com.git.cs309.mmoserver.packets.PacketFactory;

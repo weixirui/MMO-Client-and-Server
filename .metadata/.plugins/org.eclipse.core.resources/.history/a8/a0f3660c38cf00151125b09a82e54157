@@ -199,4 +199,13 @@ public final class Main {
 		// should check to see which part failed, and recover if it can.
 		running = false;
 	}
+
+	/**
+	 * Getter for wasPaused state.
+	 * 
+	 * @return wasPaused state
+	 */
+	public static boolean wasPaused() {
+		return paused;
+	}
 }
