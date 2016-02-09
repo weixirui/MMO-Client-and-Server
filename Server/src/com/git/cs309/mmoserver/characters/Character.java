@@ -4,8 +4,7 @@ import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
 /**
  * 
- * @author Clownvin
- * @author Jeffery Schons
+ * @author Group 21
  *
  *         An abstract class representing the basis for all in-game characters,
  *         such as player, npcs, bosses, etc.
