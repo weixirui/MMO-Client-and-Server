@@ -1,4 +1,4 @@
 #ignore logs
 /Server/data/logs/
-#ignore logs
 *.log
+Server/data/logs/

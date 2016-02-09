@@ -1,7 +1,0 @@
-[05:11:31] java.net.SocketException: Connection reset by peer: socket write error
-[05:11:31] 	at java.net.SocketOutputStream.socketWrite0(Native Method)
-[05:11:31] 	at java.net.SocketOutputStream.socketWrite(Unknown Source)
-[05:11:31] 	at java.net.SocketOutputStream.write(Unknown Source)
-[05:11:31] 	at com.git.cs309.mmoserver.util.StreamUtils.writeBlockToStream(StreamUtils.java:62)
-[05:11:31] 	at com.git.cs309.mmoserver.connection.AbstractConnection$1.run(AbstractConnection.java:28)
-[05:11:31] Connection reset
