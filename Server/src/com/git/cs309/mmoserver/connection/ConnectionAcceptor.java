@@ -1,14 +1,16 @@
 package com.git.cs309.mmoserver.connection;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 
 import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.packets.ErrorPacket;
 
 /**
  * 
- * @author Clownvin
+ * @author Group 21
  *
  *         Connection acceptor. Waits for connections, then encapsulates the
  *         sockets into Connection containers.
@@ -53,7 +55,11 @@ public final class ConnectionAcceptor implements Runnable {
 			return;
 		}
 		if (acceptorSocket != null && !acceptorSocket.isClosed()) { // If it's not null and not closed, proceed.
-			System.out.println("Acceptor running on port: " + port);
+			try {
+				System.out.println("Acceptor running on " + InetAddress.getLocalHost() + ":" + port);
+			} catch (UnknownHostException e1) {
+				e1.printStackTrace();
+			}
 			while (Main.isRunning() && !acceptorSocket.isClosed()) { // While open and server is running..
 				try {
 					Connection connection = new Connection(acceptorSocket.accept()); // Accept new socket, and immediately encapsulate.

@@ -1,5 +1,6 @@
 package com.git.cs309.mmoserver;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import com.git.cs309.mmoserver.util.TickProcess;
 
 /**
  * 
- * @author Clownvin
+ * @author Group 21
  *
  *         Main is the main class and entry point of the MMOServer. I also
  *         handles the "tick" mechanics.
@@ -59,7 +60,7 @@ public final class Main {
 	private static final Object TICK_NOTIFIER = new Object(); // To notify
 																// threads of
 																// new tick.
-	// Current server ticks count.
+																// Current server ticks count.
 	private static volatile long tickCount = 0; // Tick count.
 
 	/**
@@ -95,24 +96,6 @@ public final class Main {
 	}
 
 	/**
-	 * Getter for running state.
-	 * 
-	 * @return running state
-	 */
-	public static boolean isRunning() {
-		return running;
-	}
-
-	/**
-	 * Getter for wasPaused state.
-	 * 
-	 * @return wasPaused state
-	 */
-	public static boolean wasPaused() {
-		return paused;
-	}
-
-	/**
 	 * Initializes handler and managers, to ensure they're ready to handle
 	 * activity.
 	 */
@@ -126,11 +109,21 @@ public final class Main {
 	}
 
 	/**
+	 * Getter for running state.
+	 * 
+	 * @return running state
+	 */
+	public static boolean isRunning() {
+		return running;
+	}
+
+	/**
 	 * Main method, duh.
 	 * 
 	 * @param args
+	 * @throws UnknownHostException
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnknownHostException {
 		System.setOut(Logger.getOutPrintStream()); // Set System out to logger
 													// out
 		System.setErr(Logger.getErrPrintStream());
@@ -218,5 +211,14 @@ public final class Main {
 		// For now we can just have it set running to false, but later on it
 		// should check to see which part failed, and recover if it can.
 		running = false;
+	}
+
+	/**
+	 * Getter for wasPaused state.
+	 * 
+	 * @return wasPaused state
+	 */
+	public static boolean wasPaused() {
+		return paused;
 	}
 }

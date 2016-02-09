@@ -13,6 +13,11 @@ import javax.swing.ListModel;
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.util.CycleQueue;
 
+/**
+ * 
+ * @author Group 21
+ *
+ */
 public class Logger {
 	private static final class LoggerListModel extends AbstractListModel<String> {
 
@@ -47,16 +52,13 @@ public class Logger {
 	}
 
 	private static final class LoggerPrintStream extends PrintStream {
-		private final PrintStream defaultStream;
-		private volatile String pendingMessage = "";
-
 		private static String ensureFileExists(boolean isErr) {
 			File logPathFile = new File(
 					Config.LOG_BASE_PATH + Calendar.getInstance().get(Calendar.YEAR) + "/" + getMonthAsString() + "/");
 			logPathFile.mkdirs();
 			File logFile = new File(Config.LOG_BASE_PATH + Calendar.getInstance().get(Calendar.YEAR) + "/"
-					+ getMonthAsString() + "/" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + (isErr ? " error " : "") + " logs - "
-					+ getDayAsString() + ".log");
+					+ getMonthAsString() + "/" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+					+ (isErr ? " error " : "") + " logs - " + getDayAsString() + ".log");
 			try {
 				logFile.createNewFile();
 			} catch (IOException e) {
@@ -64,7 +66,6 @@ public class Logger {
 			}
 			return logFile.getAbsolutePath();
 		}
-
 		private static String getDayAsString() {
 			switch (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
 			case Calendar.SUNDAY:
@@ -114,6 +115,10 @@ public class Logger {
 			}
 			return "Null";
 		}
+
+		private final PrintStream defaultStream;
+
+		private volatile String pendingMessage = "";
 
 		private LoggerPrintStream(boolean isErr) throws FileNotFoundException {
 			super(new FileOutputStream(ensureFileExists(isErr), true));
@@ -278,11 +283,11 @@ public class Logger {
 	private static final CycleQueue<String> outputList = new CycleQueue<>(200, true);
 
 	private static final Logger SINGLETON = new Logger();
-	
+
 	private static LoggerPrintStream OUT; // Should be treated as final.
-	
+
 	private static LoggerPrintStream ERR; // Should be treated as final.
-	
+
 	static {
 		try {
 			OUT = new LoggerPrintStream(false);
@@ -294,16 +299,16 @@ public class Logger {
 		}
 	}
 
+	public static PrintStream getErrPrintStream() {
+		return ERR;
+	}
+
 	public static ListModel<String> getListModel() {
 		return LoggerListModel.getSingleton();
 	}
 
 	public static PrintStream getOutPrintStream() {
 		return OUT;
-	}
-	
-	public static PrintStream getErrPrintStream() {
-		return ERR;
 	}
 
 	public static Logger getSingleton() {

@@ -6,7 +6,6 @@ import java.net.UnknownHostException;
 
 import com.git.cs309.mmoserver.packets.LoginPacket;
 import com.git.cs309.mmoserver.packets.MessagePacket;
-import com.git.cs309.mmoserver.packets.TestPacket;
 import com.git.cs309.mmoserver.util.StreamUtils;
 
 public class Client {
@@ -24,8 +23,8 @@ public class Client {
 		StreamUtils.writeBlockToStream(socket.getOutputStream(), packet.toBytes());
 		Thread.sleep(500);
 		while (true) {
-				StreamUtils.writeBlockToStream(socket.getOutputStream(),
-						new MessagePacket(null, (byte) 0, "Lol....").toBytes());
+			StreamUtils.writeBlockToStream(socket.getOutputStream(),
+					new MessagePacket(null, (byte) 0, "Lol....").toBytes());
 			Thread.sleep(20);
 		}
 		//}
