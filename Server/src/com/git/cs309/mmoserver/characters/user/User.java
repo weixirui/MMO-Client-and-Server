@@ -12,6 +12,7 @@ public final class User extends Character implements Serializable {
 	/**
 	 * 
 	 */
+	//need split between user and users charicter
 	private static final long serialVersionUID = 9016268542066197274L;
 
 	private final String username;

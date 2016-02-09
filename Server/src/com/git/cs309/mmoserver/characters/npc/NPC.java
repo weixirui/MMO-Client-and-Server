@@ -1,5 +1,11 @@
 package com.git.cs309.mmoserver.characters.npc;
 
+/**
+ *
+ * @author Jeffery Schons
+ * 
+ */
+
 import com.git.cs309.mmoserver.characters.Character;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
