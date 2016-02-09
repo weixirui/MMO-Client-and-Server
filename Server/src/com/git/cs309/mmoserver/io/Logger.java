@@ -11,7 +11,6 @@ import javax.swing.AbstractListModel;
 import javax.swing.ListModel;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.gui.ServerGUI;
 import com.git.cs309.mmoserver.util.CycleQueue;
 
 public class Logger {
@@ -25,7 +24,6 @@ public class Logger {
 
 		public static void fireContentsChanged() {
 			SINGLETON.fireContentsChanged(SINGLETON, 0, outputList.size());
-			ServerGUI.update();
 		}
 
 		public static LoggerListModel getSingleton() {

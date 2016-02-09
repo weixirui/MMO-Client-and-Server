@@ -1,14 +1,10 @@
 package com.git.cs309.mmoserver.util;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Observable;
 
 import javax.swing.JButton;
 
 import com.git.cs309.mmoserver.Main;
-import com.git.cs309.mmoserver.gui.ServerGUI;
-import com.git.cs309.mmoserver.gui.TickProcessStatusComponent;
 
 /**
  * 
@@ -27,7 +23,6 @@ public abstract class TickProcess extends Observable implements Runnable {
 	protected volatile boolean tickFinished = true;
 	protected volatile boolean isStopped = true;
 	protected final String name;
-	protected final TickProcessStatusComponent component;
 	protected volatile long cumulative = 0;
 	protected volatile int count = 0;
 	protected volatile long average = 0;
@@ -36,18 +31,6 @@ public abstract class TickProcess extends Observable implements Runnable {
 
 	public TickProcess(final String name) {
 		this.name = name;
-		component = new TickProcessStatusComponent(this);
-		restartButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				start();
-				Main.notifyFailureResolution();
-			}
-
-		});
-		component.add(restartButton);
-		ServerGUI.addComponentToStatusPanel(component);
 		Main.addTickProcess(this);
 		start();
 	}
@@ -59,15 +42,6 @@ public abstract class TickProcess extends Observable implements Runnable {
 	 */
 	public long getAverageTick() {
 		return average;
-	}
-
-	/**
-	 * FOR GUI ONLY
-	 * 
-	 * @return the component representing this object.
-	 */
-	public TickProcessStatusComponent getComponent() {
-		return component;
 	}
 
 	/**
@@ -128,7 +102,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 		notifyObservers();
 	}
 
-	protected final void start() {
+	public final void start() {
 		if (TickProcessThread == null || !TickProcessThread.isAlive()) {
 			TickProcessThread = new Thread(this);
 			TickProcessThread.setName(name);
