@@ -139,7 +139,8 @@ public final class Main {
 		initialize(); // Call initialize block, which will initialize things
 						// that should be initialized before starting server.
 		System.out.println("Starting server...");
-		ConnectionAcceptor.startAcceptor(43594);
+		ConnectionAcceptor.startAcceptor(6667); // TODO Replace with actual
+												// port.
 		int ticks = 0;
 		long tickTimes = 0L;
 		while (running) { // As long as server is running...

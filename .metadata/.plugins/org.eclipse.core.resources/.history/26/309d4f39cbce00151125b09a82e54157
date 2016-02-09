@@ -17,7 +17,7 @@ public class Client {
 	private final Socket socket;
 
 	private Client() throws UnknownHostException, IOException, InterruptedException {
-		socket = new Socket("proj-309-21.cs.iastate.edu", 43594);
+		socket = new Socket("localhost", 6667);
 		//while (true) {
 		LoginPacket packet = new LoginPacket(null, "Clowbn", "Clown");
 		StreamUtils.writeBlockToStream(socket.getOutputStream(), packet.toBytes());

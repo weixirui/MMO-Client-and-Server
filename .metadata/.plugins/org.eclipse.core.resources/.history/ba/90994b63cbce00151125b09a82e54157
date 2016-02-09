@@ -24,7 +24,7 @@ public final class Client {
 
 	public static void main(String[] args) {
 		try {
-			connection = new Connection(new Socket("proj-309-21.cs.iastate.edu", 43594));
+			connection = new Connection(new Socket("localhost", 6667));
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Failed to connect to the server.");
 			return;

@@ -21,7 +21,7 @@ public final class PacketHandler {
 			ErrorPacket errorPacket = (ErrorPacket) packet;
 			switch (errorPacket.getErrorCode()) {
 			case ErrorPacket.GENERAL_ERROR:
-				JOptionPane.showMessageDialog(null, "Error: " + errorPacket.getErrorMessage());
+				System.out.println("Recieved error from server: " + errorPacket.getErrorMessage());
 				break;
 			case ErrorPacket.LOGIN_ERROR:
 				JOptionPane.showMessageDialog(null, "Error: " + errorPacket.getErrorMessage());
