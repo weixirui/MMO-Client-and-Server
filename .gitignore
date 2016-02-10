@@ -1,0 +1,8 @@
+#ignore logs
+/Server/data/logs/
+*.log
+Server/data/logs/
+#ignore users
+/Server/data/users/
+Server/data/users/
+*.user
