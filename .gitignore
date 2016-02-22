@@ -2,3 +2,6 @@
 /Server/data/logs/
 #ignore logs
 *.log
+#ignore eclipse data
+.metadata
+.recommenders
