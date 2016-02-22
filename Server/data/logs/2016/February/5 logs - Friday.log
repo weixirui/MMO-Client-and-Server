@@ -1,16 +1,10 @@
-[05:56:49] Starting server...
-[05:56:49] Acceptor running on port: 6667
-[05:56:59] Connection joined: 127.0.0.1
-[05:56:59] User Clowbn:0 logged in.
-[05:57:59] Saved 1 users in 0ms.
-[05:58:59] Saved 1 users in 0ms.
-[06:00:00] Saved 1 users in 0ms.
-[06:01:00] Saved 1 users in 0ms.
-[06:01:50] Average tick consumption over 5 minutes: 0.018%.
-[06:02:00] Saved 1 users in 0ms.
-[06:03:00] Saved 1 users in 0ms.
-[06:04:00] Saved 1 users in 0ms.
-[06:05:01] Saved 1 users in 0ms.
-[06:06:01] Saved 1 users in 0ms.
-[06:06:51] Average tick consumption over 5 minutes: 0.017%.
-[06:06:56] Saved all users before going down.
+
+[10:07:11] Starting server...
+[10:07:11] Acceptor running on port: 6667
+[10:07:31] Connection joined: 127.0.0.1
+[10:07:34] User Username:0 logged in.
+[10:07:34] Warning: Server is lagging behind desired tick time 44ms.
+[10:07:48] Connection reset
+[10:07:48] User Username:0 logged out.
+[10:07:48] Connection disconnected: 127.0.0.1
+[10:07:51] Saved all users before going down.
