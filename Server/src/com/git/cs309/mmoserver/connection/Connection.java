@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.Socket;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.characters.user.User;
 import com.git.cs309.mmoserver.characters.user.UserManager;
 import com.git.cs309.mmoserver.packets.PacketFactory;
@@ -14,12 +13,30 @@ import com.git.cs309.mmoserver.util.StreamUtils;
 
 /**
  * 
- * @author Clownvin
+ * @author Group 21
  *
  * 
  */
 public class Connection extends AbstractConnection {
 	private volatile boolean closeRequested = false;
+	private volatile User user = null;
+	private volatile boolean loggedIn = false;
+	
+	public boolean isLoggedIn() {
+		return loggedIn && user != null;
+	}
+	
+	public void setLoggedIn(boolean state) {
+		loggedIn = state;
+	}
+	
+	public void setUser(final User user) {
+		this.user = user;
+	}
+	
+	public User getUser() {
+		return user;
+	}
 
 	public Connection(Socket socket) throws IOException {
 		super(socket);
@@ -74,7 +91,7 @@ public class Connection extends AbstractConnection {
 						closeRequested = true;
 						break;
 					}
-					if (!Main.wasPaused() && ++packetsThisTick == Config.PACKETS_PER_TICK_BEFORE_KICK) {
+					if (++packetsThisTick == Config.PACKETS_PER_TICK_BEFORE_KICK) {
 						System.out.println(
 								this + " exceeded the maximum packets per tick limit. Packets: " + packetsThisTick);
 						closeRequested = true;
@@ -85,7 +102,7 @@ public class Connection extends AbstractConnection {
 				e.printStackTrace();
 			}
 		}
-		User user = UserManager.getUserForIP(ip);
+		user = UserManager.getUserForIP(ip);
 		if (user != null) {
 			UserManager.logOut(user.getUsername());
 		}

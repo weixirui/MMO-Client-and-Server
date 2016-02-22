@@ -4,15 +4,15 @@ import com.git.cs309.mmoserver.Config;
 
 /**
  * 
- * @author Clownvin
+ * @author Group 21
  * 
  *         <p>
- *         I'm actually pretty proud of this one. This is the ClosedIDSystem. It
- *         houses a finite number of IDTags, which can be distributed for use.
- *         The purpose behind this is to ensure completely that no two entities
- *         ever share the same unique ID, therefore making differentiation much
- *         easier. No other class can create more IDTags, ensuring the pool of
- *         legitimate tags isn't polluted with false tags.
+ *         This is the ClosedIDSystem. It houses a finite number of IDTags,
+ *         which can be distributed for use. The purpose behind this is to
+ *         ensure completely that no two entities ever share the same unique ID,
+ *         therefore making differentiation much easier. No other class can
+ *         create more IDTags, ensuring the pool of legitimate tags isn't
+ *         polluted with false tags.
  *         </p>
  *         <p>
  *         There is only one method this static utility provides, and that is

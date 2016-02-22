@@ -1,9 +1,13 @@
 package com.git.cs309.mmoserver.characters.user;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,6 +15,7 @@ import java.util.Hashtable;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.connection.Connection;
 import com.git.cs309.mmoserver.cycle.CycleProcess;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.packets.LoginPacket;
@@ -18,7 +23,7 @@ import com.git.cs309.mmoserver.util.ClosedIDSystem;
 
 /**
  * 
- * @author Clownvin
+ * @author Group 21
  *
  *         Static utility class that handles user management. This class does
  *         not do anything to the users except load them, and store them into
@@ -27,8 +32,14 @@ import com.git.cs309.mmoserver.util.ClosedIDSystem;
 public final class UserManager {
 	private static final Hashtable<String, User> USER_TABLE = new Hashtable<>(); // User table with Username as key
 	private static final Hashtable<String, User> IP_TABLE = new Hashtable<>(); // User table with IP as key
+	private static final Hashtable<String, Rights> RIGHTS_TABLE = new Hashtable<>();
 
 	static {
+		try {
+			reloadRights();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		CycleProcessManager.addProcess(new CycleProcess() { // Add autosave process to CPM
 			private int tick = 0;
 
@@ -44,6 +55,12 @@ public final class UserManager {
 							}
 						}
 						long start = System.currentTimeMillis();
+						saveAllUsers();
+						try {
+							reloadRights();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
 						System.out.println("Saved " + USER_TABLE.size() + " users in "
 								+ (System.currentTimeMillis() - start) + "ms.");
 					}
@@ -74,6 +91,64 @@ public final class UserManager {
 			}
 
 		});
+	}
+	
+	public static void setRights(String playerName, Rights rights) throws IOException {
+		File permissionsFile = new File(Config.PERMISSIONS_PATH);
+		File tempFile = new File(Config.PERMISSIONS_PATH+"_temp");
+		BufferedReader reader = new BufferedReader(new FileReader(permissionsFile));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+		String line = "";
+		boolean writeNextLine = false;
+		while (!(line = reader.readLine()).equalsIgnoreCase("[EOF]")) {
+			if ((line.equalsIgnoreCase("[MOD]") && rights == Rights.MOD) || (line.equalsIgnoreCase("[ADMIN]") && rights == Rights.ADMIN)) {
+				writeNextLine = true;
+				writer.write(line);
+				writer.newLine();
+				continue;
+			}
+			if ((line.equalsIgnoreCase(playerName))) {
+				continue;
+			}
+			if (writeNextLine) {
+				writer.write(playerName);
+				writer.newLine();
+				writer.write(line);
+				writer.newLine();
+			} else {
+				writer.write(line);
+				writer.newLine();
+			}
+		}
+		writer.write(line);
+		writer.newLine();
+		writer.close();
+		reader.close();
+		tempFile.renameTo(permissionsFile);
+		if (isLoggedIn(playerName)) {
+			getUserForUsername(playerName).setRights(rights);
+		}
+	}
+	
+	public static void reloadRights() throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(Config.PERMISSIONS_PATH));
+		String line = "";
+		Rights currentRights = Rights.PLAYER;
+		RIGHTS_TABLE.clear();
+		while (!(line = reader.readLine()).equalsIgnoreCase("[EOF]")) {
+			switch (line.toUpperCase()) {
+			case "[ADMIN]":
+				currentRights = Rights.ADMIN;
+				break;
+			case "[MOD]":
+				currentRights = Rights.MOD;
+				break;
+			default:
+				RIGHTS_TABLE.put(line.toLowerCase(), currentRights);
+			}
+		}
+		reader.close();
+		System.out.println("Loaded rights.");
 	}
 
 	/**
@@ -197,7 +272,11 @@ public final class UserManager {
 			addUserToTables(user);
 		}
 		user.setIDTag(ClosedIDSystem.getTag());
-		System.out.println("User " + user + " logged in.");
+		if (RIGHTS_TABLE.containsKey(user.getUsername().toLowerCase())) {
+			user.setRights(RIGHTS_TABLE.get(user.getUsername().toLowerCase()));
+		}
+		((Connection)loginPacket.getConnection()).setUser(user);
+		System.out.println(user.getRights()+" " + user + " logged in.");
 		return true;
 	}
 

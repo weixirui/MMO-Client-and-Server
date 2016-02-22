@@ -1,5 +1,0 @@
-1454482208759	Rename method 'ensureInitialize'
-1454482464676	Rename method 'getTickLock'
-1454482480407	Rename field 'TICK_LOCK'
-1454482491442	Rename field 'FAILURE_RESOLUTION_LOCK'
-1454482834855	Rename local variable 'tickLock'

@@ -9,7 +9,7 @@ import com.git.cs309.mmoserver.util.TickProcess;
 
 /**
  * 
- * @author Clownvin
+ * @author Group 21
  *
  *         TickProcess implementation that manages all Character objects.
  */

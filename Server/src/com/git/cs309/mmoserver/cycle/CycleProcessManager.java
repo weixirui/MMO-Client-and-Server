@@ -9,7 +9,7 @@ import com.git.cs309.mmoserver.util.TickProcess;
 
 /**
  * 
- * @author Clownvin
+ * @author Group 21
  * 
  *         Handles all CycleProcesses. A CycleProcess is simply a task that
  *         needs to be executed per tick, but doesn't need or can't implement

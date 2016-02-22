@@ -7,7 +7,7 @@ import com.git.cs309.mmoserver.connection.ConnectionManager;
 
 /**
  * 
- * @author Clownvin
+ * @author Group 21
  * 
  *         Packet handler. Handles packets. Can also interpret this as a packet
  *         distributer, if the need arises for packets to be handled elsewhere.
