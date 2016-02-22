@@ -19,6 +19,24 @@ import com.git.cs309.mmoserver.util.StreamUtils;
  */
 public class Connection extends AbstractConnection {
 	private volatile boolean closeRequested = false;
+	private volatile User user = null;
+	private volatile boolean loggedIn = false;
+	
+	public boolean isLoggedIn() {
+		return loggedIn && user != null;
+	}
+	
+	public void setLoggedIn(boolean state) {
+		loggedIn = state;
+	}
+	
+	public void setUser(final User user) {
+		this.user = user;
+	}
+	
+	public User getUser() {
+		return user;
+	}
 
 	public Connection(Socket socket) throws IOException {
 		super(socket);
@@ -84,7 +102,7 @@ public class Connection extends AbstractConnection {
 				e.printStackTrace();
 			}
 		}
-		User user = UserManager.getUserForIP(ip);
+		user = UserManager.getUserForIP(ip);
 		if (user != null) {
 			UserManager.logOut(user.getUsername());
 		}

@@ -1,28 +1,25 @@
-package com.git.cs309.mmoclient;
+package com.git.cs309.adminclient;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.Socket;
 
 import javax.swing.JOptionPane;
 
-import com.git.cs309.mmoclient.connection.Connection;
-import com.git.cs309.mmoclient.gui.LoginGUI;
+import com.git.cs309.adminclient.connection.Connection;
+import com.git.cs309.adminclient.gui.LoginGUI;
 
-public final class Client {
-	private static volatile Connection connection;
-	private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
+public final class AdminClient {
 	private static boolean debug = false;
-
+	private static volatile Connection connection;
+	
 	public static Connection getConnection() {
 		return connection;
 	}
-
-	public static Dimension getScreenSize() {
-		return SCREEN_SIZE;
+	
+	public static boolean isDebug() {
+		return debug;
 	}
-
+	
 	public static void main(String[] args) {
 		for (String arg : args) {
 			switch (arg.toLowerCase()) {

@@ -6,22 +6,22 @@ public final class PacketFactory {
 
 	public static Packet buildPacket(final byte[] bytes, final AbstractConnection source) {
 		switch (bytes[0]) { // First byte should ALWAYS be the type byte.
-		case 0: // Null packet
+		case PacketType.NULL_PACKET_BYTE: // Null packet
 			return null;
-		case 1: // Message packet
+		case PacketType.MESSAGE_PACKET_BYTE: // Message packet
 			return new MessagePacket(bytes, source);
-		case 2: // Login packet
+		case PacketType.LOGIN_PACKET_BYTE: // Login packet
 			return new LoginPacket(bytes, source);
-		case 3: // Error packet
+		case PacketType.ERROR_PACKET_BYTE: // Error packet
 			return new ErrorPacket(bytes, source);
-		case 4:
+		case PacketType.EVENT_PACKET_BYTE:
 			return new EventPacket(bytes, source);
-		case 5:
+		case PacketType.ENTITY_UPDATE_PACKET_BYTE:
 			return new EntityUpdatePacket(bytes, source);
-		case 6:
+		case PacketType.TEST_PACKET_BYTE:
 			return new TestPacket(source, bytes);
 		default:
-			System.out.println("No case for type: " + bytes[0]);
+			System.out.println("No case for type byte: " + bytes[0]);
 			return null;
 		}
 	}

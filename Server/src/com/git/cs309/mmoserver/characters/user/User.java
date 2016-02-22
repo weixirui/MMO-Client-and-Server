@@ -18,13 +18,22 @@ public final class User extends Character implements Serializable {
 	private final String username;
 	private final String password;
 	private transient AbstractConnection connection; // Transient means serialization will ignore this variable.
+	private transient Rights userRights = Rights.PLAYER;
 
 	public User(final String username, final String password) {
 		super(Config.PLAYER_START_X, Config.PLAYER_START_Y, ClosedIDSystem.getTag());
 		this.username = username;
 		this.password = password;
 	}
-
+	
+	public void setRights(Rights rights) {
+		userRights = rights;
+	}
+	
+	public Rights getRights() {
+		return userRights;
+	}
+	
 	@Override
 	public void applyDamage(int damageAmount) {
 		health -= damageAmount;

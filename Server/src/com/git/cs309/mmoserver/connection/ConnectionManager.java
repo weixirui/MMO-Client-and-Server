@@ -127,18 +127,6 @@ public final class ConnectionManager extends TickProcess {
 	}
 
 	/**
-	 * Sends a packet to the connection given by the packet.
-	 * 
-	 * @param packet
-	 *            packet to send
-	 * @throws NullPointerException
-	 *             if packet doesn't have a destination
-	 */
-	public static void sendPacket(final Packet packet) throws NullPointerException {
-		packet.getConnection().addOutgoingPacket(packet);
-	}
-
-	/**
 	 * Sends a packet to all connections in list.
 	 * 
 	 * @param packet
@@ -147,7 +135,8 @@ public final class ConnectionManager extends TickProcess {
 	public static void sendPacketToAllConnections(final Packet packet) {
 		synchronized (connections) {
 			for (Connection connection : connections) {
-				connection.addOutgoingPacket(packet);
+				if (connection.isLoggedIn())
+					connection.addOutgoingPacket(packet);
 			}
 		}
 	}
