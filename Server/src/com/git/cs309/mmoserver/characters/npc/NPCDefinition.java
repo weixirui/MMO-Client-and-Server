@@ -1,13 +1,13 @@
 package com.git.cs309.mmoserver.characters.npc;
 
 public final class NPCDefinition {
-	private final String name;
-	private final int id;
-	private final int maxHealth;
-	private final int strength;
 	private final int accuracy;
 	private final int defence;
+	private final int id;
 	private final int level;
+	private final int maxHealth;
+	private final String name;
+	private final int strength;
 
 	public NPCDefinition(final String name, final int id, final int maxHealth, final int strength, final int accuracy,
 			final int defence, final int level) {

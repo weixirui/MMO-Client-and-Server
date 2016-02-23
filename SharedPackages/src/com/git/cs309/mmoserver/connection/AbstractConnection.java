@@ -23,19 +23,20 @@ public abstract class AbstractConnection extends Thread {
 		@Override
 		public void run() {
 			while (!disconnected && !socket.isClosed()) {
-				while (!disconnected && outgoingPackets.size() > 0) {
+				synchronized (outgoingPackets) {
+					while (!disconnected && outgoingPackets.size() > 0) {
+						try {
+							StreamUtils.writeBlockToStream(output, outgoingPackets.remove(0).toBytes());
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
 					try {
-						StreamUtils.writeBlockToStream(output, outgoingPackets.remove(0).toBytes());
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				try {
-					synchronized (outgoingPackets) {
+
 						outgoingPackets.wait();
+					} catch (InterruptedException e) {
+						//Don't care if it gets interrupted.
 					}
-				} catch (InterruptedException e) {
-					//Don't care if it gets interrupted.
 				}
 			}
 		}

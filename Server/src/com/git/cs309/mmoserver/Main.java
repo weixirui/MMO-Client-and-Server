@@ -44,17 +44,25 @@ import com.git.cs309.mmoserver.util.TickProcess;
  */
 public final class Main {
 
+	private static volatile CharacterManager characterManager = null;
+
+	private static volatile ConnectionManager connectionManager = null;
+	private static volatile CycleProcessManager cycleProcessManager = null;
+	private static volatile NPCManager npcManager = null;
+
+	// Is server running.
+	private static volatile boolean running = true;
+
+	// Object that all TickProcess objects wait on for tick notification.
+	private static final Object TICK_NOTIFIER = new Object(); // To notify
+
 	// List of TickProcess objects currently running. They add themselves to
 	// this list when instantiated.
 	private static final List<TickProcess> TICK_RELIANT_LIST = new ArrayList<>();
 
-	// Is server running.
-	private static volatile boolean running = true;
-	// Object that all TickProcess objects wait on for tick notification.
-	private static final Object TICK_NOTIFIER = new Object(); // To notify
-																// threads of
-																// new tick.
-																// Current server ticks count.
+	// threads of
+	// new tick.
+	// Current server ticks count.
 	private static volatile long tickCount = 0; // Tick count.
 
 	/**
@@ -69,6 +77,22 @@ public final class Main {
 											// TICK_RELIANT_LIST lock
 			TICK_RELIANT_LIST.add(TickProcess);
 		}
+	}
+
+	public static CharacterManager getCharacterManager() {
+		return characterManager;
+	}
+
+	public static ConnectionManager getConnectionManager() {
+		return connectionManager;
+	}
+
+	public static CycleProcessManager getCycleProcessManager() {
+		return cycleProcessManager;
+	}
+
+	public static NPCManager getNPCManager() {
+		return npcManager;
 	}
 
 	/**
@@ -90,25 +114,42 @@ public final class Main {
 	}
 
 	/**
-	 * Initializes handler and managers, to ensure they're ready to handle
-	 * activity.
-	 */
-	private static void initialize() {
-		NPCManager.initialize();
-		// These next few lines are just making reference to the classes. They
-		// handle initialization on first reference.
-		ConnectionManager.getSingleton();
-		CycleProcessManager.getSingleton();
-		CharacterManager.getSingleton();
-	}
-
-	/**
 	 * Getter for running state.
 	 * 
 	 * @return running state
 	 */
 	public static boolean isRunning() {
 		return running;
+	}
+
+	public static void loadAndStartCharacterManager() {
+		characterManager = new CharacterManager();
+	}
+
+	/**
+	 * Initializes handler and managers, to ensure they're ready to handle
+	 * activity.
+	 */
+	private static void loadAndStartClasses() {
+		loadAndStartNPCManager();
+		loadAndStartConnectionManager();
+		loadAndStartCycleProcessManager();
+		loadAndStartCharacterManager();
+	}
+
+	public static void loadAndStartConnectionManager() {
+		connectionManager = new ConnectionManager();
+	}
+
+	public static void loadAndStartCycleProcessManager() {
+		cycleProcessManager = new CycleProcessManager();
+	}
+
+	//Turns out that using the default system loader will just re-reference already loaded classes. Would need to create and use a different classloader
+	//Will do, if I can find time to do something ridiculous like that. Keeping them like this for time being (not singletons, that is)
+	public static void loadAndStartNPCManager() {
+		npcManager = new NPCManager();
+		npcManager.initialize();
 	}
 
 	/**
@@ -130,10 +171,31 @@ public final class Main {
 				System.out.println("Saved all users before going down.");
 			}
 		});
-		initialize(); // Call initialize block, which will initialize things
-						// that should be initialized before starting server.
-		System.out.println("Starting server...");
 		ConnectionAcceptor.startAcceptor(43594);
+		while (true) {
+			runServer();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// Don't care tooo much if it gets interrupted.
+			}
+			System.out.println("Restarting server...");
+		}
+	}
+
+	/**
+	 * Requests program termination.
+	 */
+	public static void requestExit() {
+		running = false;
+	}
+
+	private static void runServer() {
+		TICK_RELIANT_LIST.clear();
+		running = true;
+		loadAndStartClasses(); // Call initialize block, which will initialize things
+		// that should be initialized before starting server.
+		System.out.println("Starting server...");
 		int ticks = 0;
 		long tickTimes = 0L;
 		while (running) {
@@ -175,10 +237,10 @@ public final class Main {
 				ticks = 0;
 				tickTimes = 0L;
 			}
+			if (timeLeft < 0) {
+				System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
+			}
 			if (timeLeft < 2) {
-				if (timeLeft < 0) {
-					System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
-				}
 				timeLeft = 2; // Must wait at least a little bit, so that
 								// threads can catch up and wait.
 			}
@@ -189,14 +251,9 @@ public final class Main {
 			}
 		}
 		System.out.println("Server going down...");
-	}
-
-	/**
-	 * Requests program termination.
-	 */
-	public static void requestExit() {
-		// For now we can just have it set running to false, but later on it
-		// should check to see which part failed, and recover if it can.
-		running = false;
+		UserManager.saveAllUsers();
+		System.out.println("Saved all users before going down.");
+		System.out.println("");
+		System.out.println("");
 	}
 }

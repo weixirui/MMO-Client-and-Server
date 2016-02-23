@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.util.TickProcess;
 
 /**
@@ -18,8 +19,17 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *         if a condition is met.
  */
 public final class CycleProcessManager extends TickProcess {
-	private static final CycleProcessManager SINGLETON = new CycleProcessManager();
-	private static final Set<CycleProcess> PROCESSES = new HashSet<>(); // Set of processes.
+	private final Set<CycleProcess> processes = new HashSet<>(); // Set of processes.
+
+	//Private so that only this class can access constructor.
+	public CycleProcessManager() {
+		super("CycleProcessManager");
+		CycleProcessManager predecessor = Main.getCycleProcessManager();
+		if (predecessor != null) {
+			processes.addAll(predecessor.processes); // Carry over all the old processes.
+		}
+		predecessor = null;
+	}
 
 	/**
 	 * Add a new process for execution.
@@ -27,33 +37,29 @@ public final class CycleProcessManager extends TickProcess {
 	 * @param process
 	 *            new process
 	 */
-	public static void addProcess(final CycleProcess process) {
-		synchronized (PROCESSES) {
-			PROCESSES.add(process);
+	public void addProcess(final CycleProcess process) {
+		synchronized (processes) {
+			processes.add(process);
 		}
 	}
 
-	public static CycleProcessManager getSingleton() {
-		return SINGLETON;
-	}
-
-	//Private so that only this class can access constructor.
-	private CycleProcessManager() {
-		super("CycleProcessManager");
+	@Override
+	public void ensureSafeClose() {
+		//Don't need to do anything here.
 	}
 
 	@Override
 	protected synchronized void tickTask() {
 		List<CycleProcess> removalList = new ArrayList<>(); // List of objects to remove after finished processing. Because of for-each loop, concurrent modification would occur if they were removed during loop.
-		synchronized (PROCESSES) {
-			for (CycleProcess process : PROCESSES) {
+		synchronized (processes) {
+			for (CycleProcess process : processes) {
 				process.process();
 				if (process.finished()) { // Check if process is finished.
 					process.end();
 					removalList.add(process);
 				}
 			}
-			PROCESSES.removeAll(removalList);
+			processes.removeAll(removalList);
 		}
 	}
 }

@@ -15,8 +15,16 @@ import com.git.cs309.mmoserver.util.TickProcess;
  */
 public final class CharacterManager extends TickProcess {
 
-	private static final Set<Character> characterSet = new HashSet<>(); // All registered characters
-	private static final CharacterManager SINGLETON = new CharacterManager(); // Single instance of this class
+	private final Set<Character> characterSet = new HashSet<>(); // All registered characters
+
+	public CharacterManager() {
+		super("CharacterManager");
+		CharacterManager predecessor = Main.getCharacterManager();
+		if (predecessor != null) {
+			characterSet.addAll(predecessor.characterSet);
+		}
+		predecessor = null;
+	}
 
 	/**
 	 * Adds a character object to the character set. In theory, this should only
@@ -25,31 +33,13 @@ public final class CharacterManager extends TickProcess {
 	 * @param character
 	 *            character to add to set.
 	 */
-	public static synchronized void addCharacter(final Character character) { // Add new character to characterSet
+	public synchronized void addCharacter(final Character character) { // Add new character to characterSet
 		characterSet.add(character);
 	}
 
-	/**
-	 * Gets the single instance of this class.
-	 * 
-	 * @return the singleton for this class.
-	 */
-	public static CharacterManager getSingleton() { // Get the singleton
-		return SINGLETON;
-	}
-
-	/**
-	 * Removes character from the set.
-	 * 
-	 * @param character
-	 *            character to remove from set.
-	 */
-	public static synchronized void removeCharacter(final Character character) { // Remove character from set
-		characterSet.remove(character);
-	}
-
-	private CharacterManager() {
-		super("CharacterManager");
+	@Override
+	public void ensureSafeClose() {
+		//Not required
 	}
 
 	/**
@@ -68,6 +58,16 @@ public final class CharacterManager extends TickProcess {
 				character.process();
 			}
 		}
+	}
+
+	/**
+	 * Removes character from the set.
+	 * 
+	 * @param character
+	 *            character to remove from set.
+	 */
+	public synchronized void removeCharacter(final Character character) { // Remove character from set
+		characterSet.remove(character);
 	}
 
 	@Override
