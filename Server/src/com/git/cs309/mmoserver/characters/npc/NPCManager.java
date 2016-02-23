@@ -14,7 +14,7 @@ public final class NPCManager {
 
 	private final List<NPCDefinition> npcDefinitions = new ArrayList<>(); // List of NPC definitions.
 
-	public  void initialize() {
+	public void initialize() {
 		System.out.println("Initializing NPC Definitions...");
 		BufferedReader reader = null;
 		try {

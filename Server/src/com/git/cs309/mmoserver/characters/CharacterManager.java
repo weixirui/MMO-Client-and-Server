@@ -17,6 +17,15 @@ public final class CharacterManager extends TickProcess {
 
 	private final Set<Character> characterSet = new HashSet<>(); // All registered characters
 
+	public CharacterManager() {
+		super("CharacterManager");
+		CharacterManager predecessor = Main.getCharacterManager();
+		if (predecessor != null) {
+			characterSet.addAll(predecessor.characterSet);
+		}
+		predecessor = null;
+	}
+
 	/**
 	 * Adds a character object to the character set. In theory, this should only
 	 * need to be called from the Character constructor.
@@ -28,23 +37,9 @@ public final class CharacterManager extends TickProcess {
 		characterSet.add(character);
 	}
 
-	/**
-	 * Removes character from the set.
-	 * 
-	 * @param character
-	 *            character to remove from set.
-	 */
-	public synchronized void removeCharacter(final Character character) { // Remove character from set
-		characterSet.remove(character);
-	}
-
-	public CharacterManager() {
-		super("CharacterManager");
-		CharacterManager predecessor = Main.getCharacterManager();
-		if (predecessor != null) {
-			characterSet.addAll(predecessor.characterSet);
-		}
-		predecessor = null;
+	@Override
+	public void ensureSafeClose() {
+		//Not required
 	}
 
 	/**
@@ -65,14 +60,19 @@ public final class CharacterManager extends TickProcess {
 		}
 	}
 
-	@Override
-	protected void tickTask() {
-		processCharacters(Main.getTickCount() % Config.TICKS_PER_REGEN == 0); // Process characters.
+	/**
+	 * Removes character from the set.
+	 * 
+	 * @param character
+	 *            character to remove from set.
+	 */
+	public synchronized void removeCharacter(final Character character) { // Remove character from set
+		characterSet.remove(character);
 	}
 
 	@Override
-	public void ensureSafeClose() {
-		//Not required
+	protected void tickTask() {
+		processCharacters(Main.getTickCount() % Config.TICKS_PER_REGEN == 0); // Process characters.
 	}
 
 }

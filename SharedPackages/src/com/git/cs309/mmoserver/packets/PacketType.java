@@ -1,7 +1,7 @@
 package com.git.cs309.mmoserver.packets;
 
 public enum PacketType {
-	SERVER_MODULE_STATUS_PACKET((byte) 9), ADMIN_COMMAND_PACKET((byte) 8), CHARACTER_SELECTED_PACKET((byte) 7), TEST_PACKET((byte) 6), ENTITY_UPDATE_PACKET((byte) 5), EVENT_PACKET((byte) 4), ERROR_PACKET((byte) 3), LOGIN_PACKET(
+	USER_STATUS_PACKET((byte) 10), SERVER_MODULE_STATUS_PACKET((byte) 9), ADMIN_COMMAND_PACKET((byte) 8), CHARACTER_SELECTED_PACKET((byte) 7), TEST_PACKET((byte) 6), ENTITY_UPDATE_PACKET((byte) 5), EVENT_PACKET((byte) 4), ERROR_PACKET((byte) 3), LOGIN_PACKET(
 			(byte) 2), MESSAGE_PACKET((byte) 1), NULL_PACKET((byte) 0);
 	
 	public static final byte NULL_PACKET_BYTE = 0;
@@ -14,6 +14,7 @@ public enum PacketType {
 	public static final byte CHARACTER_SELECTED_PACKET_BYTE = 7;
 	public static final byte ADMIN_COMMAND_PACKET_BYTE = 8;
 	public static final byte SERVER_MODULE_STATUS_PACKET_BYTE = 9;
+	public static final byte USER_STATUS_PACKET_BYTE = 10;
 	private final byte typeByte;
 
 	private PacketType(final byte typeByte) {

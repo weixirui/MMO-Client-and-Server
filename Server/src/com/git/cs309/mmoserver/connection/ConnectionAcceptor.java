@@ -16,9 +16,9 @@ import com.git.cs309.mmoserver.packets.ErrorPacket;
  *         sockets into Connection containers.
  */
 public final class ConnectionAcceptor implements Runnable {
-	private static final ConnectionAcceptor SINGLETON = new ConnectionAcceptor();
 	private static Thread connectionAcceptorThread;
 	private static int port = 6667; // A default port.
+	private static final ConnectionAcceptor SINGLETON = new ConnectionAcceptor();
 
 	public static ConnectionAcceptor getSingleton() {
 		return SINGLETON;

@@ -23,21 +23,23 @@ import com.git.cs309.mmoserver.packets.ServerModuleStatusPacket;
  *         </p>
  */
 public abstract class TickProcess extends Observable implements Runnable {
-	protected volatile boolean tickFinished = true;
-	protected volatile boolean isStopped = true;
-	protected volatile boolean forceStop = false;
-	protected final String name;
-	protected volatile long cumulative = 0;
-	protected volatile int count = 0;
 	protected volatile long average = 0;
-	protected volatile Thread TickProcessThread = null;
+	protected volatile int count = 0;
+	protected volatile long cumulative = 0;
+	protected volatile boolean forceStop = false;
+	protected volatile boolean isStopped = true;
+	protected final String name;
 	protected final JButton restartButton = new JButton("Restart");
+	protected volatile boolean tickFinished = true;
+	protected volatile Thread TickProcessThread = null;
 
 	public TickProcess(final String name) {
 		this.name = name;
 		Main.addTickProcess(this);
 		start();
 	}
+
+	public abstract void ensureSafeClose();
 
 	/**
 	 * Allows access to the average time per tick of this object.
@@ -61,7 +63,9 @@ public abstract class TickProcess extends Observable implements Runnable {
 			average = cumulative / count;
 			count = 0;
 			cumulative = 0;
-			Main.getConnectionManager().sendPacketToConnectionsWithRights(new ServerModuleStatusPacket(null, name, (float) (average / (Config.MILLISECONDS_PER_TICK * 1000000.0f))), Rights.ADMIN);
+			Main.getConnectionManager().sendPacketToConnectionsWithRights(
+					new ServerModuleStatusPacket(null, name, average / (Config.MILLISECONDS_PER_TICK * 1000000.0f)),
+					Rights.ADMIN);
 		}
 	}
 
@@ -122,8 +126,6 @@ public abstract class TickProcess extends Observable implements Runnable {
 	public boolean tickFinished() {
 		return tickFinished;
 	}
-	
-	public abstract void ensureSafeClose();
 
 	protected abstract void tickTask();
 

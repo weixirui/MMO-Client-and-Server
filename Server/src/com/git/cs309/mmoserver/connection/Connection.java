@@ -20,24 +20,8 @@ import com.git.cs309.mmoserver.util.StreamUtils;
  */
 public class Connection extends AbstractConnection {
 	private volatile boolean closeRequested = false;
-	private volatile User user = null;
 	private volatile boolean loggedIn = false;
-
-	public boolean isLoggedIn() {
-		return loggedIn && user != null;
-	}
-
-	public void setLoggedIn(boolean state) {
-		loggedIn = state;
-	}
-
-	public void setUser(final User user) {
-		this.user = user;
-	}
-
-	public User getUser() {
-		return user;
-	}
+	private volatile User user = null;
 
 	public Connection(Socket socket) throws IOException {
 		super(socket);
@@ -60,6 +44,14 @@ public class Connection extends AbstractConnection {
 		synchronized (outgoingPackets) {
 			outgoingPackets.notifyAll();
 		}
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public boolean isLoggedIn() {
+		return loggedIn && user != null;
 	}
 
 	@Override
@@ -110,5 +102,13 @@ public class Connection extends AbstractConnection {
 		}
 		close();
 		disconnected = true;
+	}
+
+	public void setLoggedIn(boolean state) {
+		loggedIn = state;
+	}
+
+	public void setUser(final User user) {
+		this.user = user;
 	}
 }

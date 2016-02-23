@@ -237,13 +237,13 @@ public class Logger {
 		}
 	}
 
-	private static final CycleQueue<String> outputList = new CycleQueue<>(200, true);
-
-	private static final Logger SINGLETON = new Logger();
+	private static LoggerPrintStream ERR; // Should be treated as final.
 
 	private static LoggerPrintStream OUT; // Should be treated as final.
 
-	private static LoggerPrintStream ERR; // Should be treated as final.
+	private static final CycleQueue<String> outputList = new CycleQueue<>(200, true);
+
+	private static final Logger SINGLETON = new Logger();
 
 	static {
 		try {

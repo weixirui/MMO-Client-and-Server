@@ -21,6 +21,16 @@ import com.git.cs309.mmoserver.util.TickProcess;
 public final class CycleProcessManager extends TickProcess {
 	private final Set<CycleProcess> processes = new HashSet<>(); // Set of processes.
 
+	//Private so that only this class can access constructor.
+	public CycleProcessManager() {
+		super("CycleProcessManager");
+		CycleProcessManager predecessor = Main.getCycleProcessManager();
+		if (predecessor != null) {
+			processes.addAll(predecessor.processes); // Carry over all the old processes.
+		}
+		predecessor = null;
+	}
+
 	/**
 	 * Add a new process for execution.
 	 * 
@@ -33,14 +43,9 @@ public final class CycleProcessManager extends TickProcess {
 		}
 	}
 
-	//Private so that only this class can access constructor.
-	public CycleProcessManager() {
-		super("CycleProcessManager");
-		CycleProcessManager predecessor = Main.getCycleProcessManager();
-		if (predecessor != null) {
-			processes.addAll(predecessor.processes); // Carry over all the old processes.
-		}
-		predecessor = null;
+	@Override
+	public void ensureSafeClose() {
+		//Don't need to do anything here.
 	}
 
 	@Override
@@ -56,10 +61,5 @@ public final class CycleProcessManager extends TickProcess {
 			}
 			processes.removeAll(removalList);
 		}
-	}
-
-	@Override
-	public void ensureSafeClose() {
-		//Don't need to do anything here.
 	}
 }

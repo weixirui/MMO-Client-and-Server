@@ -26,6 +26,8 @@ public final class PacketFactory {
 			return new AdminCommandPacket(source, bytes);
 		case PacketType.SERVER_MODULE_STATUS_PACKET_BYTE:
 			return new ServerModuleStatusPacket(source, bytes);
+		case PacketType.USER_STATUS_PACKET_BYTE:
+			return new UserStatusPacket(source, bytes);
 		default:
 			System.out.println("No case for type byte: " + bytes[0]);
 			return null;

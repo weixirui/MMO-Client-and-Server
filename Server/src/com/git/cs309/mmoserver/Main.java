@@ -44,17 +44,25 @@ import com.git.cs309.mmoserver.util.TickProcess;
  */
 public final class Main {
 
+	private static volatile CharacterManager characterManager = null;
+
+	private static volatile ConnectionManager connectionManager = null;
+	private static volatile CycleProcessManager cycleProcessManager = null;
+	private static volatile NPCManager npcManager = null;
+
+	// Is server running.
+	private static volatile boolean running = true;
+
+	// Object that all TickProcess objects wait on for tick notification.
+	private static final Object TICK_NOTIFIER = new Object(); // To notify
+
 	// List of TickProcess objects currently running. They add themselves to
 	// this list when instantiated.
 	private static final List<TickProcess> TICK_RELIANT_LIST = new ArrayList<>();
 
-	// Is server running.
-	private static volatile boolean running = true;
-	// Object that all TickProcess objects wait on for tick notification.
-	private static final Object TICK_NOTIFIER = new Object(); // To notify
-																// threads of
-																// new tick.
-																// Current server ticks count.
+	// threads of
+	// new tick.
+	// Current server ticks count.
 	private static volatile long tickCount = 0; // Tick count.
 
 	/**
@@ -69,6 +77,22 @@ public final class Main {
 											// TICK_RELIANT_LIST lock
 			TICK_RELIANT_LIST.add(TickProcess);
 		}
+	}
+
+	public static CharacterManager getCharacterManager() {
+		return characterManager;
+	}
+
+	public static ConnectionManager getConnectionManager() {
+		return connectionManager;
+	}
+
+	public static CycleProcessManager getCycleProcessManager() {
+		return cycleProcessManager;
+	}
+
+	public static NPCManager getNPCManager() {
+		return npcManager;
 	}
 
 	/**
@@ -89,25 +113,17 @@ public final class Main {
 		return TICK_NOTIFIER;
 	}
 
-	private static volatile NPCManager npcManager = null;
-	private static volatile ConnectionManager connectionManager = null;
-	private static volatile CycleProcessManager cycleProcessManager = null;
-	private static volatile CharacterManager characterManager = null;
-
-	public static NPCManager getNPCManager() {
-		return npcManager;
+	/**
+	 * Getter for running state.
+	 * 
+	 * @return running state
+	 */
+	public static boolean isRunning() {
+		return running;
 	}
 
-	public static ConnectionManager getConnectionManager() {
-		return connectionManager;
-	}
-
-	public static CycleProcessManager getCycleProcessManager() {
-		return cycleProcessManager;
-	}
-
-	public static CharacterManager getCharacterManager() {
-		return characterManager;
+	public static void loadAndStartCharacterManager() {
+		characterManager = new CharacterManager();
 	}
 
 	/**
@@ -121,13 +137,6 @@ public final class Main {
 		loadAndStartCharacterManager();
 	}
 
-	//Turns out that using the default system loader will just re-reference already loaded classes. Would need to create and use a different classloader
-	//Will do, if I can find time to do something ridiculous like that. Keeping them like this for time being (not singletons, that is)
-	public static void loadAndStartNPCManager() {
-		npcManager = new NPCManager();
-		npcManager.initialize();
-	}
-
 	public static void loadAndStartConnectionManager() {
 		connectionManager = new ConnectionManager();
 	}
@@ -136,17 +145,49 @@ public final class Main {
 		cycleProcessManager = new CycleProcessManager();
 	}
 
-	public static void loadAndStartCharacterManager() {
-		characterManager = new CharacterManager();
+	//Turns out that using the default system loader will just re-reference already loaded classes. Would need to create and use a different classloader
+	//Will do, if I can find time to do something ridiculous like that. Keeping them like this for time being (not singletons, that is)
+	public static void loadAndStartNPCManager() {
+		npcManager = new NPCManager();
+		npcManager.initialize();
 	}
 
 	/**
-	 * Getter for running state.
+	 * Main method, duh.
 	 * 
-	 * @return running state
+	 * @param args
+	 * @throws UnknownHostException
 	 */
-	public static boolean isRunning() {
-		return running;
+	public static void main(String[] args) throws UnknownHostException {
+		System.setOut(Logger.getOutPrintStream()); // Set System out to logger
+													// out
+		System.setErr(Logger.getErrPrintStream());
+		Runtime.getRuntime().addShutdownHook(new Thread() { // Add shutdown hook
+															// that autosaves
+															// users.
+			@Override
+			public void run() {
+				UserManager.saveAllUsers();
+				System.out.println("Saved all users before going down.");
+			}
+		});
+		ConnectionAcceptor.startAcceptor(43594);
+		while (true) {
+			runServer();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// Don't care tooo much if it gets interrupted.
+			}
+			System.out.println("Restarting server...");
+		}
+	}
+
+	/**
+	 * Requests program termination.
+	 */
+	public static void requestExit() {
+		running = false;
 	}
 
 	private static void runServer() {
@@ -214,43 +255,5 @@ public final class Main {
 		System.out.println("Saved all users before going down.");
 		System.out.println("");
 		System.out.println("");
-	}
-
-	/**
-	 * Main method, duh.
-	 * 
-	 * @param args
-	 * @throws UnknownHostException
-	 */
-	public static void main(String[] args) throws UnknownHostException {
-		System.setOut(Logger.getOutPrintStream()); // Set System out to logger
-													// out
-		System.setErr(Logger.getErrPrintStream());
-		Runtime.getRuntime().addShutdownHook(new Thread() { // Add shutdown hook
-															// that autosaves
-															// users.
-			@Override
-			public void run() {
-				UserManager.saveAllUsers();
-				System.out.println("Saved all users before going down.");
-			}
-		});
-		ConnectionAcceptor.startAcceptor(43594);
-		while (true) {
-			runServer();
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// Don't care tooo much if it gets interrupted.
-			}
-			System.out.println("Restarting server...");
-		}
-	}
-
-	/**
-	 * Requests program termination.
-	 */
-	public static void requestExit() {
-		running = false;
 	}
 }

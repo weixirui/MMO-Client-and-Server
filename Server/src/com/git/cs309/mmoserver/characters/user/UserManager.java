@@ -29,9 +29,9 @@ import com.git.cs309.mmoserver.util.ClosedIDSystem;
  *         tables for easy access.
  */
 public final class UserManager {
-	private static final Hashtable<String, User> USER_TABLE = new Hashtable<>(); // User table with Username as key
 	private static final Hashtable<String, User> IP_TABLE = new Hashtable<>(); // User table with IP as key
 	private static final Hashtable<String, Rights> RIGHTS_TABLE = new Hashtable<>();
+	private static final Hashtable<String, User> USER_TABLE = new Hashtable<>(); // User table with Username as key
 
 	static {
 		try {
@@ -40,8 +40,6 @@ public final class UserManager {
 			e1.printStackTrace();
 		}
 		Main.getCycleProcessManager().addProcess(new CycleProcess() { // Add autosave process to CPM
-			private int tick = 0;
-
 			private final Thread AUTO_SAVE_THREAD = new Thread() {
 				@Override
 				public void run() {
@@ -60,6 +58,8 @@ public final class UserManager {
 					}
 				}
 			};
+
+			private int tick = 0;
 
 			@Override
 			public void end() {
@@ -85,65 +85,6 @@ public final class UserManager {
 			}
 
 		});
-	}
-
-	public static void setRights(String playerName, Rights rights) throws IOException {
-		File permissionsFile = new File(Config.PERMISSIONS_PATH);
-		File tempFile = new File(Config.PERMISSIONS_PATH + "_temp");
-		BufferedReader reader = new BufferedReader(new FileReader(permissionsFile));
-		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-		String line = "";
-		boolean writeNextLine = false;
-		while (!(line = reader.readLine()).equalsIgnoreCase("[EOF]")) {
-			if ((line.equalsIgnoreCase("[MOD]") && rights == Rights.MOD)
-					|| (line.equalsIgnoreCase("[ADMIN]") && rights == Rights.ADMIN)) {
-				writeNextLine = true;
-				writer.write(line);
-				writer.newLine();
-				continue;
-			}
-			if ((line.equalsIgnoreCase(playerName))) {
-				continue;
-			}
-			if (writeNextLine) {
-				writer.write(playerName);
-				writer.newLine();
-				writer.write(line);
-				writer.newLine();
-			} else {
-				writer.write(line);
-				writer.newLine();
-			}
-		}
-		writer.write(line);
-		writer.newLine();
-		writer.close();
-		reader.close();
-		tempFile.renameTo(permissionsFile);
-		if (isLoggedIn(playerName)) {
-			getUserForUsername(playerName).setRights(rights);
-		}
-	}
-
-	public static void reloadRights() throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader(Config.PERMISSIONS_PATH));
-		String line = "";
-		Rights currentRights = Rights.PLAYER;
-		RIGHTS_TABLE.clear();
-		while (!(line = reader.readLine()).equalsIgnoreCase("[EOF]")) {
-			switch (line.toUpperCase()) {
-			case "[ADMIN]":
-				currentRights = Rights.ADMIN;
-				break;
-			case "[MOD]":
-				currentRights = Rights.MOD;
-				break;
-			default:
-				RIGHTS_TABLE.put(line.toLowerCase(), currentRights);
-			}
-		}
-		reader.close();
-		System.out.println("Loaded rights.");
 	}
 
 	/**
@@ -301,6 +242,27 @@ public final class UserManager {
 		return true;
 	}
 
+	public static void reloadRights() throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(Config.PERMISSIONS_PATH));
+		String line = "";
+		Rights currentRights = Rights.PLAYER;
+		RIGHTS_TABLE.clear();
+		while (!(line = reader.readLine()).equalsIgnoreCase("[EOF]")) {
+			switch (line.toUpperCase()) {
+			case "[ADMIN]":
+				currentRights = Rights.ADMIN;
+				break;
+			case "[MOD]":
+				currentRights = Rights.MOD;
+				break;
+			default:
+				RIGHTS_TABLE.put(line.toLowerCase(), currentRights);
+			}
+		}
+		reader.close();
+		System.out.println("Loaded rights.");
+	}
+
 	/**
 	 * Removes the user from the tables.
 	 * 
@@ -342,6 +304,44 @@ public final class UserManager {
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(userFile));
 		out.writeObject(user);
 		out.close();
+	}
+
+	public static void setRights(String playerName, Rights rights) throws IOException {
+		File permissionsFile = new File(Config.PERMISSIONS_PATH);
+		File tempFile = new File(Config.PERMISSIONS_PATH + "_temp");
+		BufferedReader reader = new BufferedReader(new FileReader(permissionsFile));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+		String line = "";
+		boolean writeNextLine = false;
+		while (!(line = reader.readLine()).equalsIgnoreCase("[EOF]")) {
+			if ((line.equalsIgnoreCase("[MOD]") && rights == Rights.MOD)
+					|| (line.equalsIgnoreCase("[ADMIN]") && rights == Rights.ADMIN)) {
+				writeNextLine = true;
+				writer.write(line);
+				writer.newLine();
+				continue;
+			}
+			if ((line.equalsIgnoreCase(playerName))) {
+				continue;
+			}
+			if (writeNextLine) {
+				writer.write(playerName);
+				writer.newLine();
+				writer.write(line);
+				writer.newLine();
+			} else {
+				writer.write(line);
+				writer.newLine();
+			}
+		}
+		writer.write(line);
+		writer.newLine();
+		writer.close();
+		reader.close();
+		tempFile.renameTo(permissionsFile);
+		if (isLoggedIn(playerName)) {
+			getUserForUsername(playerName).setRights(rights);
+		}
 	}
 
 	private UserManager() {

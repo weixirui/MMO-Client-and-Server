@@ -18,7 +18,10 @@ public final class PacketHandler {
 	public static void handlePacket(final Packet packet) {
 		switch (packet.getPacketType()) { // Case for each type of packet.
 		case MESSAGE_PACKET:
-			Main.getConnectionManager().sendPacketToAllConnections(new MessagePacket(null, MessagePacket.GLOBAL_CHAT, ((Connection)packet.getConnection()).getUser().getUsername()+": "+((MessagePacket) packet).getMessage()));
+			Main.getConnectionManager()
+					.sendPacketToAllConnections(new MessagePacket(null, MessagePacket.GLOBAL_CHAT,
+							((Connection) packet.getConnection()).getUser().getUsername() + ": "
+									+ ((MessagePacket) packet).getMessage()));
 			break;
 		case LOGIN_PACKET:
 			LoginPacket loginPacket = (LoginPacket) packet;
@@ -58,8 +61,10 @@ public final class PacketHandler {
 			break;
 		case ADMIN_COMMAND_PACKET:
 			AdminCommandPacket adminPacket = (AdminCommandPacket) packet;
-			if (((Connection) adminPacket.getConnection()).isLoggedIn() && ((Connection) adminPacket.getConnection()).getUser().getRights() != Rights.ADMIN) {
-				adminPacket.getConnection().addOutgoingPacket(new ErrorPacket(null, ErrorPacket.PERMISSION_ERROR, "You do not have the correct permissions to do that."));
+			if (((Connection) adminPacket.getConnection()).isLoggedIn()
+					&& ((Connection) adminPacket.getConnection()).getUser().getRights() != Rights.ADMIN) {
+				adminPacket.getConnection().addOutgoingPacket(new ErrorPacket(null, ErrorPacket.PERMISSION_ERROR,
+						"You do not have the correct permissions to do that."));
 			}
 			switch (adminPacket.getCommand()) {
 			case AdminCommandPacket.RESTART_SERVER:
@@ -78,7 +83,7 @@ public final class PacketHandler {
 				Main.loadAndStartNPCManager();
 				break;
 			default:
-				System.err.println("No case for admin command "+adminPacket.getCommand());
+				System.err.println("No case for admin command " + adminPacket.getCommand());
 			}
 			break;
 		default:

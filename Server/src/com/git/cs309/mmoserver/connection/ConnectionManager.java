@@ -29,9 +29,20 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *         work, so it can still take on new connections.
  */
 public final class ConnectionManager extends TickProcess {
-	private Object waitObject = new Object();
-	private final List<Connection> connections = new ArrayList<>(Config.MAX_CONNECTIONS);
 	private final Map<String, Connection> connectionMap = new HashMap<>(); // Could hold both username -> connection and ip -> connection. But will probably only hold ip -> connection, since that's all that's needed.
+	private final List<Connection> connections = new ArrayList<>(Config.MAX_CONNECTIONS);
+	private Object waitObject = new Object();
+
+	public ConnectionManager() {
+		super("ConnectionManager");
+		ConnectionManager predecessor = Main.getConnectionManager();
+		if (predecessor != null) {
+			waitObject = predecessor.waitObject;
+			connectionMap.putAll(predecessor.connectionMap);
+			connections.addAll(predecessor.connections);
+		}
+		predecessor = null;
+	}
 
 	/**
 	 * Adds a connection to the connection list, so it can be processed over and
@@ -50,8 +61,9 @@ public final class ConnectionManager extends TickProcess {
 		}
 	}
 
-	public Object getWaitObject() {
-		return waitObject;
+	@Override
+	public void ensureSafeClose() {
+		//Not required
 	}
 
 	/**
@@ -73,6 +85,10 @@ public final class ConnectionManager extends TickProcess {
 	 */
 	public synchronized Connection getConnectionForIP(final String ip) {
 		return connectionMap.get(ip);
+	}
+
+	public Object getWaitObject() {
+		return waitObject;
 	}
 
 	/**
@@ -137,25 +153,15 @@ public final class ConnectionManager extends TickProcess {
 			}
 		}
 	}
-	
+
 	public void sendPacketToConnectionsWithRights(final Packet packet, final Rights rights) {
 		synchronized (connections) {
 			for (Connection connection : connections) {
-				if (connection.isLoggedIn() && (connection.getUser().getRights() == Rights.ADMIN || (rights == Rights.MOD && connection.getUser().getRights() != Rights.PLAYER)))
+				if (connection.isLoggedIn() && (connection.getUser().getRights() == Rights.ADMIN
+						|| (rights == Rights.MOD && connection.getUser().getRights() != Rights.PLAYER)))
 					connection.addOutgoingPacket(packet);
 			}
 		}
-	}
-
-	public ConnectionManager() {
-		super("ConnectionManager");
-		ConnectionManager predecessor = Main.getConnectionManager();
-		if (predecessor != null) {
-			waitObject = predecessor.waitObject;
-			connectionMap.putAll(predecessor.connectionMap);
-			connections.addAll(predecessor.connections);
-		}
-		predecessor = null;
 	}
 
 	@Override
@@ -180,10 +186,5 @@ public final class ConnectionManager extends TickProcess {
 			PacketHandler.handlePacket(packet); // Handle all the packets.
 		}
 		packets.clear();
-	}
-
-	@Override
-	public void ensureSafeClose() {
-		//Not required
 	}
 }

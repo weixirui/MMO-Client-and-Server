@@ -14,14 +14,10 @@ public abstract class Character {
 
 	//Current health.
 	protected volatile int health;
+	protected transient IDTag idTag; // Unique identifier
 	protected volatile boolean isDead; //true is dead
 	protected volatile int x, y; // Coordinates
-	protected transient IDTag idTag; // Unique identifier
 
-	public void addToManager() {
-		Main.getCharacterManager().addCharacter(this); // Ensure that all classes extending character get added to the CharacterManager
-	}
-	
 	public Character() {
 		// For deserialization only
 	}
@@ -31,6 +27,10 @@ public abstract class Character {
 		this.y = y;
 		this.idTag = idTag;
 		Main.getCharacterManager().addCharacter(this);
+	}
+
+	public void addToManager() {
+		Main.getCharacterManager().addCharacter(this); // Ensure that all classes extending character get added to the CharacterManager
 	}
 
 	public abstract void applyDamage(int damageAmount); // Abstract so subclasses can implement in their own way.
