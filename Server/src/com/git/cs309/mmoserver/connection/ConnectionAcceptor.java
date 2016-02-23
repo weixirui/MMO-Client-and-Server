@@ -40,21 +40,21 @@ public final class ConnectionAcceptor implements Runnable {
 	private ConnectionAcceptor() {
 		// Can only be instantiated internally.
 	}
-	
+
 	private void addConnection(Connection connection) throws IOException {
-		if (ConnectionManager.ipConnected(connection.getIP())) { // Is a socket with same IP already connected?
+		if (Main.getConnectionManager().ipConnected(connection.getIP())) { // Is a socket with same IP already connected?
 			connection.forceOutgoingPacket(new ErrorPacket(null, ErrorPacket.GENERAL_ERROR,
 					"Failed to connect because your ip is already logged in.")); // Send error packet.
 			connection.close(); // Close connection.
 			return;
 		}
-		if (ConnectionManager.full()) { // Are we at max connections?
-			connection.forceOutgoingPacket(new ErrorPacket(null, ErrorPacket.GENERAL_ERROR,
-					"Failed to connect because server is full.")); // Send error packet
+		if (Main.getConnectionManager().full()) { // Are we at max connections?
+			connection.forceOutgoingPacket(
+					new ErrorPacket(null, ErrorPacket.GENERAL_ERROR, "Failed to connect because server is full.")); // Send error packet
 			connection.close(); // Close
 			return;
 		}
-		ConnectionManager.addConnection(connection); // Made it to end, so add to manager.
+		Main.getConnectionManager().addConnection(connection); // Made it to end, so add to manager.
 	}
 
 	/**

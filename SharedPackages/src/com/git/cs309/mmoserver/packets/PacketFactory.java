@@ -20,6 +20,12 @@ public final class PacketFactory {
 			return new EntityUpdatePacket(bytes, source);
 		case PacketType.TEST_PACKET_BYTE:
 			return new TestPacket(source, bytes);
+		case PacketType.CHARACTER_SELECTED_PACKET_BYTE:
+			return new CharacterSelectedPacket(source, bytes);
+		case PacketType.ADMIN_COMMAND_PACKET_BYTE:
+			return new AdminCommandPacket(source, bytes);
+		case PacketType.SERVER_MODULE_STATUS_PACKET_BYTE:
+			return new ServerModuleStatusPacket(source, bytes);
 		default:
 			System.out.println("No case for type byte: " + bytes[0]);
 			return null;

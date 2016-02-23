@@ -27,7 +27,7 @@ public final class Config {
 	public static final String LOG_BASE_PATH = "./data/logs/";
 
 	public static final String NPC_DEFINITION_PATH = "./data/cfg/npc_definitions.cfg";
-	
+
 	public static final String PERMISSIONS_PATH = "./data/cfg/permissions.cfg";
 
 	public static final int MILLISECONDS_PER_MINUTE = 60000;

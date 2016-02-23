@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import com.git.cs309.mmoserver.Config;
+import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.characters.user.User;
 import com.git.cs309.mmoserver.characters.user.UserManager;
 import com.git.cs309.mmoserver.packets.PacketFactory;
@@ -21,19 +22,19 @@ public class Connection extends AbstractConnection {
 	private volatile boolean closeRequested = false;
 	private volatile User user = null;
 	private volatile boolean loggedIn = false;
-	
+
 	public boolean isLoggedIn() {
 		return loggedIn && user != null;
 	}
-	
+
 	public void setLoggedIn(boolean state) {
 		loggedIn = state;
 	}
-	
+
 	public void setUser(final User user) {
 		this.user = user;
 	}
-	
+
 	public User getUser() {
 		return user;
 	}
@@ -65,11 +66,11 @@ public class Connection extends AbstractConnection {
 	public void run() {
 		int packetsThisTick;
 		//ConnectionManager singleton to wait on.
-		final ConnectionManager connectionManager = ConnectionManager.getSingleton();
+		final Object waitObject = Main.getConnectionManager().getWaitObject();
 		while (!socket.isClosed() && !closeRequested) {
-			synchronized (connectionManager) {
+			synchronized (waitObject) {
 				try {
-					connectionManager.wait(); // Wait for connection manager to notify us of new tick.
+					waitObject.wait(); // Wait for connection manager to notify us of new tick.
 				} catch (InterruptedException e) {
 					// We shouldn't care too much if it gets interrupted.
 				}
@@ -102,6 +103,7 @@ public class Connection extends AbstractConnection {
 				e.printStackTrace();
 			}
 		}
+		loggedIn = false;
 		user = UserManager.getUserForIP(ip);
 		if (user != null) {
 			UserManager.logOut(user.getUsername());

@@ -4,7 +4,10 @@ import java.util.Observable;
 
 import javax.swing.JButton;
 
+import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.characters.user.Rights;
+import com.git.cs309.mmoserver.packets.ServerModuleStatusPacket;
 
 /**
  * 
@@ -22,6 +25,7 @@ import com.git.cs309.mmoserver.Main;
 public abstract class TickProcess extends Observable implements Runnable {
 	protected volatile boolean tickFinished = true;
 	protected volatile boolean isStopped = true;
+	protected volatile boolean forceStop = false;
 	protected final String name;
 	protected volatile long cumulative = 0;
 	protected volatile int count = 0;
@@ -57,6 +61,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 			average = cumulative / count;
 			count = 0;
 			cumulative = 0;
+			Main.getConnectionManager().sendPacketToConnectionsWithRights(new ServerModuleStatusPacket(null, name, (float) (average / (Config.MILLISECONDS_PER_TICK * 1000000.0f))), Rights.ADMIN);
 		}
 	}
 
@@ -73,7 +78,8 @@ public abstract class TickProcess extends Observable implements Runnable {
 	public final void run() { // Final to ensure that this can't be overriden, to ensure that all extending classes follow the rules.
 		final Object tickNotifier = Main.getTickNotifier(); // Acquire the tickNotifier object from Main.
 		isStopped = false;
-		while (Main.isRunning()) { // While server is running...
+		System.out.println("Running " + this + "...");
+		while (Main.isRunning() && !forceStop) { // While server is running...
 			try {
 				synchronized (tickNotifier) {
 					try {
@@ -96,10 +102,13 @@ public abstract class TickProcess extends Observable implements Runnable {
 				break;
 			}
 		}
+		ensureSafeClose();
+		forceStop = false;
 		tickFinished = true;
 		isStopped = true;
 		setChanged();
 		notifyObservers();
+		System.out.println(this + " has stopped running.");
 	}
 
 	public final void start() {
@@ -113,6 +122,8 @@ public abstract class TickProcess extends Observable implements Runnable {
 	public boolean tickFinished() {
 		return tickFinished;
 	}
+	
+	public abstract void ensureSafeClose();
 
 	protected abstract void tickTask();
 

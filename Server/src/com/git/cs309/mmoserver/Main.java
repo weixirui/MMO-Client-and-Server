@@ -89,17 +89,77 @@ public final class Main {
 		return TICK_NOTIFIER;
 	}
 
+	private static volatile NPCManager npcManager = null;
+	private static volatile ConnectionManager connectionManager = null;
+	private static volatile CycleProcessManager cycleProcessManager = null;
+	private static volatile CharacterManager characterManager = null;
+
+	public static NPCManager getNPCManager() {
+		return npcManager;
+	}
+
+	public static ConnectionManager getConnectionManager() {
+		return connectionManager;
+	}
+
+	public static CycleProcessManager getCycleProcessManager() {
+		return cycleProcessManager;
+	}
+
+	public static CharacterManager getCharacterManager() {
+		return characterManager;
+	}
+
 	/**
 	 * Initializes handler and managers, to ensure they're ready to handle
 	 * activity.
 	 */
-	private static void initialize() {
-		NPCManager.initialize();
-		// These next few lines are just making reference to the classes. They
-		// handle initialization on first reference.
-		ConnectionManager.getSingleton();
-		CycleProcessManager.getSingleton();
-		CharacterManager.getSingleton();
+	private static void loadAndStartClasses() {
+		loadAndStartNPCManager();
+		loadAndStartConnectionManager();
+		loadAndStartCycleProcessManager();
+		loadAndStartCharacterManager();
+	}
+
+	public static void loadAndStartNPCManager() {
+		try {
+			npcManager = (NPCManager) ClassLoader.getSystemClassLoader().loadClass(NPCManager.class.getCanonicalName())
+					.newInstance();
+			npcManager.initialize();
+		} catch (ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+
+	public static void loadAndStartConnectionManager() {
+		try {
+			connectionManager = (ConnectionManager) ClassLoader.getSystemClassLoader()
+					.loadClass(ConnectionManager.class.getCanonicalName()).newInstance();
+		} catch (ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+
+	public static void loadAndStartCycleProcessManager() {
+		try {
+			cycleProcessManager = (CycleProcessManager) ClassLoader.getSystemClassLoader()
+					.loadClass(CycleProcessManager.class.getCanonicalName()).newInstance();
+		} catch (ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+
+	public static void loadAndStartCharacterManager() {
+		try {
+			characterManager = (CharacterManager) ClassLoader.getSystemClassLoader()
+					.loadClass(CharacterManager.class.getCanonicalName()).newInstance();
+		} catch (ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
 	}
 
 	/**
@@ -111,29 +171,10 @@ public final class Main {
 		return running;
 	}
 
-	/**
-	 * Main method, duh.
-	 * 
-	 * @param args
-	 * @throws UnknownHostException
-	 */
-	public static void main(String[] args) throws UnknownHostException {
-		System.setOut(Logger.getOutPrintStream()); // Set System out to logger
-													// out
-		System.setErr(Logger.getErrPrintStream());
-		Runtime.getRuntime().addShutdownHook(new Thread() { // Add shutdown hook
-															// that autosaves
-															// users.
-			@Override
-			public void run() {
-				UserManager.saveAllUsers();
-				System.out.println("Saved all users before going down.");
-			}
-		});
-		initialize(); // Call initialize block, which will initialize things
-						// that should be initialized before starting server.
+	private static void runServer() {
+		loadAndStartClasses(); // Call initialize block, which will initialize things
+		// that should be initialized before starting server.
 		System.out.println("Starting server...");
-		ConnectionAcceptor.startAcceptor(43594);
 		int ticks = 0;
 		long tickTimes = 0L;
 		while (running) {
@@ -175,10 +216,10 @@ public final class Main {
 				ticks = 0;
 				tickTimes = 0L;
 			}
+			if (timeLeft < 0) {
+				System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
+			}
 			if (timeLeft < 2) {
-				if (timeLeft < 0) {
-					System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
-				}
 				timeLeft = 2; // Must wait at least a little bit, so that
 								// threads can catch up and wait.
 			}
@@ -189,14 +230,44 @@ public final class Main {
 			}
 		}
 		System.out.println("Server going down...");
+		UserManager.saveAllUsers();
+		System.out.println("Saved all users before going down.");
+	}
+
+	/**
+	 * Main method, duh.
+	 * 
+	 * @param args
+	 * @throws UnknownHostException
+	 */
+	public static void main(String[] args) throws UnknownHostException {
+		System.setOut(Logger.getOutPrintStream()); // Set System out to logger
+													// out
+		System.setErr(Logger.getErrPrintStream());
+		Runtime.getRuntime().addShutdownHook(new Thread() { // Add shutdown hook
+															// that autosaves
+															// users.
+			@Override
+			public void run() {
+				UserManager.saveAllUsers();
+				System.out.println("Saved all users before going down.");
+			}
+		});
+		ConnectionAcceptor.startAcceptor(43594);
+		while (true) {
+			runServer();
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// Don't care tooo much if it gets interrupted.
+			}
+		}
 	}
 
 	/**
 	 * Requests program termination.
 	 */
 	public static void requestExit() {
-		// For now we can just have it set running to false, but later on it
-		// should check to see which part failed, and recover if it can.
 		running = false;
 	}
 }

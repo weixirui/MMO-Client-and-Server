@@ -11,9 +11,11 @@ import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
 
 public final class NPCManager {
-	private static final List<NPCDefinition> NPC_DEFINITIONS = new ArrayList<>(); // List of NPC definitions.
 
-	public static void initialize() {
+	private final List<NPCDefinition> npcDefinitions = new ArrayList<>(); // List of NPC definitions.
+
+	public  void initialize() {
+		System.out.println("Initializing NPC Definitions...");
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(Config.NPC_DEFINITION_PATH));
@@ -37,7 +39,7 @@ public final class NPCManager {
 					// Later, use switch on state. Adding BOSS is just future proofing because I can totally see bosses having some unique stuff.
 					String[] tokens = line.split(" ");
 					try {
-						NPC_DEFINITIONS.add(new NPCDefinition(tokens[1], Integer.parseInt(tokens[2]),
+						npcDefinitions.add(new NPCDefinition(tokens[1], Integer.parseInt(tokens[2]),
 								Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), Integer.parseInt(tokens[5]),
 								Integer.parseInt(tokens[6]), Integer.parseInt(tokens[7])));
 					} catch (NumberFormatException e) {

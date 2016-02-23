@@ -4,6 +4,7 @@ import com.git.cs309.mmoserver.connection.AbstractConnection;
 
 public class EventPacket extends Packet {
 	public static final int LOGIN_SUCCESS = 1;
+	public static final int CREATE_CHARACTER = 2;
 	protected final int eventCode;
 
 	public EventPacket(final AbstractConnection source, final int eventCode) {

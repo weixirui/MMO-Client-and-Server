@@ -1,5 +1,6 @@
 package com.git.cs309.mmoserver.characters;
 
+import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
 /**
@@ -17,15 +18,19 @@ public abstract class Character {
 	protected volatile int x, y; // Coordinates
 	protected transient IDTag idTag; // Unique identifier
 
-	public Character() { // This constructor exits solely so that deserialization can happen, which requires a contructor with no arguments.
-		CharacterManager.addCharacter(this); // Ensure that all classes extending character get added to the CharacterManager
+	public void addToManager() {
+		Main.getCharacterManager().addCharacter(this); // Ensure that all classes extending character get added to the CharacterManager
+	}
+	
+	public Character() {
+		// For deserialization only
 	}
 
 	public Character(final int x, final int y, final IDTag idTag) {
 		this.x = x;
 		this.y = y;
 		this.idTag = idTag;
-		CharacterManager.addCharacter(this);
+		Main.getCharacterManager().addCharacter(this);
 	}
 
 	public abstract void applyDamage(int damageAmount); // Abstract so subclasses can implement in their own way.
@@ -34,7 +39,7 @@ public abstract class Character {
 
 	//Release this object and return id tag to system.
 	public final void cleanUp() {
-		CharacterManager.removeCharacter(this);
+		Main.getCharacterManager().removeCharacter(this);
 		idTag.returnTag();
 	}
 
@@ -57,7 +62,7 @@ public abstract class Character {
 	}
 
 	public boolean isDead() {
-		return isDead;
+		return isDead || health <= 0;
 	}
 
 	public void kill() {

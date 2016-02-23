@@ -2,6 +2,7 @@ package com.git.cs309.adminclient.connection;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 import com.git.cs309.adminclient.packets.PacketHandler;
 import com.git.cs309.mmoserver.connection.AbstractConnection;
@@ -23,7 +24,9 @@ public class Connection extends AbstractConnection {
 				Packet packet = PacketFactory.buildPacket(StreamUtils.readBlockFromStream(input), this);
 				PacketHandler.handlePacket(packet);
 			} catch (EndOfStreamReachedException e) {
-				System.exit(0);
+				System.exit(1);
+			} catch (SocketException e) {
+				System.exit(1);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -66,6 +66,7 @@ public class Logger {
 			}
 			return logFile.getAbsolutePath();
 		}
+
 		private static String getDayAsString() {
 			switch (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
 			case Calendar.SUNDAY:

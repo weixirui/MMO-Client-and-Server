@@ -17,7 +17,6 @@ import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.connection.Connection;
 import com.git.cs309.mmoserver.cycle.CycleProcess;
-import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.packets.LoginPacket;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
 
@@ -40,7 +39,7 @@ public final class UserManager {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		CycleProcessManager.addProcess(new CycleProcess() { // Add autosave process to CPM
+		Main.getCycleProcessManager().addProcess(new CycleProcess() { // Add autosave process to CPM
 			private int tick = 0;
 
 			private final Thread AUTO_SAVE_THREAD = new Thread() {
@@ -56,11 +55,6 @@ public final class UserManager {
 						}
 						long start = System.currentTimeMillis();
 						saveAllUsers();
-						try {
-							reloadRights();
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
 						System.out.println("Saved " + USER_TABLE.size() + " users in "
 								+ (System.currentTimeMillis() - start) + "ms.");
 					}
@@ -92,16 +86,17 @@ public final class UserManager {
 
 		});
 	}
-	
+
 	public static void setRights(String playerName, Rights rights) throws IOException {
 		File permissionsFile = new File(Config.PERMISSIONS_PATH);
-		File tempFile = new File(Config.PERMISSIONS_PATH+"_temp");
+		File tempFile = new File(Config.PERMISSIONS_PATH + "_temp");
 		BufferedReader reader = new BufferedReader(new FileReader(permissionsFile));
 		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 		String line = "";
 		boolean writeNextLine = false;
 		while (!(line = reader.readLine()).equalsIgnoreCase("[EOF]")) {
-			if ((line.equalsIgnoreCase("[MOD]") && rights == Rights.MOD) || (line.equalsIgnoreCase("[ADMIN]") && rights == Rights.ADMIN)) {
+			if ((line.equalsIgnoreCase("[MOD]") && rights == Rights.MOD)
+					|| (line.equalsIgnoreCase("[ADMIN]") && rights == Rights.ADMIN)) {
 				writeNextLine = true;
 				writer.write(line);
 				writer.newLine();
@@ -129,7 +124,7 @@ public final class UserManager {
 			getUserForUsername(playerName).setRights(rights);
 		}
 	}
-	
+
 	public static void reloadRights() throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(Config.PERMISSIONS_PATH));
 		String line = "";
@@ -275,8 +270,9 @@ public final class UserManager {
 		if (RIGHTS_TABLE.containsKey(user.getUsername().toLowerCase())) {
 			user.setRights(RIGHTS_TABLE.get(user.getUsername().toLowerCase()));
 		}
-		((Connection)loginPacket.getConnection()).setUser(user);
-		System.out.println(user.getRights()+" " + user + " logged in.");
+		((Connection) loginPacket.getConnection()).setUser(user);
+		((Connection) loginPacket.getConnection()).setLoggedIn(true);
+		System.out.println(user.getRights() + " " + user + " logged in.");
 		return true;
 	}
 

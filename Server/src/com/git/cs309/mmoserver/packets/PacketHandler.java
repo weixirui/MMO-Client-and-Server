@@ -1,9 +1,11 @@
 package com.git.cs309.mmoserver.packets;
 
+import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.characters.user.InvalidPasswordException;
+import com.git.cs309.mmoserver.characters.user.Rights;
 import com.git.cs309.mmoserver.characters.user.UserAlreadyLoggedInException;
 import com.git.cs309.mmoserver.characters.user.UserManager;
-import com.git.cs309.mmoserver.connection.ConnectionManager;
+import com.git.cs309.mmoserver.connection.Connection;
 
 /**
  * 
@@ -16,7 +18,7 @@ public final class PacketHandler {
 	public static void handlePacket(final Packet packet) {
 		switch (packet.getPacketType()) { // Case for each type of packet.
 		case MESSAGE_PACKET:
-			ConnectionManager.sendPacketToAllConnections(packet);
+			Main.getConnectionManager().sendPacketToAllConnections(packet);
 			break;
 		case LOGIN_PACKET:
 			LoginPacket loginPacket = (LoginPacket) packet;
@@ -54,6 +56,30 @@ public final class PacketHandler {
 				throw new RuntimeException("Just a test.");
 			}
 			break;
+		case ADMIN_COMMAND_PACKET:
+			AdminCommandPacket adminPacket = (AdminCommandPacket) packet;
+			if (((Connection) adminPacket.getConnection()).isLoggedIn() && ((Connection) adminPacket.getConnection()).getUser().getRights() != Rights.ADMIN) {
+				adminPacket.getConnection().addOutgoingPacket(new ErrorPacket(null, ErrorPacket.PERMISSION_ERROR, "You do not have the correct permissions to do that."));
+			}
+			switch (adminPacket.getCommand()) {
+			case AdminCommandPacket.RESTART_SERVER:
+				Main.requestExit();
+				break;
+			case AdminCommandPacket.RESTART_CHARACTER_MANAGER:
+				Main.loadAndStartCharacterManager();
+				break;
+			case AdminCommandPacket.RESTART_CONNECTION_MANAGER:
+				Main.loadAndStartConnectionManager();
+				break;
+			case AdminCommandPacket.RESTART_CYCLE_PROCESS_MANAGER:
+				Main.loadAndStartCycleProcessManager();
+				break;
+			case AdminCommandPacket.RESTART_NPC_MANAGER:
+				Main.loadAndStartNPCManager();
+				break;
+			default:
+				System.err.println("No case for admin command "+adminPacket.getCommand());
+			}
 		default:
 			System.out.println("No case for type: " + packet.getPacketType()); // If you get this message, then you NEED to add a case for the missing type.
 		}
