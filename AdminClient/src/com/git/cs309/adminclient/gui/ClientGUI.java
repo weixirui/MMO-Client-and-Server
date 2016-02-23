@@ -2,16 +2,26 @@ package com.git.cs309.adminclient.gui;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JTextPane;
+
+import com.git.cs309.adminclient.AdminClient;
+import com.git.cs309.mmoserver.packets.AdminCommandPacket;
+import com.git.cs309.mmoserver.packets.MessagePacket;
+
 import javax.swing.JTextField;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.FlowLayout;
@@ -19,6 +29,10 @@ import java.awt.FlowLayout;
 public class ClientGUI extends JFrame {
 	
 	private final class ListModel<T> extends AbstractListModel<T> {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private final List<T> tList = new ArrayList<>();
 		
 		public void add(T t) {
@@ -43,6 +57,7 @@ public class ClientGUI extends JFrame {
 	private List<ServerModuleComponent> serverModuleList = new ArrayList<>();
 	private ListModel<UserComponent> userModel = new ListModel<>();
 	private JTextField chatField;
+	private static JTextArea chatBox;
 	
 	public ServerModuleComponent getComponentForModuleName(final String moduleName) {
 		for (ServerModuleComponent component : serverModuleList) {
@@ -55,6 +70,11 @@ public class ClientGUI extends JFrame {
 	
 	public static ClientGUI getSingleton() {
 		return SINGLETON;
+	}
+	
+	public static void addMessage(String message) {
+		chatBox.append(message+"\n");
+		chatBox.setCaretPosition(chatBox.getText().length());
 	}
 	
 	private ClientGUI() {
@@ -71,10 +91,22 @@ public class ClientGUI extends JFrame {
 		
 		JPanel serverStatusPanel = new JPanel();
 		serverPanel.add(serverStatusPanel, BorderLayout.CENTER);
-		serverStatusPanel.setLayout(new GridLayout(3, 0, 5, 0));
+		serverStatusPanel.setLayout(new GridLayout(4, 0, 5, 0));
 		for (ServerModuleComponent component : serverModuleList) {
 			serverStatusPanel.add(component);
 		}
+		JButton restartServerButton = new JButton("Restart Server");
+		serverStatusPanel.add(restartServerButton);
+		restartServerButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (JOptionPane.showConfirmDialog(null, "Are you sure you want to restart the server? This can cause the server to shutdown entirely.") == JOptionPane.YES_OPTION) {
+					AdminClient.getConnection().addOutgoingPacket(new AdminCommandPacket(null, AdminCommandPacket.RESTART_SERVER));
+				}
+			}
+			
+		});
 		
 		JPanel usersPanel = new JPanel();
 		tabbedPane.addTab("Users", null, usersPanel, null);
@@ -114,10 +146,28 @@ public class ClientGUI extends JFrame {
 		tabbedPane.addTab("Chat", null, chatPanel, null);
 		chatPanel.setLayout(new BorderLayout(0, 0));
 		
-		JTextPane chatBox = new JTextPane();
+		chatBox = new JTextArea();
+		chatBox.setEditable(false);
 		chatPanel.add(chatBox, BorderLayout.CENTER);
 		
 		chatField = new JTextField();
+		chatField.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String message = chatField.getText();
+				chatField.setText("");
+				if (message.length() > 0) {
+					if (message.equalsIgnoreCase("cls")) {
+						chatBox.setText("");
+						chatBox.setCaretPosition(0);
+					} else {
+						AdminClient.getConnection().addOutgoingPacket(new MessagePacket(null, MessagePacket.GLOBAL_CHAT, message));
+					}
+				}
+			}
+			
+		});
 		chatPanel.add(chatField, BorderLayout.SOUTH);
 		chatField.setColumns(10);
 	}

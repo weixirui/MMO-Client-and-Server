@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Calendar;
 
-import javax.swing.AbstractListModel;
-import javax.swing.ListModel;
-
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.util.CycleQueue;
 
@@ -19,37 +16,6 @@ import com.git.cs309.mmoserver.util.CycleQueue;
  *
  */
 public class Logger {
-	private static final class LoggerListModel extends AbstractListModel<String> {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -3855629851629104651L;
-		private static final LoggerListModel SINGLETON = new LoggerListModel();
-
-		public static void fireContentsChanged() {
-			SINGLETON.fireContentsChanged(SINGLETON, 0, outputList.size());
-		}
-
-		public static LoggerListModel getSingleton() {
-			return SINGLETON;
-		}
-
-		private LoggerListModel() {
-			//To prevent external instantiation.
-		}
-
-		@Override
-		public String getElementAt(int index) {
-			return outputList.get(index);
-		}
-
-		@Override
-		public int getSize() {
-			return outputList.size();
-		}
-
-	}
 
 	private static final class LoggerPrintStream extends PrintStream {
 		private static String ensureFileExists(boolean isErr) {
@@ -196,7 +162,6 @@ public class Logger {
 			defaultStream.print('\n');
 			outputList.add(pendingMessage);
 			pendingMessage = "";
-			LoggerListModel.fireContentsChanged();
 		}
 
 		@Override
@@ -205,7 +170,6 @@ public class Logger {
 			defaultStream.print('\n');
 			outputList.add(pendingMessage);
 			pendingMessage = "";
-			LoggerListModel.fireContentsChanged();
 		}
 
 		@Override
@@ -214,7 +178,6 @@ public class Logger {
 			defaultStream.print('\n');
 			outputList.add(pendingMessage);
 			pendingMessage = "";
-			LoggerListModel.fireContentsChanged();
 		}
 
 		@Override
@@ -223,7 +186,6 @@ public class Logger {
 			defaultStream.print('\n');
 			outputList.add(pendingMessage);
 			pendingMessage = "";
-			LoggerListModel.fireContentsChanged();
 		}
 
 		@Override
@@ -232,7 +194,6 @@ public class Logger {
 			defaultStream.print('\n');
 			outputList.add(pendingMessage);
 			pendingMessage = "";
-			LoggerListModel.fireContentsChanged();
 		}
 
 		@Override
@@ -241,7 +202,6 @@ public class Logger {
 			defaultStream.print('\n');
 			outputList.add(pendingMessage);
 			pendingMessage = "";
-			LoggerListModel.fireContentsChanged();
 		}
 
 		@Override
@@ -250,7 +210,6 @@ public class Logger {
 			defaultStream.print('\n');
 			outputList.add(pendingMessage);
 			pendingMessage = "";
-			LoggerListModel.fireContentsChanged();
 		}
 
 		@Override
@@ -259,7 +218,6 @@ public class Logger {
 			defaultStream.print('\n');
 			outputList.add(pendingMessage);
 			pendingMessage = "";
-			LoggerListModel.fireContentsChanged();
 		}
 
 		@Override
@@ -268,7 +226,6 @@ public class Logger {
 			defaultStream.print('\n');
 			outputList.add(pendingMessage);
 			pendingMessage = "";
-			LoggerListModel.fireContentsChanged();
 		}
 
 		@Override
@@ -277,7 +234,6 @@ public class Logger {
 			defaultStream.print('\n');
 			outputList.add(pendingMessage);
 			pendingMessage = "";
-			LoggerListModel.fireContentsChanged();
 		}
 	}
 
@@ -302,10 +258,6 @@ public class Logger {
 
 	public static PrintStream getErrPrintStream() {
 		return ERR;
-	}
-
-	public static ListModel<String> getListModel() {
-		return LoggerListModel.getSingleton();
 	}
 
 	public static PrintStream getOutPrintStream() {

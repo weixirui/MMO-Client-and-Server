@@ -3,9 +3,12 @@ package com.git.cs309.mmoserver.characters.user;
 import java.io.Serializable;
 
 import com.git.cs309.mmoserver.Config;
+import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.connection.AbstractConnection;
+import com.git.cs309.mmoserver.packets.EventPacket;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
+import com.git.cs309.mmoserver.util.WordUtils;
 
 public final class User implements Serializable {
 
@@ -31,7 +34,7 @@ public final class User implements Serializable {
 	}
 
 	public User(final String username, final String password) {
-		this.username = username;
+		this.username = WordUtils.capitalizeText(username);
 		this.password = password;
 		for (int i = 0; i < playerCharacters.length; i++) {
 			playerCharacters[i] = new PlayerCharacter(Config.PLAYER_START_X, Config.PLAYER_START_Y);
@@ -41,8 +44,17 @@ public final class User implements Serializable {
 
 	public void enterGame(int characterIndex) {
 		if (!playerCharacters[characterIndex].isCreated()) {
-
+			connection.addOutgoingPacket(new EventPacket(null, EventPacket.CREATE_CHARACTER));
+			return;
 		}
+		if (inGame) {
+			System.err.println("User already in the game.");
+			return;
+		}
+		playerCharacters[characterIndex].setIDTag(this.idTag);
+		playerCharacters[characterIndex].addToManager();
+		currentCharacter = characterIndex;
+		inGame = true;
 	}
 
 	public PlayerCharacter getCurrentCharacter() {
@@ -59,9 +71,16 @@ public final class User implements Serializable {
 	public int getUniqueID() {
 		return idTag.getID();
 	}
+	
+	public void exitCurrentCharacter() {
+		currentCharacter = -1;
+		Main.getCharacterManager().removeCharacter(getCurrentCharacter());
+		getCurrentCharacter().cleanUp();
+	}
 
 	public void cleanUp() {
-
+		inGame = false;
+		exitCurrentCharacter();
 	}
 
 	public void setRights(Rights rights) {

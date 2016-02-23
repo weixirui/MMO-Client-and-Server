@@ -121,45 +121,23 @@ public final class Main {
 		loadAndStartCharacterManager();
 	}
 
+	//Turns out that using the default system loader will just re-reference already loaded classes. Would need to create and use a different classloader
+	//Will do, if I can find time to do something ridiculous like that. Keeping them like this for time being (not singletons, that is)
 	public static void loadAndStartNPCManager() {
-		try {
-			npcManager = (NPCManager) ClassLoader.getSystemClassLoader().loadClass(NPCManager.class.getCanonicalName())
-					.newInstance();
-			npcManager.initialize();
-		} catch (ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
+		npcManager = new NPCManager();
+		npcManager.initialize();
 	}
 
 	public static void loadAndStartConnectionManager() {
-		try {
-			connectionManager = (ConnectionManager) ClassLoader.getSystemClassLoader()
-					.loadClass(ConnectionManager.class.getCanonicalName()).newInstance();
-		} catch (ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
+		connectionManager = new ConnectionManager();
 	}
 
 	public static void loadAndStartCycleProcessManager() {
-		try {
-			cycleProcessManager = (CycleProcessManager) ClassLoader.getSystemClassLoader()
-					.loadClass(CycleProcessManager.class.getCanonicalName()).newInstance();
-		} catch (ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
+		cycleProcessManager = new CycleProcessManager();
 	}
 
 	public static void loadAndStartCharacterManager() {
-		try {
-			characterManager = (CharacterManager) ClassLoader.getSystemClassLoader()
-					.loadClass(CharacterManager.class.getCanonicalName()).newInstance();
-		} catch (ClassNotFoundException | SecurityException | InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
+		characterManager = new CharacterManager();
 	}
 
 	/**
@@ -172,6 +150,8 @@ public final class Main {
 	}
 
 	private static void runServer() {
+		TICK_RELIANT_LIST.clear();
+		running = true;
 		loadAndStartClasses(); // Call initialize block, which will initialize things
 		// that should be initialized before starting server.
 		System.out.println("Starting server...");
@@ -232,6 +212,8 @@ public final class Main {
 		System.out.println("Server going down...");
 		UserManager.saveAllUsers();
 		System.out.println("Saved all users before going down.");
+		System.out.println("");
+		System.out.println("");
 	}
 
 	/**
@@ -257,10 +239,11 @@ public final class Main {
 		while (true) {
 			runServer();
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				// Don't care tooo much if it gets interrupted.
 			}
+			System.out.println("Restarting server...");
 		}
 	}
 
