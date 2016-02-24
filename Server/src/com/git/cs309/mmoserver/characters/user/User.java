@@ -32,6 +32,10 @@ public final class User implements Serializable {
 		inGame = false;
 		idTag = ClosedIDSystem.getTag();
 	}
+	
+	public boolean isInGame() {
+		return inGame;
+	}
 
 	public User(final String username, final String password) {
 		this.username = WordUtils.capitalizeText(username);

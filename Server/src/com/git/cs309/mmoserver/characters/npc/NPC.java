@@ -2,18 +2,18 @@ package com.git.cs309.mmoserver.characters.npc;
 
 /**
  *
- * @author Jeffery Schons
+ * @author Group 21
  * 
  */
 
 import com.git.cs309.mmoserver.characters.Character;
-import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
+import com.git.cs309.mmoserver.util.ClosedIDSystem;
 
 public class NPC extends Character {
 	private final NPCDefinition definition;
 
-	public NPC(int x, int y, final NPCDefinition definition, final IDTag idTag) {
-		super(x, y, idTag);
+	public NPC(int x, int y, final NPCDefinition definition) {
+		super(x, y, ClosedIDSystem.getTag());
 		this.definition = definition;
 	}
 

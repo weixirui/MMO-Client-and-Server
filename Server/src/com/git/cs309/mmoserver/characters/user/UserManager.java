@@ -179,9 +179,10 @@ public final class UserManager {
 	 *             if user already exists in tables.
 	 * @throws InvalidPasswordException
 	 *             if the LoginPacket contains the wrong password for that user.
+	 * @throws IllegalNamingException 
 	 */
 	public static boolean logIn(final LoginPacket loginPacket)
-			throws UserAlreadyLoggedInException, InvalidPasswordException { // Perform login
+			throws UserAlreadyLoggedInException, InvalidPasswordException, IllegalNamingException { // Perform login
 		if (isLoggedIn(loginPacket.getUsername())) {
 			throw new UserAlreadyLoggedInException(
 					"The user \"" + loginPacket.getUsername() + "\" is already logged in.");
@@ -203,6 +204,8 @@ public final class UserManager {
 			user.setConnection(loginPacket.getConnection());
 			addUserToTables(user);
 		} else {
+			if (loginPacket.getUsername().contains(" "))
+				throw new IllegalNamingException("Usernames for Users cannot contain spaces.");
 			user = new User(loginPacket.getUsername(), loginPacket.getPassword());
 			user.setConnection(loginPacket.getConnection());
 			addUserToTables(user);
