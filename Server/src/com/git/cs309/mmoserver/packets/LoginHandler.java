@@ -1,9 +1,9 @@
 package com.git.cs309.mmoserver.packets;
 
-import com.git.cs309.mmoserver.characters.user.IllegalNamingException;
-import com.git.cs309.mmoserver.characters.user.InvalidPasswordException;
-import com.git.cs309.mmoserver.characters.user.UserAlreadyLoggedInException;
-import com.git.cs309.mmoserver.characters.user.UserManager;
+import com.git.cs309.mmoserver.entity.characters.user.IllegalNamingException;
+import com.git.cs309.mmoserver.entity.characters.user.InvalidPasswordException;
+import com.git.cs309.mmoserver.entity.characters.user.UserAlreadyLoggedInException;
+import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 
 public final class LoginHandler {
 	public static final void handleLoginPacket(LoginPacket loginPacket) {

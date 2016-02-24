@@ -1,9 +1,9 @@
 package com.git.cs309.mmoserver.packets;
 
 import com.git.cs309.mmoserver.Main;
-import com.git.cs309.mmoserver.characters.user.User;
-import com.git.cs309.mmoserver.characters.user.UserManager;
 import com.git.cs309.mmoserver.connection.Connection;
+import com.git.cs309.mmoserver.entity.characters.user.User;
+import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 
 public final class MessageHandler {
 	public static final void handleMessagePacket(MessagePacket messagePacket) {
@@ -12,7 +12,7 @@ public final class MessageHandler {
 			return; // No need to handle message packets for users not logged in yet.
 		}
 		String username = userConnection.getUser().isInGame()
-				? userConnection.getUser().getCurrentCharacter().getCharacterName()
+				? userConnection.getUser().getCurrentCharacter().getName()
 				: userConnection.getUser().getUsername();
 		String lowercaseMessage = messagePacket.getMessage().toLowerCase();
 		if (lowercaseMessage.startsWith("/p ") || lowercaseMessage.startsWith("/party ")) { // Party messages

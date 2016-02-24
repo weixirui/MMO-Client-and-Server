@@ -6,7 +6,7 @@ import javax.swing.JButton;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
-import com.git.cs309.mmoserver.characters.user.Rights;
+import com.git.cs309.mmoserver.entity.characters.user.Rights;
 import com.git.cs309.mmoserver.packets.ServerModuleStatusPacket;
 
 /**

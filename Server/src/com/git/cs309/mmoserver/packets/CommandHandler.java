@@ -1,12 +1,12 @@
 package com.git.cs309.mmoserver.packets;
 
 import com.git.cs309.mmoserver.Main;
-import com.git.cs309.mmoserver.characters.user.ModerationHandler;
-import com.git.cs309.mmoserver.characters.user.ModerationHandler.ModerationType;
-import com.git.cs309.mmoserver.characters.user.Rights;
-import com.git.cs309.mmoserver.characters.user.User;
-import com.git.cs309.mmoserver.characters.user.UserManager;
 import com.git.cs309.mmoserver.connection.Connection;
+import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
+import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler.ModerationType;
+import com.git.cs309.mmoserver.entity.characters.user.Rights;
+import com.git.cs309.mmoserver.entity.characters.user.User;
+import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 
 public final class CommandHandler {
 	public static final void handleCommandPacket(final Packet packet) {

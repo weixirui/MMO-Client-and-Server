@@ -4,13 +4,13 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.git.cs309.mmoserver.characters.CharacterManager;
-import com.git.cs309.mmoserver.characters.npc.NPCManager;
-import com.git.cs309.mmoserver.characters.user.ModerationHandler;
-import com.git.cs309.mmoserver.characters.user.UserManager;
 import com.git.cs309.mmoserver.connection.ConnectionAcceptor;
 import com.git.cs309.mmoserver.connection.ConnectionManager;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
+import com.git.cs309.mmoserver.entity.characters.CharacterManager;
+import com.git.cs309.mmoserver.entity.characters.npc.NPCManager;
+import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
+import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.io.Logger;
 import com.git.cs309.mmoserver.util.TickProcess;
 

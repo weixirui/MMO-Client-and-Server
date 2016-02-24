@@ -32,7 +32,7 @@ public final class Config {
 	public static final String NPC_DEFINITION_PATH = "./data/cfg/npc_definitions.cfg";
 
 	//Max packets/tick before automatically closes connection.
-	public static final int PACKETS_PER_TICK_BEFORE_KICK = (int) (MILLISECONDS_PER_TICK / 10);
+	public static final int PACKETS_PER_TICK_BEFORE_KICK = 10;
 
 	public static final String PERMISSIONS_PATH = "./data/cfg/permissions.cfg";
 

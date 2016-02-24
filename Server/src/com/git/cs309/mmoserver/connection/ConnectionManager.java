@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
-import com.git.cs309.mmoserver.characters.user.Rights;
+import com.git.cs309.mmoserver.entity.characters.user.Rights;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.packets.PacketHandler;
 import com.git.cs309.mmoserver.packets.PacketType;
