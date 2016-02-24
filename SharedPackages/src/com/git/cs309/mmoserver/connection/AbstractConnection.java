@@ -22,6 +22,7 @@ public abstract class AbstractConnection extends Thread {
 	protected volatile Thread outgoingThread = new Thread() {
 		@Override
 		public void run() {
+			setName(AbstractConnection.this + "'s Output Thread");
 			while (!disconnected && !socket.isClosed()) {
 				synchronized (outgoingPackets) {
 					while (!disconnected && outgoingPackets.size() > 0) {

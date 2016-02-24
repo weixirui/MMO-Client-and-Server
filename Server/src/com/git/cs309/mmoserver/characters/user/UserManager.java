@@ -14,9 +14,7 @@ import java.io.ObjectOutputStream;
 import java.util.Hashtable;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.connection.Connection;
-import com.git.cs309.mmoserver.cycle.CycleProcess;
 import com.git.cs309.mmoserver.packets.LoginPacket;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
 
@@ -39,52 +37,6 @@ public final class UserManager {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		Main.getCycleProcessManager().addProcess(new CycleProcess() { // Add autosave process to CPM
-			private final Thread AUTO_SAVE_THREAD = new Thread() {
-				@Override
-				public void run() {
-					while (Main.isRunning()) {
-						synchronized (AUTO_SAVE_THREAD) {
-							try {
-								AUTO_SAVE_THREAD.wait();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-						long start = System.currentTimeMillis();
-						saveAllUsers();
-						System.out.println("Saved " + USER_TABLE.size() + " users in "
-								+ (System.currentTimeMillis() - start) + "ms.");
-					}
-				}
-			};
-
-			private int tick = 0;
-
-			@Override
-			public void end() {
-				System.out.println("User save processes ended.");
-			}
-
-			@Override
-			public boolean finished() {
-				return !Main.isRunning();
-			}
-
-			@Override
-			public void process() {
-				if (!AUTO_SAVE_THREAD.isAlive()) {
-					AUTO_SAVE_THREAD.start();
-				}
-				if (++tick == Config.TICKS_PER_AUTO_SAVE) {
-					tick = 0;
-					synchronized (AUTO_SAVE_THREAD) {
-						AUTO_SAVE_THREAD.notifyAll();
-					}
-				}
-			}
-
-		});
 	}
 
 	/**

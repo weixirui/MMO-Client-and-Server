@@ -11,15 +11,15 @@ import com.git.cs309.adminclient.gui.LoginGUI;
 public final class AdminClient {
 	private static boolean debug = false;
 	private static volatile Connection connection;
-	
+
 	public static Connection getConnection() {
 		return connection;
 	}
-	
+
 	public static boolean isDebug() {
 		return debug;
 	}
-	
+
 	public static void main(String[] args) {
 		for (String arg : args) {
 			switch (arg.toLowerCase()) {

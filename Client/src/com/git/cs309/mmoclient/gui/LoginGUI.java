@@ -25,6 +25,7 @@ public final class LoginGUI extends JFrame {
 	public static LoginGUI getSingleton() {
 		return SINGLETON;
 	}
+
 	private final JTextField usernameField = new JTextField("Username");
 	private final JPasswordField passwordField = new JPasswordField("Password");
 

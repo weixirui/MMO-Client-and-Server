@@ -41,12 +41,16 @@ public abstract class TickProcess extends Observable implements Runnable {
 
 	public abstract void ensureSafeClose();
 
+	public final void forceStop() {
+		forceStop = true;
+	}
+
 	/**
 	 * Allows access to the average time per tick of this object.
 	 * 
 	 * @return the average tick time.
 	 */
-	public long getAverageTick() {
+	public final long getAverageTick() {
 		return average;
 	}
 
@@ -55,7 +59,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 	 * 
 	 * @return
 	 */
-	public boolean isStopped() {
+	public final boolean isStopped() {
 		return isStopped;
 	}
 
@@ -104,7 +108,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 		}
 	}
 
-	public boolean tickFinished() {
+	public final boolean tickFinished() {
 		return tickFinished;
 	}
 
@@ -119,7 +123,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 	 * @param thisTick
 	 *            time this tick
 	 */
-	protected void handleTickAveraging(long thisTick) {
+	protected final void handleTickAveraging(long thisTick) {
 		cumulative += thisTick;
 		count++;
 		if (count == 10) {

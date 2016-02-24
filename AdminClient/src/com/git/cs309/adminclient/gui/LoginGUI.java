@@ -13,13 +13,17 @@ import com.git.cs309.adminclient.AdminClient;
 import com.git.cs309.mmoserver.packets.LoginPacket;
 
 public class LoginGUI extends JFrame {
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1830528029732548694L;
 	private static final LoginGUI SINGLETON = new LoginGUI();
-	
+
+	public static LoginGUI getSingleton() {
+		return SINGLETON;
+	}
+
 	private LoginGUI() {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		JTextField usernameField = new JTextField();
@@ -32,15 +36,16 @@ public class LoginGUI extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				passwordField.grabFocus();
 			}
-			
+
 		});
 		ActionListener loginListener = new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				AdminClient.getConnection().addOutgoingPacket(new LoginPacket(null, usernameField.getText(), String.valueOf(passwordField.getPassword())));
+				AdminClient.getConnection().addOutgoingPacket(
+						new LoginPacket(null, usernameField.getText(), String.valueOf(passwordField.getPassword())));
 			}
-			
+
 		};
 		passwordField.addActionListener(loginListener);
 		loginButton.addActionListener(loginListener);
@@ -48,9 +53,5 @@ public class LoginGUI extends JFrame {
 		add(passwordField);
 		add(loginButton);
 		pack();
-	}
-	
-	public static LoginGUI getSingleton() {
-		return SINGLETON;
 	}
 }

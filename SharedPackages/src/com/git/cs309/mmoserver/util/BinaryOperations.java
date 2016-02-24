@@ -108,9 +108,9 @@ public final class BinaryOperations {
 		if (bytes.length - startPosition < 8)
 			throw new IllegalArgumentException(
 					"Byte array must be at least 8 bytes in length from the start position.");
-		return (bytes[startPosition] << 56) | (bytes[startPosition + 1] << 48)
-				| (bytes[startPosition + 2] << 40) | (bytes[startPosition + 3] << 32) | (bytes[startPosition + 4] << 24)
-				| (bytes[startPosition + 5] << 16) | (bytes[startPosition + 6] << 8) | (bytes[startPosition + 7]);
+		return (bytes[startPosition] << 56) | (bytes[startPosition + 1] << 48) | (bytes[startPosition + 2] << 40)
+				| (bytes[startPosition + 3] << 32) | (bytes[startPosition + 4] << 24) | (bytes[startPosition + 5] << 16)
+				| (bytes[startPosition + 6] << 8) | (bytes[startPosition + 7]);
 	}
 
 	public static final byte[] toBytes(final int i) {

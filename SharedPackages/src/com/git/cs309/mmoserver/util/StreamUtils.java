@@ -46,8 +46,8 @@ public final class StreamUtils {
 		if (totalEOFChars > buffer.length >> 1) { // Mostly EOF characters.
 			throw new EndOfStreamReachedException("The end of the stream has been reached.");
 		}
-	if (total % 0x7F != checksum) {
-		throw new CorruptDataException("Block read from stream was corrupt.");
+		if (total % 0x7F != checksum) {
+			throw new CorruptDataException("Block read from stream was corrupt.");
 		}
 		return buffer;
 	}

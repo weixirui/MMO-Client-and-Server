@@ -26,7 +26,8 @@ public final class CycleProcessManager extends TickProcess {
 		super("CycleProcessManager");
 		CycleProcessManager predecessor = Main.getCycleProcessManager();
 		if (predecessor != null) {
-			processes.addAll(predecessor.processes); // Carry over all the old processes.
+			processes.addAll(predecessor.processes); // Carry over all the old processes
+			predecessor.forceStop();
 		}
 		predecessor = null;
 	}
@@ -45,7 +46,7 @@ public final class CycleProcessManager extends TickProcess {
 
 	@Override
 	public void ensureSafeClose() {
-		//Don't need to do anything here.
+		//Not needed
 	}
 
 	@Override

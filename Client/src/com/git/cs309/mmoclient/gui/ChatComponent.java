@@ -23,17 +23,8 @@ public final class ChatComponent extends ScrollPane {
 	private static final Queue<ChatMessage> privateMessages = new CycleQueue<>(1000, true);
 	private static final Color backgroundColor = new Color(0x7F, 0x7F, 0x7F, 0x7F);
 	private static final Scrollbar scrollBar = new Scrollbar();
-	
+
 	private static final ChatComponent SINGLETON = new ChatComponent();
-	
-	private ChatComponent() {
-		setSize(400, 300);
-		setLayout(new BorderLayout());
-	}
-	
-	public static ChatComponent getSingleton() {
-		return SINGLETON;
-	}
 
 	public static void addMessage(final MessageGroup group, final String message) {
 		ChatMessage chatMessage = new ChatMessage(group, message);
@@ -56,7 +47,11 @@ public final class ChatComponent extends ScrollPane {
 		allMessages.add(chatMessage);
 		updateScrollBar();
 	}
-	
+
+	public static ChatComponent getSingleton() {
+		return SINGLETON;
+	}
+
 	private static void updateScrollBar() {
 		scrollBar.setMinimum(0);
 		switch (currentGroup) {
@@ -76,10 +71,15 @@ public final class ChatComponent extends ScrollPane {
 			scrollBar.setMaximum(privateMessages.size());
 			break;
 		default:
-			System.err.println("No case for type: "+currentGroup);
+			System.err.println("No case for type: " + currentGroup);
 		}
 	}
-	
+
+	private ChatComponent() {
+		setSize(400, 300);
+		setLayout(new BorderLayout());
+	}
+
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(backgroundColor);

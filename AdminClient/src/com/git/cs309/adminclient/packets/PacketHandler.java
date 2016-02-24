@@ -35,7 +35,7 @@ public final class PacketHandler {
 				messagePrefix = "[GAME] ";
 				break;
 			}
-			ClientGUI.addMessage(messagePrefix+message.getMessage());
+			ClientGUI.addMessage(messagePrefix + message.getMessage());
 			break;
 		case EVENT_PACKET:
 			EventPacket eventPacket = (EventPacket) packet;
@@ -45,7 +45,7 @@ public final class PacketHandler {
 				ClientGUI.getSingleton().setVisible(true);
 				break;
 			default:
-				System.out.println("No case for event code: "+eventPacket.getEventCode());
+				System.out.println("No case for event code: " + eventPacket.getEventCode());
 			}
 			break;
 		case SERVER_MODULE_STATUS_PACKET:

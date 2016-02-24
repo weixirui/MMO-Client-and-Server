@@ -22,6 +22,7 @@ public final class CharacterManager extends TickProcess {
 		CharacterManager predecessor = Main.getCharacterManager();
 		if (predecessor != null) {
 			characterSet.addAll(predecessor.characterSet);
+			predecessor.forceStop();
 		}
 		predecessor = null;
 	}

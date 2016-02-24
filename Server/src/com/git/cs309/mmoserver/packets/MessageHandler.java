@@ -29,6 +29,7 @@ public final class MessageHandler {
 			if (otherUsername.equalsIgnoreCase(userConnection.getUser().getUsername())) {
 				userConnection.addOutgoingPacket(
 						new MessagePacket(null, MessagePacket.ERROR_CHAT, "You cannot whisper yourself!"));
+				return;
 			}
 			User other = UserManager.getUserForUsername(otherUsername);
 			if (other == null) {

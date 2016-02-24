@@ -22,15 +22,17 @@ public final class Config {
 
 	public static final int MILLISECONDS_PER_MINUTE = 60000;
 
+	public static final int MILLISECONDS_PER_SECOND = 1000;
+
+	public static final int TICK_RATE = 250; // Ticks per second
+
 	//Desired tick delay
-	public static final long MILLISECONDS_PER_TICK = 100; // 100MS (runescape runs around 575MS/tick)
+	public static final long MILLISECONDS_PER_TICK = MILLISECONDS_PER_SECOND / TICK_RATE;
 
 	public static final String NPC_DEFINITION_PATH = "./data/cfg/npc_definitions.cfg";
 
 	//Max packets/tick before automatically closes connection.
 	public static final int PACKETS_PER_TICK_BEFORE_KICK = (int) (MILLISECONDS_PER_TICK / 10);
-
-	public static final int PAUSE_TIMER_TICKS = (int) ((.5 * MILLISECONDS_PER_MINUTE) / MILLISECONDS_PER_TICK);
 
 	public static final String PERMISSIONS_PATH = "./data/cfg/permissions.cfg";
 

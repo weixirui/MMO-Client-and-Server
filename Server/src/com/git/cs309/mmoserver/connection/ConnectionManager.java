@@ -40,6 +40,7 @@ public final class ConnectionManager extends TickProcess {
 			waitObject = predecessor.waitObject;
 			connectionMap.putAll(predecessor.connectionMap);
 			connections.addAll(predecessor.connections);
+			predecessor.forceStop();
 		}
 		predecessor = null;
 	}
