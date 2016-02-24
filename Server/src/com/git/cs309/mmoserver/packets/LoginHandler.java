@@ -25,7 +25,8 @@ public final class LoginHandler {
 					.addOutgoingPacket(new ErrorPacket(loginPacket.getConnection(), ErrorPacket.LOGIN_ERROR,
 							"Password for user \"" + loginPacket.getUsername() + "\" does not match."));
 		} catch (IllegalNamingException e) {
-			loginPacket.getConnection().addOutgoingPacket(new ErrorPacket(loginPacket.getConnection(), ErrorPacket.GENERAL_ERROR, e.getMessage()));
+			loginPacket.getConnection().addOutgoingPacket(
+					new ErrorPacket(loginPacket.getConnection(), ErrorPacket.GENERAL_ERROR, e.getMessage()));
 		}
 	}
 }

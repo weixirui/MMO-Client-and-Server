@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.git.cs309.mmoserver.characters.CharacterManager;
 import com.git.cs309.mmoserver.characters.npc.NPCManager;
+import com.git.cs309.mmoserver.characters.user.ModerationHandler;
 import com.git.cs309.mmoserver.characters.user.UserManager;
 import com.git.cs309.mmoserver.connection.ConnectionAcceptor;
 import com.git.cs309.mmoserver.connection.ConnectionManager;
@@ -126,17 +127,6 @@ public final class Main {
 		characterManager = new CharacterManager();
 	}
 
-	/**
-	 * Initializes handler and managers, to ensure they're ready to handle
-	 * activity.
-	 */
-	private static void loadAndStartClasses() {
-		loadAndStartNPCManager();
-		loadAndStartConnectionManager();
-		loadAndStartCycleProcessManager();
-		loadAndStartCharacterManager();
-	}
-
 	public static void loadAndStartConnectionManager() {
 		connectionManager = new ConnectionManager();
 	}
@@ -167,7 +157,7 @@ public final class Main {
 															// users.
 			@Override
 			public void run() {
-				UserManager.saveAllUsers();
+				saveEverything();
 				System.out.println("Saved all users before going down.");
 			}
 		});
@@ -188,6 +178,18 @@ public final class Main {
 	 */
 	public static void requestExit() {
 		running = false;
+	}
+
+	/**
+	 * Initializes handler and managers, to ensure they're ready to handle
+	 * activity.
+	 */
+	private static void loadAndStartClasses() {
+		ModerationHandler.loadModerations();
+		loadAndStartNPCManager();
+		loadAndStartConnectionManager();
+		loadAndStartCycleProcessManager();
+		loadAndStartCharacterManager();
 	}
 
 	private static void runServer() {
@@ -251,9 +253,14 @@ public final class Main {
 			}
 		}
 		System.out.println("Server going down...");
-		UserManager.saveAllUsers();
+		saveEverything();
 		System.out.println("Saved all users before going down.");
 		System.out.println("");
 		System.out.println("");
+	}
+
+	private static void saveEverything() {
+		UserManager.saveAllUsers();
+		ModerationHandler.saveModerations();
 	}
 }

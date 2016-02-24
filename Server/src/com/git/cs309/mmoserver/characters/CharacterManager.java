@@ -43,6 +43,16 @@ public final class CharacterManager extends TickProcess {
 	}
 
 	/**
+	 * Removes character from the set.
+	 * 
+	 * @param character
+	 *            character to remove from set.
+	 */
+	public synchronized void removeCharacter(final Character character) { // Remove character from set
+		characterSet.remove(character);
+	}
+
+	/**
 	 * Processes characters. Should be called each tick, from the tickTask
 	 * method.
 	 * 
@@ -58,16 +68,6 @@ public final class CharacterManager extends TickProcess {
 				character.process();
 			}
 		}
-	}
-
-	/**
-	 * Removes character from the set.
-	 * 
-	 * @param character
-	 *            character to remove from set.
-	 */
-	public synchronized void removeCharacter(final Character character) { // Remove character from set
-		characterSet.remove(character);
 	}
 
 	@Override

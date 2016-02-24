@@ -31,9 +31,8 @@ public class Connection extends AbstractConnection {
 		idTag = ClosedIDSystem.getTag();
 	}
 
-	@Override
-	public boolean equals(Object other) {
-		return other instanceof Connection && ((Connection) other).getServerSideIP().equals(getServerSideIP());
+	public void cleanUp() {
+		idTag.returnTag();
 	}
 
 	@Override
@@ -55,6 +54,11 @@ public class Connection extends AbstractConnection {
 		}
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		return other instanceof Connection && ((Connection) other).getServerSideIP().equals(getServerSideIP());
+	}
+
 	public String getServerSideIP() {
 		return socket.getInetAddress().getHostAddress() + "." + idTag.getID();
 	}
@@ -65,10 +69,6 @@ public class Connection extends AbstractConnection {
 
 	public boolean isLoggedIn() {
 		return loggedIn && user != null;
-	}
-
-	public void cleanUp() {
-		idTag.returnTag();
 	}
 
 	@Override

@@ -88,16 +88,6 @@ public final class UserManager {
 	}
 
 	/**
-	 * Adds specified user to the user tables based on the users IP and Username
-	 * 
-	 * @param user
-	 */
-	private static void addUserToTables(final User user) { // Add user to tables.
-		USER_TABLE.put(user.getUsername().toLowerCase(), user);
-		IP_TABLE.put(((Connection) user.getConnection()).getServerSideIP(), user);
-	}
-
-	/**
 	 * Creates a new File object representing the file associated with the
 	 * username.
 	 * 
@@ -119,6 +109,17 @@ public final class UserManager {
 	 */
 	public static User getUserForIP(final String ip) { // Get user for their IP
 		return IP_TABLE.get(ip);
+	}
+
+	public static User getUserForUserID(final int userID) {
+		synchronized (USER_TABLE) {
+			for (String key : USER_TABLE.keySet()) {
+				if (USER_TABLE.get(key).getUniqueID() == userID) {
+					return USER_TABLE.get(key);
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -147,29 +148,6 @@ public final class UserManager {
 	}
 
 	/**
-	 * Load user from File representing path to user.
-	 * 
-	 * @param userFile
-	 *            File path to user.
-	 * @return deserialized user
-	 * @throws FileNotFoundException
-	 *             if File doesn't exist.
-	 * @throws IOException
-	 *             if there is some kind of IOException
-	 */
-	private static User loadUser(final File userFile) throws FileNotFoundException, IOException { // Load user from file
-		ObjectInputStream in = new ObjectInputStream(new FileInputStream(userFile));
-		User user = null;
-		try {
-			user = (User) in.readObject(); // Deserialize user.
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		in.close();
-		return user;
-	}
-
-	/**
 	 * Perform login for LoginPacket
 	 * 
 	 * @param loginPacket
@@ -179,7 +157,7 @@ public final class UserManager {
 	 *             if user already exists in tables.
 	 * @throws InvalidPasswordException
 	 *             if the LoginPacket contains the wrong password for that user.
-	 * @throws IllegalNamingException 
+	 * @throws IllegalNamingException
 	 */
 	public static boolean logIn(final LoginPacket loginPacket)
 			throws UserAlreadyLoggedInException, InvalidPasswordException, IllegalNamingException { // Perform login
@@ -269,17 +247,6 @@ public final class UserManager {
 	}
 
 	/**
-	 * Removes the user from the tables.
-	 * 
-	 * @param user
-	 *            user to remove from tables.
-	 */
-	private static void removeUserFromTables(final User user) {
-		USER_TABLE.remove(user.getUsername().toLowerCase());
-		IP_TABLE.remove(((Connection) user.getConnection()).getServerSideIP());
-	}
-
-	/**
 	 * Saves all users.
 	 */
 	public static void saveAllUsers() {
@@ -290,6 +257,93 @@ public final class UserManager {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public static void setRights(String playerName, Rights rights) {
+		File permissionsFile = new File(Config.PERMISSIONS_PATH);
+		File tempFile = new File(Config.PERMISSIONS_PATH + "_temp");
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(permissionsFile));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+			String line = "";
+			boolean writeNextLine = false;
+			while (!(line = reader.readLine()).equalsIgnoreCase("[EOF]")) {
+				if ((line.equalsIgnoreCase("[MOD]") && rights == Rights.MOD)
+						|| (line.equalsIgnoreCase("[ADMIN]") && rights == Rights.ADMIN)) {
+					writeNextLine = true;
+					writer.write(line);
+					writer.newLine();
+					continue;
+				}
+				if ((line.equalsIgnoreCase(playerName))) {
+					continue;
+				}
+				if (writeNextLine) {
+					writer.write(playerName);
+					writer.newLine();
+					writer.write(line);
+					writer.newLine();
+				} else {
+					writer.write(line);
+					writer.newLine();
+				}
+			}
+			writer.write(line);
+			writer.newLine();
+			writer.close();
+			reader.close();
+			tempFile.renameTo(permissionsFile);
+			if (isLoggedIn(playerName)) {
+				getUserForUsername(playerName).setRights(rights);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Failed to set rights for user " + playerName);
+		}
+	}
+
+	/**
+	 * Adds specified user to the user tables based on the users IP and Username
+	 * 
+	 * @param user
+	 */
+	private static void addUserToTables(final User user) { // Add user to tables.
+		USER_TABLE.put(user.getUsername().toLowerCase(), user);
+		IP_TABLE.put(((Connection) user.getConnection()).getServerSideIP(), user);
+	}
+
+	/**
+	 * Load user from File representing path to user.
+	 * 
+	 * @param userFile
+	 *            File path to user.
+	 * @return deserialized user
+	 * @throws FileNotFoundException
+	 *             if File doesn't exist.
+	 * @throws IOException
+	 *             if there is some kind of IOException
+	 */
+	private static User loadUser(final File userFile) throws FileNotFoundException, IOException { // Load user from file
+		ObjectInputStream in = new ObjectInputStream(new FileInputStream(userFile));
+		User user = null;
+		try {
+			user = (User) in.readObject(); // Deserialize user.
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		in.close();
+		return user;
+	}
+
+	/**
+	 * Removes the user from the tables.
+	 * 
+	 * @param user
+	 *            user to remove from tables.
+	 */
+	private static void removeUserFromTables(final User user) {
+		USER_TABLE.remove(user.getUsername().toLowerCase());
+		IP_TABLE.remove(((Connection) user.getConnection()).getServerSideIP());
 	}
 
 	/**
@@ -309,44 +363,6 @@ public final class UserManager {
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(userFile));
 		out.writeObject(user);
 		out.close();
-	}
-
-	public static void setRights(String playerName, Rights rights) throws IOException {
-		File permissionsFile = new File(Config.PERMISSIONS_PATH);
-		File tempFile = new File(Config.PERMISSIONS_PATH + "_temp");
-		BufferedReader reader = new BufferedReader(new FileReader(permissionsFile));
-		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-		String line = "";
-		boolean writeNextLine = false;
-		while (!(line = reader.readLine()).equalsIgnoreCase("[EOF]")) {
-			if ((line.equalsIgnoreCase("[MOD]") && rights == Rights.MOD)
-					|| (line.equalsIgnoreCase("[ADMIN]") && rights == Rights.ADMIN)) {
-				writeNextLine = true;
-				writer.write(line);
-				writer.newLine();
-				continue;
-			}
-			if ((line.equalsIgnoreCase(playerName))) {
-				continue;
-			}
-			if (writeNextLine) {
-				writer.write(playerName);
-				writer.newLine();
-				writer.write(line);
-				writer.newLine();
-			} else {
-				writer.write(line);
-				writer.newLine();
-			}
-		}
-		writer.write(line);
-		writer.newLine();
-		writer.close();
-		reader.close();
-		tempFile.renameTo(permissionsFile);
-		if (isLoggedIn(playerName)) {
-			getUserForUsername(playerName).setRights(rights);
-		}
 	}
 
 	private UserManager() {

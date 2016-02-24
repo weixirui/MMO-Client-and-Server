@@ -6,6 +6,7 @@ import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.connection.AbstractConnection;
 import com.git.cs309.mmoserver.packets.EventPacket;
+import com.git.cs309.mmoserver.packets.MessagePacket;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 import com.git.cs309.mmoserver.util.WordUtils;
@@ -32,10 +33,6 @@ public final class User implements Serializable {
 		inGame = false;
 		idTag = ClosedIDSystem.getTag();
 	}
-	
-	public boolean isInGame() {
-		return inGame;
-	}
 
 	public User(final String username, final String password) {
 		this.username = WordUtils.capitalizeText(username);
@@ -59,6 +56,7 @@ public final class User implements Serializable {
 			System.err.println("User already in the game.");
 			return;
 		}
+		connection.addOutgoingPacket(new MessagePacket(null, MessagePacket.GAME_CHAT, Config.ENTER_GAME_MESSAGE));
 		playerCharacters[characterIndex].setIDTag(this.idTag);
 		playerCharacters[characterIndex].addToManager();
 		currentCharacter = characterIndex;
@@ -100,6 +98,10 @@ public final class User implements Serializable {
 
 	public String getUsername() {
 		return username;
+	}
+
+	public boolean isInGame() {
+		return inGame;
 	}
 
 	public void setConnection(final AbstractConnection connection) {

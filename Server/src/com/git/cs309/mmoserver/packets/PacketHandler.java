@@ -30,7 +30,7 @@ public final class PacketHandler {
 			CommandHandler.handleCommandPacket(packet);
 			break;
 		default:
-			System.err.println("No case for type: " + packet.getPacketType()+" in PacketHandler.handlePacket");
+			System.err.println("No case for type: " + packet.getPacketType() + " in PacketHandler.handlePacket");
 		}
 	}
 }

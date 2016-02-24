@@ -28,6 +28,12 @@ public final class PacketHandler {
 			case MessagePacket.PRIVATE_CHAT:
 				messagePrefix = "[PRIVATE] ";
 				break;
+			case MessagePacket.ERROR_CHAT:
+				messagePrefix = "[ERROR] ";
+				break;
+			case MessagePacket.GAME_CHAT:
+				messagePrefix = "[GAME] ";
+				break;
 			}
 			ClientGUI.addMessage(messagePrefix+message.getMessage());
 			break;

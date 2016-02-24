@@ -34,6 +34,10 @@ public final class Config {
 
 	public static final String PERMISSIONS_PATH = "./data/cfg/permissions.cfg";
 
+	public static final String MODERATIONS_PATH = "./data/cfg/moderations.ser";
+
+	public static final String ENTER_GAME_MESSAGE = "Welcome to Island Depths.";
+
 	public static final int PLAYER_START_X = 0;
 
 	public static final int PLAYER_START_Y = 0;

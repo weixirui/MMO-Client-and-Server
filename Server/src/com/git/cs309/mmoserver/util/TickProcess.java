@@ -51,25 +51,6 @@ public abstract class TickProcess extends Observable implements Runnable {
 	}
 
 	/**
-	 * Handles tick averaging.
-	 * 
-	 * @param thisTick
-	 *            time this tick
-	 */
-	protected void handleTickAveraging(long thisTick) {
-		cumulative += thisTick;
-		count++;
-		if (count == 10) {
-			average = cumulative / count;
-			count = 0;
-			cumulative = 0;
-			Main.getConnectionManager().sendPacketToConnectionsWithRights(
-					new ServerModuleStatusPacket(null, name, average / (Config.MILLISECONDS_PER_TICK * 1000000.0f)),
-					Rights.ADMIN);
-		}
-	}
-
-	/**
 	 * Is this process stopped?
 	 * 
 	 * @return
@@ -127,10 +108,29 @@ public abstract class TickProcess extends Observable implements Runnable {
 		return tickFinished;
 	}
 
-	protected abstract void tickTask();
-
 	@Override
 	public String toString() {
 		return name;
 	}
+
+	/**
+	 * Handles tick averaging.
+	 * 
+	 * @param thisTick
+	 *            time this tick
+	 */
+	protected void handleTickAveraging(long thisTick) {
+		cumulative += thisTick;
+		count++;
+		if (count == 10) {
+			average = cumulative / count;
+			count = 0;
+			cumulative = 0;
+			Main.getConnectionManager().sendPacketToConnectionsWithRights(
+					new ServerModuleStatusPacket(null, name, average / (Config.MILLISECONDS_PER_TICK * 1000000.0f)),
+					Rights.ADMIN);
+		}
+	}
+
+	protected abstract void tickTask();
 }
