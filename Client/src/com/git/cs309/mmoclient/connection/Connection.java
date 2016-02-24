@@ -14,6 +14,7 @@ public class Connection extends AbstractConnection {
 
 	public Connection(Socket socket) throws IOException {
 		super(socket);
+		//Comment
 	}
 
 	@Override

@@ -41,8 +41,13 @@ public class MessagePacket extends Packet {
 	}
 
 	@Override
+	public int sizeOf() {
+		return message.length() + 2;
+	}
+
+	@Override
 	public byte[] toBytes() {
-		byte[] bytes = new byte[message.length() + 2];
+		byte[] bytes = new byte[sizeOf()];
 		int index = 0;
 		bytes[index++] = getPacketType().getTypeByte();
 		bytes[index++] = messageCode;

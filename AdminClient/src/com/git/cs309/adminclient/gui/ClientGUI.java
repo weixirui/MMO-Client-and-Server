@@ -102,7 +102,7 @@ public class ClientGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (JOptionPane.showConfirmDialog(null, "Are you sure you want to restart the server? This can cause the server to shutdown entirely.") == JOptionPane.YES_OPTION) {
-					AdminClient.getConnection().addOutgoingPacket(new AdminCommandPacket(null, AdminCommandPacket.RESTART_SERVER));
+					AdminClient.getConnection().addOutgoingPacket(new AdminCommandPacket(null, AdminCommandPacket.RESTART_SERVER, 0));
 				}
 			}
 			

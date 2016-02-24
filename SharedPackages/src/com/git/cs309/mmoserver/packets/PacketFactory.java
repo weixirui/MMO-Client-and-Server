@@ -16,18 +16,18 @@ public final class PacketFactory {
 			return new ErrorPacket(bytes, source);
 		case PacketType.EVENT_PACKET_BYTE:
 			return new EventPacket(bytes, source);
-		case PacketType.ENTITY_UPDATE_PACKET_BYTE:
-			return new EntityUpdatePacket(bytes, source);
 		case PacketType.TEST_PACKET_BYTE:
 			return new TestPacket(source, bytes);
-		case PacketType.CHARACTER_SELECTED_PACKET_BYTE:
-			return new CharacterSelectedPacket(source, bytes);
 		case PacketType.ADMIN_COMMAND_PACKET_BYTE:
 			return new AdminCommandPacket(source, bytes);
 		case PacketType.SERVER_MODULE_STATUS_PACKET_BYTE:
 			return new ServerModuleStatusPacket(source, bytes);
 		case PacketType.USER_STATUS_PACKET_BYTE:
 			return new UserStatusPacket(source, bytes);
+		case PacketType.CHARACTER_STATUS_PACKET_BYTE:
+			return new CharacterStatusPacket(source, bytes);
+		case PacketType.ENTITY_CLICK_PACKET_BYTE:
+			return new EntityClickPacket(source, bytes);
 		default:
 			System.out.println("No case for type byte: " + bytes[0]);
 			return null;

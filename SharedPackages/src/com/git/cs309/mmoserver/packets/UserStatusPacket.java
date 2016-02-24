@@ -6,20 +6,12 @@ public class UserStatusPacket extends Packet {
 	public static final byte LOGGED_IN = 0;
 	public static final byte IN_GAME = 1;
 	public static final byte DISCONNECTED = 2;
-	
+
 	private final byte status;
 	private final int userID;
 	private final String username;
 	private final String permissions;
-	
-	public UserStatusPacket(AbstractConnection destination, final int userID, final String username, final String permissions, final byte status) {
-		super(destination);
-		this.status = status;
-		this.userID = userID;
-		this.username = username;
-		this.permissions = permissions;
-	}
-	
+
 	public UserStatusPacket(AbstractConnection destination, byte[] bytes) {
 		super(destination);
 		this.status = bytes[1];
@@ -38,26 +30,45 @@ public class UserStatusPacket extends Packet {
 		}
 		permissions = buff;
 	}
-	
-	public byte getStatus() {
-		return status;
+
+	public UserStatusPacket(AbstractConnection destination, final int userID, final String username,
+			final String permissions, final byte status) {
+		super(destination);
+		this.status = status;
+		this.userID = userID;
+		this.username = username;
+		this.permissions = permissions;
 	}
-	
-	public int getUserID() {
-		return userID;
+
+	@Override
+	public PacketType getPacketType() {
+		return PacketType.USER_STATUS_PACKET;
 	}
-	
-	public String getUsername() {
-		return username;
-	}
-	
+
 	public String getPermissions() {
 		return permissions;
 	}
-	
+
+	public byte getStatus() {
+		return status;
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	@Override
+	public int sizeOf() {
+		return 14 + username.length() + permissions.length();
+	}
+
 	@Override
 	public byte[] toBytes() {
-		byte[] bytes = new byte[14 + username.length() + permissions.length()];
+		byte[] bytes = new byte[sizeOf()];
 		int index = 0;
 		bytes[index++] = getPacketType().getTypeByte();
 		bytes[index++] = (byte) (userID >> 24);
@@ -79,11 +90,6 @@ public class UserStatusPacket extends Packet {
 			bytes[index++] = (byte) c;
 		}
 		return bytes;
-	}
-
-	@Override
-	public PacketType getPacketType() {
-		return PacketType.USER_STATUS_PACKET;
 	}
 
 }

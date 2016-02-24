@@ -8,6 +8,8 @@ import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.characters.user.User;
 import com.git.cs309.mmoserver.characters.user.UserManager;
 import com.git.cs309.mmoserver.packets.PacketFactory;
+import com.git.cs309.mmoserver.util.ClosedIDSystem;
+import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 import com.git.cs309.mmoserver.util.CorruptDataException;
 import com.git.cs309.mmoserver.util.EndOfStreamReachedException;
 import com.git.cs309.mmoserver.util.StreamUtils;
@@ -22,9 +24,16 @@ public class Connection extends AbstractConnection {
 	private volatile boolean closeRequested = false;
 	private volatile boolean loggedIn = false;
 	private volatile User user = null;
+	private final IDTag idTag;
 
 	public Connection(Socket socket) throws IOException {
 		super(socket);
+		idTag = ClosedIDSystem.getTag();
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		return other instanceof Connection && ((Connection) other).getServerSideIP().equals(getServerSideIP());
 	}
 
 	@Override
@@ -46,12 +55,20 @@ public class Connection extends AbstractConnection {
 		}
 	}
 
+	public String getServerSideIP() {
+		return socket.getInetAddress().getHostAddress() + "." + idTag.getID();
+	}
+
 	public User getUser() {
 		return user;
 	}
 
 	public boolean isLoggedIn() {
 		return loggedIn && user != null;
+	}
+
+	public void cleanUp() {
+		idTag.returnTag();
 	}
 
 	@Override
@@ -96,7 +113,7 @@ public class Connection extends AbstractConnection {
 			}
 		}
 		loggedIn = false;
-		user = UserManager.getUserForIP(ip);
+		user = UserManager.getUserForIP(getServerSideIP());
 		if (user != null) {
 			UserManager.logOut(user.getUsername());
 		}

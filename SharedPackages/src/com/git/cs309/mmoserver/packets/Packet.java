@@ -19,4 +19,6 @@ public abstract class Packet implements ByteFormatted {
 	}
 
 	public abstract PacketType getPacketType();
+
+	public abstract int sizeOf();
 }

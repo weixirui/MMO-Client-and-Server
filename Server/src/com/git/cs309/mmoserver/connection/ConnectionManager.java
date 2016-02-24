@@ -53,11 +53,11 @@ public final class ConnectionManager extends TickProcess {
 	 */
 	public void addConnection(final Connection connection) {
 		synchronized (connectionMap) {
-			connectionMap.put(connection.getIP(), connection); // Add connection to "IP->Connection" map
+			connectionMap.put(connection.getServerSideIP(), connection); // Add connection to "IP->Connection" map
 		}
 		synchronized (connections) {
 			connections.add(connection); // Add connection to list.
-			System.out.println("Connection joined: " + connection.getIP());
+			System.out.println("Connection joined: " + connection.getServerSideIP());
 		}
 	}
 
@@ -109,16 +109,16 @@ public final class ConnectionManager extends TickProcess {
 	 * 
 	 * @param connection
 	 *            connection to remove.
-	 * @return the same connection.
 	 */
-	public Connection removeConnection(final Connection connection) {
+	public void removeConnection(final Connection connection) {
 		synchronized (connectionMap) {
-			connectionMap.remove(connection.getIP());
+			connectionMap.remove(connection.getServerSideIP());
 		}
 		synchronized (connections) {
 			connections.remove(connection);
 		}
-		return connection;
+		System.out.println("Connection disconnected: " + connection.getServerSideIP());
+		connection.cleanUp();
 	}
 
 	/**
@@ -126,9 +126,8 @@ public final class ConnectionManager extends TickProcess {
 	 * 
 	 * @param ip
 	 *            IP of connection to remove
-	 * @return the connection for the IP
 	 */
-	public Connection removeConnection(final String ip) {
+	public void removeConnection(final String ip) {
 		Connection connection = getConnectionForIP(ip);
 		synchronized (connectionMap) {
 			connectionMap.remove(connection);
@@ -136,7 +135,8 @@ public final class ConnectionManager extends TickProcess {
 		synchronized (connections) {
 			connections.remove(connection);
 		}
-		return connection;
+		System.out.println("Connection disconnected: " + connection.getServerSideIP());
+		connection.cleanUp();
 	}
 
 	/**
@@ -170,7 +170,7 @@ public final class ConnectionManager extends TickProcess {
 		synchronized (connections) {
 			for (int i = 0; i < connections.size(); i++) {
 				if (connections.get(i).isDisconnected()) {
-					System.out.println("Connection disconnected: " + removeConnection(connections.get(i--)).getIP()); // Send message and remove.
+					removeConnection(connections.get(i--));
 					continue;
 				}
 				Packet packet = connections.get(i).getPacket();

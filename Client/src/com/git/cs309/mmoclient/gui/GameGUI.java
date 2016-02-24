@@ -30,7 +30,7 @@ public class GameGUI extends JFrame {
 	private GameGUI() {
 		setLayout(new GridLayout(2, 1));
 		add(Engine.getSingleton());
-		setSize(4000, 3000);
+		setSize(1600, 900);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 

@@ -48,12 +48,6 @@ public final class CycleQueue<T> implements Queue<T> {
 		return true;
 	}
 
-	private void checkForConcurrentModification(final long startModifications) {
-		if (startModifications != modifications) {
-			throw new ConcurrentModificationException("CycleQueue was modified by a thread while being accessed.");
-		}
-	}
-
 	@Override
 	public synchronized void clear() {
 		for (int i = 0; i < array.length; i++) {
@@ -92,11 +86,6 @@ public final class CycleQueue<T> implements Queue<T> {
 			throw new IllegalStateException("CycleQueue is empty.");
 		}
 		return get(0);
-	}
-
-	private synchronized void ensureCorners() {
-		takeIndex %= array.length;
-		placeIndex %= array.length;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -246,5 +235,16 @@ public final class CycleQueue<T> implements Queue<T> {
 			}
 		}
 		return a;
+	}
+
+	private void checkForConcurrentModification(final long startModifications) {
+		if (startModifications != modifications) {
+			throw new ConcurrentModificationException("CycleQueue was modified by a thread while being accessed.");
+		}
+	}
+
+	private synchronized void ensureCorners() {
+		takeIndex %= array.length;
+		placeIndex %= array.length;
 	}
 }

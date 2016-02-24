@@ -94,7 +94,7 @@ public final class UserManager {
 	 */
 	private static void addUserToTables(final User user) { // Add user to tables.
 		USER_TABLE.put(user.getUsername().toLowerCase(), user);
-		IP_TABLE.put(user.getConnection().getIP(), user);
+		IP_TABLE.put(((Connection) user.getConnection()).getServerSideIP(), user);
 	}
 
 	/**
@@ -210,6 +210,8 @@ public final class UserManager {
 		user.setIDTag(ClosedIDSystem.getTag());
 		if (RIGHTS_TABLE.containsKey(user.getUsername().toLowerCase())) {
 			user.setRights(RIGHTS_TABLE.get(user.getUsername().toLowerCase()));
+		} else {
+			user.setRights(Rights.PLAYER);
 		}
 		((Connection) loginPacket.getConnection()).setUser(user);
 		((Connection) loginPacket.getConnection()).setLoggedIn(true);
@@ -236,7 +238,7 @@ public final class UserManager {
 				e.printStackTrace();
 			}
 			removeUserFromTables(user);
-			System.out.println("User " + user + " logged out.");
+			System.out.println(user.getRights() + " " + user + " logged out.");
 			user.cleanUp();
 		}
 		return true;
@@ -271,7 +273,7 @@ public final class UserManager {
 	 */
 	private static void removeUserFromTables(final User user) {
 		USER_TABLE.remove(user.getUsername().toLowerCase());
-		IP_TABLE.remove(user.getConnection().getIP());
+		IP_TABLE.remove(((Connection) user.getConnection()).getServerSideIP());
 	}
 
 	/**

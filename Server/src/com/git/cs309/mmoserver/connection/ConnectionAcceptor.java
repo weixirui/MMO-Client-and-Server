@@ -42,12 +42,15 @@ public final class ConnectionAcceptor implements Runnable {
 	}
 
 	private void addConnection(Connection connection) throws IOException {
-		if (Main.getConnectionManager().ipConnected(connection.getIP())) { // Is a socket with same IP already connected?
-			connection.forceOutgoingPacket(new ErrorPacket(null, ErrorPacket.GENERAL_ERROR,
-					"Failed to connect because your ip is already logged in.")); // Send error packet.
-			connection.close(); // Close connection.
-			return;
-		}
+		//For now, allowing multiple connections from same IP
+		/*
+		 * if (Main.getConnectionManager().ipConnected(connection.getIP())) { //
+		 * Is a socket with same IP already connected?
+		 * connection.forceOutgoingPacket(new ErrorPacket(null,
+		 * ErrorPacket.GENERAL_ERROR,
+		 * "Failed to connect because your ip is already logged in.")); // Send
+		 * error packet. connection.close(); // Close connection. return; }
+		 */
 		if (Main.getConnectionManager().full()) { // Are we at max connections?
 			connection.forceOutgoingPacket(
 					new ErrorPacket(null, ErrorPacket.GENERAL_ERROR, "Failed to connect because server is full.")); // Send error packet
