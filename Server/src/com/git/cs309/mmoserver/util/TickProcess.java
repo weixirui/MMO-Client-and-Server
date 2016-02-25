@@ -67,6 +67,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 	public final void run() { // Final to ensure that this can't be overriden, to ensure that all extending classes follow the rules.
 		final Object tickNotifier = Main.getTickNotifier(); // Acquire the tickNotifier object from Main.
 		isStopped = false;
+		forceStop = false;
 		System.out.println("Running " + this + "...");
 		while (Main.isRunning() && !forceStop) { // While server is running...
 			try {
@@ -92,7 +93,6 @@ public abstract class TickProcess extends Observable implements Runnable {
 			}
 		}
 		ensureSafeClose();
-		forceStop = false;
 		tickFinished = true;
 		isStopped = true;
 		setChanged();

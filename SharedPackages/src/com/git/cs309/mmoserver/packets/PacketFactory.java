@@ -28,6 +28,10 @@ public final class PacketFactory {
 			return new CharacterStatusPacket(source, bytes);
 		case PacketType.ENTITY_CLICK_PACKET_BYTE:
 			return new EntityClickPacket(source, bytes);
+		case PacketType.ENTITY_UPDATE_PACKET_BYTE:
+			return new EntityUpdatePacket(source, bytes);
+		case PacketType.EXTENSIVE_OBJECT_PACKET_BYTE:
+			return new ExtensiveObjectPacket(source, bytes);
 		default:
 			System.out.println("No case for type byte: " + bytes[0]);
 			return null;
