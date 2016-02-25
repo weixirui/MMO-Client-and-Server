@@ -3,7 +3,6 @@ package com.git.cs309.mmoserver.entity.characters.user;
 import java.io.Serializable;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.connection.AbstractConnection;
 import com.git.cs309.mmoserver.packets.EventPacket;
 import com.git.cs309.mmoserver.packets.MessagePacket;
@@ -45,6 +44,7 @@ public final class User implements Serializable {
 
 	public void cleanUp() {
 		exitCurrentCharacter();
+		cleanUpCharacters();
 	}
 
 	public void enterGame(int characterIndex) {
@@ -57,20 +57,24 @@ public final class User implements Serializable {
 			return;
 		}
 		connection.addOutgoingPacket(new MessagePacket(null, MessagePacket.GAME_CHAT, Config.ENTER_GAME_MESSAGE));
-		playerCharacters[characterIndex].setIDTag(this.idTag);
-		playerCharacters[characterIndex].addToManager();
+		playerCharacters[characterIndex].enterGame(idTag);
 		currentCharacter = characterIndex;
 		inGame = true;
+	}
+	
+	public void cleanUpCharacters() {
+		for (PlayerCharacter character : playerCharacters) {
+			character.cleanUp();
+		}
 	}
 
 	public void exitCurrentCharacter() {
 		inGame = false;
-		currentCharacter = -1;
 		PlayerCharacter character = getCurrentCharacter();
 		if (character != null) {
-			Main.getCharacterManager().removeCharacter(character);
-			character.cleanUp();
+			character.exitGame();
 		}
+		currentCharacter = -1;
 	}
 
 	public AbstractConnection getConnection() {

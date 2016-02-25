@@ -2,6 +2,9 @@ package com.git.cs309.mmoserver.entity.characters.user;
 
 import java.io.Serializable;
 
+import com.git.cs309.mmoserver.Config;
+import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.Character;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
@@ -17,24 +20,16 @@ public class PlayerCharacter extends Character implements Serializable {
 	private byte gender = -1; // 0 - Male, 1 - Female
 
 	public PlayerCharacter() {
-		
+		super();
 	}
 
 	public PlayerCharacter(int x, int y) {
-		super(x, y, null, 0, "Null");
+		super();
+		this.x = x;
+		this.y = y;
+		this.entityID = 0;
+		this.name = "Null";
 		deleteCharacter();
-	}
-
-	@Override
-	public void applyDamage(int damageAmount) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void applyRegen(int regenAmount) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void createCharacter(final String characterName, final byte gender) {
@@ -46,6 +41,8 @@ public class PlayerCharacter extends Character implements Serializable {
 	public void deleteCharacter() {
 		name = "NULL";
 		this.gender = -1;
+		this.x = Config.PLAYER_START_X;
+		this.y = Config.PLAYER_START_Y;
 		this.created = false;
 	}
 
@@ -55,8 +52,7 @@ public class PlayerCharacter extends Character implements Serializable {
 
 	@Override
 	public int getMaxHealth() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 100;
 	}
 
 	public boolean isCreated() {
@@ -68,10 +64,21 @@ public class PlayerCharacter extends Character implements Serializable {
 		// TODO Auto-generated method stub
 
 	}
+	
+	public void enterGame(final IDTag idTag) {
+		assert created;
+		setIDTag(idTag);
+		Main.getCharacterManager().addCharacter(this);
+	}
+	
+	public void exitGame() {
+		setIDTag(null);
+		Main.getCharacterManager().removeCharacter(this);
+	}
 
 	@Override
-	public void setIDTag(IDTag idTag) {
-		this.idTag = idTag;
+	public EntityType getEntityType() {
+		return EntityType.PLAYER;
 	}
 
 }

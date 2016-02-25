@@ -18,26 +18,25 @@ public abstract class Character extends Entity {
 	protected volatile boolean isDead; //true is dead
 
 	public Character() {
-		// For deserialization only
+		super();
 	}
 
-	public Character(final int x, final int y, final IDTag idTag, final int entityID, final String name) {
-		super (x, y, idTag, entityID, name);
+	public Character(final int x, final int y, final int z, final IDTag idTag, final int entityID, final String name) {
+		super (x, y, z, idTag, entityID, name);
 		Main.getCharacterManager().addCharacter(this);
 	}
 
-	public void addToManager() {
-		Main.getCharacterManager().addCharacter(this); // Ensure that all classes extending character get added to the CharacterManager
+	public void applyDamage(int damageAmount) {
+		health -= damageAmount;
+		if (health <= 0) {
+			isDead = true;
+		}
 	}
 
-	public abstract void applyDamage(int damageAmount); // Abstract so subclasses can implement in their own way.
-
-	public abstract void applyRegen(int regenAmount); // Abstract so subclasses can implement in their own way.
-
-	//Release this object and return id tag to system.
-	public final void cleanUp() {
-		super.cleanUp();
-		Main.getCharacterManager().removeCharacter(this);
+	public void applyRegen(int regenAmount) {
+		if (health + regenAmount <= getMaxHealth()) {
+			health += regenAmount;
+		}
 	}
 
 	public int getHealth() {
@@ -52,6 +51,11 @@ public abstract class Character extends Entity {
 
 	public void kill() {
 		isDead = true;
+	}
+	
+	@Override
+	public boolean canWalkThrough() {
+		return true;
 	}
 
 	public abstract void process(); // Force implementations to create their own process method.
