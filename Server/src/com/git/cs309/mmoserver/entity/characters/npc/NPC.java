@@ -9,6 +9,14 @@ import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.Character;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
 
+/**
+ * 
+ * @author Group 21
+ *
+ *	<p>
+ *The NPC class represents the basic framework for all non player character characters, for example wolves or shopkeepers.
+ *</p>
+ */
 public class NPC extends Character {
 	private final NPCDefinition definition;
 

@@ -40,20 +40,22 @@ public final class CharacterManager extends TickProcess {
 	public void addCharacter(final Character character) { // Add new character to characterSet
 		synchronized (characterSet) {
 			characterSet.add(character);
-			MapHandler.setEntityAtPosition(character.getInstanceNumber(), character.getX(), character.getY(), character.getZ(), character);
-		}
-	}
-
-	public void removeCharacter(final Character character) {
-		synchronized (characterSet) {
-			characterSet.remove(character);
-			MapHandler.setEntityAtPosition(character.getInstanceNumber(), character.getX(), character.getY(), character.getZ(), null);
+			MapHandler.setEntityAtPosition(character.getInstanceNumber(), character.getX(), character.getY(),
+					character.getZ(), character);
 		}
 	}
 
 	@Override
 	public void ensureSafeClose() {
 		//Not required
+	}
+
+	public void removeCharacter(final Character character) {
+		synchronized (characterSet) {
+			characterSet.remove(character);
+			MapHandler.setEntityAtPosition(character.getInstanceNumber(), character.getX(), character.getY(),
+					character.getZ(), null);
+		}
 	}
 
 	/**

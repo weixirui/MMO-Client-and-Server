@@ -26,6 +26,16 @@ public abstract class Entity {
 		instanceNumber = 0;
 	}
 
+	public abstract boolean canWalkThrough();
+
+	public final void cleanUp() {
+		needsDisposal = true;
+		if (idTag != null) {
+			idTag.returnTag();
+		}
+		idTag = null;
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		if (!(other instanceof Entity)) {
@@ -36,22 +46,22 @@ public abstract class Entity {
 				&& name.equals(entity.name);
 	}
 
-	public final boolean needsDisposal() {
-		return needsDisposal;
+	public abstract EntityType getEntityType();
+
+	public final int getInstanceNumber() {
+		return instanceNumber;
 	}
 
-	public abstract boolean canWalkThrough();
-
-	public final int getUniqueID() {
-		return idTag.getID();
+	public final String getName() {
+		return name;
 	}
 
 	public final int getStaticID() {
 		return entityID;
 	}
 
-	public final String getName() {
-		return name;
+	public final int getUniqueID() {
+		return idTag.getID();
 	}
 
 	public final int getX() {
@@ -66,20 +76,8 @@ public abstract class Entity {
 		return z;
 	}
 
-	protected final void setIDTag(final IDTag idTag) {
-		this.idTag = idTag;
-	}
-
-	public final void cleanUp() {
-		needsDisposal = true;
-		if (idTag != null) {
-			idTag.returnTag();
-		}
-		idTag = null;
-	}
-
-	public final int getInstanceNumber() {
-		return instanceNumber;
+	public final boolean needsDisposal() {
+		return needsDisposal;
 	}
 
 	public final void setInstanceNumber(int instanceNumber) {
@@ -101,5 +99,7 @@ public abstract class Entity {
 		this.z = z;
 	}
 
-	public abstract EntityType getEntityType();
+	protected final void setIDTag(final IDTag idTag) {
+		this.idTag = idTag;
+	}
 }

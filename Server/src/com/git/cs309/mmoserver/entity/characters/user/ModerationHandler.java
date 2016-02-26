@@ -12,6 +12,14 @@ import java.util.HashMap;
 
 import com.git.cs309.mmoserver.Config;
 
+/**
+ * 
+ * @author Group 21
+ *
+ *         <p>
+ *         Holds and maintains each Moderation in the game.
+ *         </p>
+ */
 public final class ModerationHandler {
 	public static enum ModerationType {
 		BAN, MUTE;

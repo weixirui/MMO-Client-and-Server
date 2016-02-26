@@ -180,26 +180,6 @@ public final class UserManager {
 		return true;
 	}
 
-	private static void reloadRights() throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader(Config.PERMISSIONS_PATH));
-		String line = "";
-		Rights currentRights = Rights.PLAYER;
-		RIGHTS_TABLE.clear();
-		while (!(line = reader.readLine()).equalsIgnoreCase("[EOF]")) {
-			switch (line.toUpperCase()) {
-			case "[ADMIN]":
-				currentRights = Rights.ADMIN;
-				break;
-			case "[MOD]":
-				currentRights = Rights.MOD;
-				break;
-			default:
-				RIGHTS_TABLE.put(line.toLowerCase(), currentRights);
-			}
-		}
-		reader.close();
-	}
-
 	/**
 	 * Saves all users.
 	 */
@@ -288,6 +268,26 @@ public final class UserManager {
 		}
 		in.close();
 		return user;
+	}
+
+	private static void reloadRights() throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(Config.PERMISSIONS_PATH));
+		String line = "";
+		Rights currentRights = Rights.PLAYER;
+		RIGHTS_TABLE.clear();
+		while (!(line = reader.readLine()).equalsIgnoreCase("[EOF]")) {
+			switch (line.toUpperCase()) {
+			case "[ADMIN]":
+				currentRights = Rights.ADMIN;
+				break;
+			case "[MOD]":
+				currentRights = Rights.MOD;
+				break;
+			default:
+				RIGHTS_TABLE.put(line.toLowerCase(), currentRights);
+			}
+		}
+		reader.close();
 	}
 
 	/**

@@ -10,12 +10,16 @@ import com.git.cs309.mmoserver.util.ClosedIDSystem;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 import com.git.cs309.mmoserver.util.WordUtils;
 
+/**
+ * 
+ * @author Group 21
+ *
+ */
 public final class User implements Serializable {
 
 	/**
 	 * 
 	 */
-	//need split between user and users charicter
 	private static final long serialVersionUID = 9016268542066197274L;
 
 	private transient AbstractConnection connection; // Transient means serialization will ignore this variable.
@@ -29,12 +33,6 @@ public final class User implements Serializable {
 
 	public User() {
 		//For deserialization only
-	}
-	
-	public void initialize() {
-		currentCharacter = -1;
-		inGame = false;
-		idTag = ClosedIDSystem.getTag();
 	}
 
 	public User(final String username, final String password) {
@@ -51,6 +49,12 @@ public final class User implements Serializable {
 		cleanUpCharacters();
 	}
 
+	public void cleanUpCharacters() {
+		for (PlayerCharacter character : playerCharacters) {
+			character.cleanUp();
+		}
+	}
+
 	public void enterGame(int characterIndex) {
 		if (!playerCharacters[characterIndex].isCreated()) {
 			connection.addOutgoingPacket(new EventPacket(null, EventPacket.CREATE_CHARACTER));
@@ -64,12 +68,6 @@ public final class User implements Serializable {
 		playerCharacters[characterIndex].enterGame(idTag);
 		currentCharacter = characterIndex;
 		inGame = true;
-	}
-
-	public void cleanUpCharacters() {
-		for (PlayerCharacter character : playerCharacters) {
-			character.cleanUp();
-		}
 	}
 
 	public void exitCurrentCharacter() {
@@ -106,6 +104,12 @@ public final class User implements Serializable {
 
 	public String getUsername() {
 		return username;
+	}
+
+	public void initialize() {
+		currentCharacter = -1;
+		inGame = false;
+		idTag = ClosedIDSystem.getTag();
 	}
 
 	public boolean isInGame() {

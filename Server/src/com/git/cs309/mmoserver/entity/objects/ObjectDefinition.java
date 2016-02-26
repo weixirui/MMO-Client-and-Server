@@ -11,12 +11,12 @@ public final class ObjectDefinition {
 		this.walkable = walkable;
 	}
 
-	public final String getObjectName() {
-		return objectName;
-	}
-
 	public final int getObjectID() {
 		return objectID;
+	}
+
+	public final String getObjectName() {
+		return objectName;
 	}
 
 	public boolean getWalkable() {

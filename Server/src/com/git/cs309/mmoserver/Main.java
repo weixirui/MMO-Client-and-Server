@@ -14,7 +14,6 @@ import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.io.Logger;
 import com.git.cs309.mmoserver.util.TickProcess;
 
-
 /*
  * TODO Section:
  * Implement party system
@@ -23,9 +22,6 @@ import com.git.cs309.mmoserver.util.TickProcess;
  * Add more packets to output MORE various things
  * Add and send map packet, which tells client player is in new map
  */
-
-
-
 
 /**
  * 
@@ -248,7 +244,8 @@ public final class Main {
 			tickCount++;
 			if (ticks == Config.TICKS_PER_MINUTE * 5) {
 				System.out.println("Average tick consumption over 5 minutes: "
-						+ String.format("%.3f", ((tickTimes / (float) (Config.MILLISECONDS_PER_TICK * ticks))) * 100.0f) + "%.");
+						+ String.format("%.3f", ((tickTimes / (float) (Config.MILLISECONDS_PER_TICK * ticks))) * 100.0f)
+						+ "%.");
 				ticks = 0;
 				tickTimes = 0L;
 			}

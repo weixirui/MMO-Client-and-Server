@@ -9,8 +9,13 @@ public final class MapHandler {
 	//I'm not certain how I want to implement this yet.
 	private static final Set<Map> MAPS = new HashSet<>();
 
-	private MapHandler() {
-		//Prevent instantiation
+	public static final Entity getEntityAtPosition(final int instanceNumber, final int x, final int y, final int z) {
+		Map map = getMapContainingPosition(instanceNumber, x, y, z);
+		if (map == null) {
+			//Maybe TRY and create a new map
+			return null;
+		}
+		return map.getEntity(x, y);
 	}
 
 	public static final Map getMapContainingPosition(final int instanceNumber, final int x, final int y, final int z) {
@@ -20,15 +25,6 @@ public final class MapHandler {
 			}
 		}
 		return null;
-	}
-
-	public static final Entity getEntityAtPosition(final int instanceNumber, final int x, final int y, final int z) {
-		Map map = getMapContainingPosition(instanceNumber, x, y, z);
-		if (map == null) {
-			//Maybe TRY and create a new map
-			return null;
-		}
-		return map.getEntity(x, y);
 	}
 
 	public static final void moveEntity(final int oInstanceNumber, final int oX, final int oY, final int oZ,
@@ -44,7 +40,8 @@ public final class MapHandler {
 		map.moveEntity(oX, oY, dX, dY);
 	}
 
-	public static final void setEntityAtPosition(final int instanceNumber, final int x, final int y, final int z, final Entity entity) {
+	public static final void setEntityAtPosition(final int instanceNumber, final int x, final int y, final int z,
+			final Entity entity) {
 		Map map = getMapContainingPosition(instanceNumber, x, y, z);
 		if (map == null) {
 			//Maybe TRY and create a new map
@@ -52,5 +49,9 @@ public final class MapHandler {
 		}
 		assert (map.getEntity(x, y) == null); // Cannot place an entity where there is already an entity
 		map.putEntity(x, y, entity);
+	}
+
+	private MapHandler() {
+		//Prevent instantiation
 	}
 }

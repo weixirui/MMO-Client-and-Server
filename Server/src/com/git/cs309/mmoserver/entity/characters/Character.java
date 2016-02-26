@@ -45,11 +45,16 @@ public abstract class Character extends Entity {
 		}
 	}
 
-	public abstract int getLevel();
+	@Override
+	public boolean canWalkThrough() {
+		return true;
+	}
 
 	public int getHealth() {
 		return health;
 	}
+
+	public abstract int getLevel();
 
 	public abstract int getMaxHealth();
 
@@ -59,11 +64,6 @@ public abstract class Character extends Entity {
 
 	public void kill() {
 		isDead = true;
-	}
-
-	@Override
-	public boolean canWalkThrough() {
-		return true;
 	}
 
 	public abstract void process(); // Force implementations to create their own process method.

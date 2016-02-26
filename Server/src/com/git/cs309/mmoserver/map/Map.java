@@ -26,16 +26,6 @@ public final class Map {
 	private volatile Set<Entity> entitySet = new HashSet<>();
 	private volatile Set<PlayerCharacter> playerSet = new HashSet<>();
 
-	@Override
-	public boolean equals(Object other) {
-		if (!(other instanceof Map)) {
-			return false;
-		}
-		Map otherMap = (Map) other;
-		return otherMap.instanceNumber == instanceNumber && otherMap.z == z && otherMap.xOrigin == xOrigin
-				&& otherMap.yOrigin == yOrigin;
-	}
-
 	public Map(final int instanceNumber, final int xOrigin, final int yOrigin, final int z, final int width,
 			final int height) {
 		this.instanceNumber = instanceNumber;
@@ -48,73 +38,63 @@ public final class Map {
 		setMapToNulls();
 	}
 
-	private void setMapToNulls() {
-		for (int i = 0; i < entityMap.length; i++) {
-			for (int j = 0; j < entityMap[i].length; j++) {
-				entityMap[i][j] = null;
-			}
-		}
-	}
-
 	public boolean containsPoint(final int x, final int y) {
 		return xOrigin + width >= x && x >= xOrigin && yOrigin + height >= y && y >= yOrigin;
 	}
 
-	private void sendEntitiesToPlayer(PlayerCharacter player) {
-		Connection userConnection = (Connection) UserManager.getUserForUserID(player.getUniqueID()).getConnection();
-		assert userConnection != null;
-		for (Entity e : entitySet) {
-			switch (e.getEntityType()) {
-			case OBJECT:
-				GameObject object = (GameObject) e;
-				userConnection.addOutgoingPacket(new ExtensiveObjectPacket(null, object.getUniqueID(),
-						object.getStaticID(), object.getX(), object.getY(), object.getName()));
-				break;
-			case PLAYER:
-				//TODO Implement
-				break;
-			case NPC:
-				Character character = (Character) e;
-				userConnection.addOutgoingPacket(new ExtensiveCharacterPacket(null, character.getUniqueID(),
-						character.getStaticID(), character.getX(), character.getY(), character.getHealth(),
-						character.getMaxHealth(), character.getLevel(), character.getName()));
-				break;
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Map)) {
+			return false;
+		}
+		Map otherMap = (Map) other;
+		return otherMap.instanceNumber == instanceNumber && otherMap.z == z && otherMap.xOrigin == xOrigin
+				&& otherMap.yOrigin == yOrigin;
+	}
+
+	public Entity getEntity(final int x, final int y) {
+		assert (containsPoint(x, y));
+		Entity e = entityMap[x - xOrigin][y - yOrigin];
+		if (e != null) {
+			return e;
+		}
+		for (Entity entity : entitySet) {
+			if (entity.getX() == x && entity.getY() == y) {
+				return entity;
 			}
 		}
+		return null;
 	}
 
-	public void sendPacketToPlayers(Packet packet) {
-		for (PlayerCharacter e : playerSet) {
-			Connection userConnection = (Connection) UserManager.getUserForUserID(e.getUniqueID()).getConnection();
-			userConnection.addOutgoingPacket(packet);
-		}
+	public int getHeight() {
+		return height;
 	}
 
-	private void sendEntityToPlayers(Entity entity) {
-		switch (entity.getEntityType()) {
-		case OBJECT:
-			GameObject object = (GameObject) entity;
-			sendPacketToPlayers(new ExtensiveObjectPacket(null, object.getUniqueID(), object.getStaticID(),
-					object.getX(), object.getY(), object.getName()));
-			break;
-		case PLAYER:
-			//TODO Implement
-			break;
-		case NPC:
-			Character character = (Character) entity;
-			sendPacketToPlayers(new ExtensiveCharacterPacket(null, character.getUniqueID(), character.getStaticID(),
-					character.getX(), character.getY(), character.getHealth(), character.getMaxHealth(),
-					character.getLevel(), character.getName()));
-			break;
-		}
+	public final int getInstanceNumber() {
+		return instanceNumber;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public final int getXOrigin() {
+		return xOrigin;
+	}
+
+	public final int getYOrigin() {
+		return yOrigin;
+	}
+
+	public int getZ() {
+		return z;
 	}
 
 	public void moveEntity(final int oX, final int oY, final int dX, final int dY) {
 		assert containsPoint(oX, oY) && containsPoint(dX, dY);
 		Entity entity = getEntity(oX, oY);
 		assert entity != null;
-		sendPacketToPlayers(
-				new EntityUpdatePacket(null, EntityUpdatePacket.MOVED, entity.getUniqueID(), dX, dY));
+		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.MOVED, entity.getUniqueID(), dX, dY));
 		if (entity.getEntityType() != EntityType.PLAYER) {
 			entityMap[dX][dY] = entityMap[oX][oY];
 			entityMap[oX][oY] = null;
@@ -148,41 +128,60 @@ public final class Map {
 			entityMap[x - xOrigin][y - yOrigin] = null;
 	}
 
-	public Entity getEntity(final int x, final int y) {
-		assert (containsPoint(x, y));
-		Entity e = entityMap[x - xOrigin][y - yOrigin];
-		if (e != null) {
-			return e;
+	public void sendPacketToPlayers(Packet packet) {
+		for (PlayerCharacter e : playerSet) {
+			Connection userConnection = (Connection) UserManager.getUserForUserID(e.getUniqueID()).getConnection();
+			userConnection.addOutgoingPacket(packet);
 		}
-		for (Entity entity : entitySet) {
-			if (entity.getX() == x && entity.getY() == y) {
-				return entity;
+	}
+
+	private void sendEntitiesToPlayer(PlayerCharacter player) {
+		Connection userConnection = (Connection) UserManager.getUserForUserID(player.getUniqueID()).getConnection();
+		assert userConnection != null;
+		for (Entity e : entitySet) {
+			switch (e.getEntityType()) {
+			case OBJECT:
+				GameObject object = (GameObject) e;
+				userConnection.addOutgoingPacket(new ExtensiveObjectPacket(null, object.getUniqueID(),
+						object.getStaticID(), object.getX(), object.getY(), object.getName()));
+				break;
+			case PLAYER:
+				//TODO Implement
+				break;
+			case NPC:
+				Character character = (Character) e;
+				userConnection.addOutgoingPacket(new ExtensiveCharacterPacket(null, character.getUniqueID(),
+						character.getStaticID(), character.getX(), character.getY(), character.getHealth(),
+						character.getMaxHealth(), character.getLevel(), character.getName()));
+				break;
 			}
 		}
-		return null;
 	}
 
-	public int getWidth() {
-		return width;
+	private void sendEntityToPlayers(Entity entity) {
+		switch (entity.getEntityType()) {
+		case OBJECT:
+			GameObject object = (GameObject) entity;
+			sendPacketToPlayers(new ExtensiveObjectPacket(null, object.getUniqueID(), object.getStaticID(),
+					object.getX(), object.getY(), object.getName()));
+			break;
+		case PLAYER:
+			//TODO Implement
+			break;
+		case NPC:
+			Character character = (Character) entity;
+			sendPacketToPlayers(new ExtensiveCharacterPacket(null, character.getUniqueID(), character.getStaticID(),
+					character.getX(), character.getY(), character.getHealth(), character.getMaxHealth(),
+					character.getLevel(), character.getName()));
+			break;
+		}
 	}
 
-	public int getHeight() {
-		return height;
-	}
-
-	public int getZ() {
-		return z;
-	}
-
-	public final int getXOrigin() {
-		return xOrigin;
-	}
-
-	public final int getYOrigin() {
-		return yOrigin;
-	}
-
-	public final int getInstanceNumber() {
-		return instanceNumber;
+	private void setMapToNulls() {
+		for (int i = 0; i < entityMap.length; i++) {
+			for (int j = 0; j < entityMap[i].length; j++) {
+				entityMap[i][j] = null;
+			}
+		}
 	}
 }
