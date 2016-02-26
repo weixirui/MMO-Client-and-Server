@@ -5,16 +5,16 @@ import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
 public abstract class Entity {
 	protected transient IDTag idTag; // Unique identifier
-	protected volatile int x = 0, y = 0, z  = 0; // Coordinates
+	protected volatile int x = 0, y = 0, z = 0; // Coordinates
 	protected int entityID = -1;
 	protected transient int instanceNumber = 0;
 	protected String name = "Null";
 	protected volatile boolean needsDisposal = false;
-	
+
 	public Entity() {
 		instanceNumber = 0;
 	}
-	
+
 	public Entity(final int x, final int y, final int z, final IDTag idTag, final int entityID, final String name) {
 		this.x = x;
 		this.y = y;
@@ -24,21 +24,31 @@ public abstract class Entity {
 		this.name = name;
 		instanceNumber = 0;
 	}
-	
+
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Entity)) {
+			return false;
+		}
+		Entity entity = (Entity) other;
+		return entity.x == x && entity.y == y && entity.z == z && entity.idTag.equals(idTag)
+				&& name.equals(entity.name);
+	}
+
 	public final boolean needsDisposal() {
 		return needsDisposal;
 	}
-	
+
 	public abstract boolean canWalkThrough();
-	
+
 	public final int getUniqueID() {
 		return idTag.getID();
 	}
-	
+
 	public final int getStaticID() {
 		return entityID;
 	}
-	
+
 	public final String getName() {
 		return name;
 	}
@@ -50,15 +60,15 @@ public abstract class Entity {
 	public final int getY() {
 		return y;
 	}
-	
-	public final int getZ() { 
+
+	public final int getZ() {
 		return z;
 	}
-	
+
 	protected final void setIDTag(final IDTag idTag) {
 		this.idTag = idTag;
 	}
-	
+
 	public final void cleanUp() {
 		needsDisposal = true;
 		if (idTag != null) {
@@ -66,22 +76,29 @@ public abstract class Entity {
 		}
 		idTag = null;
 	}
-	
+
 	public final int getInstanceNumber() {
 		return instanceNumber;
 	}
-	
+
 	public final void setInstanceNumber(int instanceNumber) {
 		this.instanceNumber = instanceNumber;
 	}
-	
+
 	public final void setPosition(final int x, final int y, final int z) {
-		MapHandler.setEntityAtPosition(this.x, this.y, this.z, null);
+		MapHandler.moveEntity(instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		MapHandler.setEntityAtPosition(x, y, z, this);
 	}
-	
+
+	public final void setPosition(final int instanceNumber, final int x, final int y, final int z) {
+		MapHandler.moveEntity(this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		this.instanceNumber = instanceNumber;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+
 	public abstract EntityType getEntityType();
 }

@@ -28,6 +28,10 @@ public final class User implements Serializable {
 	private transient Rights userRights = Rights.PLAYER;
 
 	public User() {
+		//For deserialization only
+	}
+	
+	public void initialize() {
 		currentCharacter = -1;
 		inGame = false;
 		idTag = ClosedIDSystem.getTag();
@@ -39,7 +43,7 @@ public final class User implements Serializable {
 		for (int i = 0; i < playerCharacters.length; i++) {
 			playerCharacters[i] = new PlayerCharacter(Config.PLAYER_START_X, Config.PLAYER_START_Y);
 		}
-		idTag = ClosedIDSystem.getTag();
+		initialize();
 	}
 
 	public void cleanUp() {
@@ -61,7 +65,7 @@ public final class User implements Serializable {
 		currentCharacter = characterIndex;
 		inGame = true;
 	}
-	
+
 	public void cleanUpCharacters() {
 		for (PlayerCharacter character : playerCharacters) {
 			character.cleanUp();

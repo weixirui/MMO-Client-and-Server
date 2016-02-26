@@ -235,13 +235,13 @@ public final class Main {
 			tickCount++;
 			if (ticks == Config.TICKS_PER_MINUTE * 5) {
 				System.out.println("Average tick consumption over 5 minutes: "
-						+ String.format("%.3f", (tickTimes / (float) (Config.MILLISECONDS_PER_TICK * ticks))) + "%.");
+						+ String.format("%.3f", ((tickTimes / (float) (Config.MILLISECONDS_PER_TICK * ticks))) * 100.0f) + "%.");
 				ticks = 0;
 				tickTimes = 0L;
 			}
-			if (timeLeft < 0) {
-				System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
-			}
+			//if (timeLeft < 0) {
+			//	System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
+			//}
 			if (timeLeft < 2) {
 				timeLeft = 2; // Must wait at least a little bit, so that
 								// threads can catch up and wait.

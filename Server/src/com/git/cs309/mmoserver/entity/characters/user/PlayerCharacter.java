@@ -52,7 +52,7 @@ public class PlayerCharacter extends Character implements Serializable {
 
 	@Override
 	public int getMaxHealth() {
-		return 100;
+		return 100; // For now, just set to 100 for testing.
 	}
 
 	public boolean isCreated() {
@@ -64,13 +64,13 @@ public class PlayerCharacter extends Character implements Serializable {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	public void enterGame(final IDTag idTag) {
 		assert created;
 		setIDTag(idTag);
 		Main.getCharacterManager().addCharacter(this);
 	}
-	
+
 	public void exitGame() {
 		setIDTag(null);
 		Main.getCharacterManager().removeCharacter(this);
@@ -79,6 +79,11 @@ public class PlayerCharacter extends Character implements Serializable {
 	@Override
 	public EntityType getEntityType() {
 		return EntityType.PLAYER;
+	}
+
+	@Override
+	public int getLevel() {
+		return 10;// For now, just set to 10 for testing.
 	}
 
 }

@@ -7,7 +7,7 @@ package com.git.cs309.mmoserver;
  */
 public final class Config {
 	public static final byte EOF_CHARACTER = -1;
-	
+
 	public static final int GLOBAL_INSTANCE = 0;
 
 	public static final String LOG_BASE_PATH = "./data/logs/";
@@ -26,7 +26,7 @@ public final class Config {
 
 	public static final int MILLISECONDS_PER_SECOND = 1000;
 
-	public static final int TICK_RATE = 250; // Ticks per second. Must divide evenly into 1000 for best results.
+	public static final int TICK_RATE = 125; // Ticks per second. Must divide evenly into 1000 for accurate results. (since it uses integer math, the resulting time calculations will be inaccurate)
 
 	//Desired tick delay
 	public static final long MILLISECONDS_PER_TICK = MILLISECONDS_PER_SECOND / TICK_RATE;
@@ -45,7 +45,7 @@ public final class Config {
 	public static final int PLAYER_START_X = 0;
 
 	public static final int PLAYER_START_Y = 0;
-	
+
 	public static final int PLAYER_START_Z = 0;
 
 	public static final int REGEN_AMOUNT = 1;

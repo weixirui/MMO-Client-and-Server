@@ -148,6 +148,7 @@ public final class UserManager {
 		}
 		((Connection) loginPacket.getConnection()).setUser(user);
 		((Connection) loginPacket.getConnection()).setLoggedIn(true);
+		user.initialize();
 		System.out.println(user.getRights() + " " + user + " logged in.");
 		return true;
 	}

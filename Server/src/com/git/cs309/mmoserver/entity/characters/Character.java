@@ -22,7 +22,7 @@ public abstract class Character extends Entity {
 	}
 
 	public Character(final int x, final int y, final int z, final IDTag idTag, final int entityID, final String name) {
-		super (x, y, z, idTag, entityID, name);
+		super(x, y, z, idTag, entityID, name);
 		Main.getCharacterManager().addCharacter(this);
 	}
 
@@ -34,10 +34,17 @@ public abstract class Character extends Entity {
 	}
 
 	public void applyRegen(int regenAmount) {
+		if (isDead) {
+			return;
+		}
 		if (health + regenAmount <= getMaxHealth()) {
 			health += regenAmount;
+		} else {
+			health = getMaxHealth();
 		}
 	}
+
+	public abstract int getLevel();
 
 	public int getHealth() {
 		return health;
@@ -52,12 +59,12 @@ public abstract class Character extends Entity {
 	public void kill() {
 		isDead = true;
 	}
-	
+
 	@Override
 	public boolean canWalkThrough() {
 		return true;
 	}
 
 	public abstract void process(); // Force implementations to create their own process method.
-	
+
 }

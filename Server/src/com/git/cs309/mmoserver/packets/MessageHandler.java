@@ -11,8 +11,7 @@ public final class MessageHandler {
 		if (!userConnection.isLoggedIn()) {
 			return; // No need to handle message packets for users not logged in yet.
 		}
-		String username = userConnection.getUser().isInGame()
-				? userConnection.getUser().getCurrentCharacter().getName()
+		String username = userConnection.getUser().isInGame() ? userConnection.getUser().getCurrentCharacter().getName()
 				: userConnection.getUser().getUsername();
 		String lowercaseMessage = messagePacket.getMessage().toLowerCase();
 		if (lowercaseMessage.startsWith("/p ") || lowercaseMessage.startsWith("/party ")) { // Party messages

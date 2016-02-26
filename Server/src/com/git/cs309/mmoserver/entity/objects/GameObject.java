@@ -7,17 +7,17 @@ import com.git.cs309.mmoserver.util.ClosedIDSystem;
 
 public class GameObject extends Entity {
 	private final ObjectDefinition definition;
-	
+
 	public GameObject(int x, int y, int z, ObjectDefinition definition) {
 		super(x, y, z, ClosedIDSystem.getTag(), z, definition.getObjectName());
 		this.definition = definition;
 		MapHandler.setEntityAtPosition(x, y, z, this);
 	}
-	
+
 	public ObjectDefinition getDefinition() {
 		return definition;
 	}
-	
+
 	@Override
 	public boolean canWalkThrough() {
 		return definition.getWalkable();

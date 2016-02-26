@@ -38,4 +38,9 @@ public class NPC extends Character {
 		return EntityType.NPC;
 	}
 
+	@Override
+	public int getLevel() {
+		return definition.getLevel();
+	}
+
 }

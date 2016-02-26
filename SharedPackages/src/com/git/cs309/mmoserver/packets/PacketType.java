@@ -23,6 +23,11 @@ public enum PacketType {
 	public static final byte EXTENSIVE_OBJECT_PACKET_BYTE = 13;
 	public static final byte EXTENSIVE_CHARACTER_PACKET_BYTE =14;
 	public static final byte PLAYER_CHARACTER_PACKET_BYTE =15;
+	//NOT YET IMPLENTED, but planned.
+	public static final byte HEALTH_UPDATE_PACKET_BYTE = 16;
+	public static final byte PLAYER_GEAR_UPDATE_PACKET_BYTE = 17;
+	public static final byte PLAYER_INVENTORY_PACKET_BYTE = 18;
+	public static final byte PLAYER_SKILL_BAR_PACKET_BYTE = 19;
 	private final byte typeByte;
 
 	private PacketType(final byte typeByte) {
