@@ -6,6 +6,9 @@ package com.git.cs309.mmoserver;
  *
  */
 public final class Config {
+	
+	public static final int MAX_PARTY_MEMBERS = 5;
+	
 	public static final byte EOF_CHARACTER = -1;
 
 	public static final int GLOBAL_INSTANCE = 0;

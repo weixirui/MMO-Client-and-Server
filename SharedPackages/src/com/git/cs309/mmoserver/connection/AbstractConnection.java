@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public abstract class AbstractConnection extends Thread {
 					while (!disconnected && outgoingPackets.size() > 0) {
 						try {
 							StreamUtils.writeBlockToStream(output, outgoingPackets.remove(0).toBytes());
+						} catch (SocketException e) {
+							System.err.println("Connection disconnected while writing to stream");
 						} catch (IOException e) {
 							e.printStackTrace();
 						}

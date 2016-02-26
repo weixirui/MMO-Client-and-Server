@@ -22,13 +22,13 @@ public final class MapHandler {
 		return null;
 	}
 
-	public static final Entity getEntityAtPosition(final int x, final int y, final int z, final int instanceNumber) {
+	public static final Entity getEntityAtPosition(final int instanceNumber, final int x, final int y, final int z) {
 		Map map = getMapContainingPosition(instanceNumber, x, y, z);
 		if (map == null) {
 			//Maybe TRY and create a new map
 			return null;
 		}
-		return map.getEntityOnGlobal(x, y);
+		return map.getEntity(x, y);
 	}
 
 	public static final void moveEntity(final int oInstanceNumber, final int oX, final int oY, final int oZ,
@@ -36,21 +36,21 @@ public final class MapHandler {
 		Map map = getMapContainingPosition(oInstanceNumber, oX, oY, oZ);
 		if (!map.equals(getMapContainingPosition(dInstanceNumber, dX, dY, dZ))) {
 			Map newMap = getMapContainingPosition(dInstanceNumber, dX, dY, dZ);
-			Entity e = map.getEntityOnGlobal(oX, oY);
-			map.setEntityOnGlobal(oX, oY, null);
-			newMap.setEntityOnGlobal(dX, dY, e);
+			Entity e = map.getEntity(oX, oY);
+			map.putEntity(oX, oY, null);
+			newMap.putEntity(dX, dY, e);
 			return;
 		}
 		map.moveEntity(oX, oY, dX, dY);
 	}
 
-	public static final void setEntityAtPosition(final int x, final int y, final int z, final Entity entity) {
-		Map map = getMapContainingPosition(entity.getInstanceNumber(), x, y, z);
+	public static final void setEntityAtPosition(final int instanceNumber, final int x, final int y, final int z, final Entity entity) {
+		Map map = getMapContainingPosition(instanceNumber, x, y, z);
 		if (map == null) {
 			//Maybe TRY and create a new map
 			return;
 		}
-		assert (map.getEntityOnGlobal(x, y) == null); // Cannot place an entity where there is already an entity
-		map.setEntityOnGlobal(x, y, entity);
+		assert (map.getEntity(x, y) == null); // Cannot place an entity where there is already an entity
+		map.putEntity(x, y, entity);
 	}
 }

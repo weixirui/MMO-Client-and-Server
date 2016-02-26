@@ -11,7 +11,14 @@ public class GameObject extends Entity {
 	public GameObject(int x, int y, int z, ObjectDefinition definition) {
 		super(x, y, z, ClosedIDSystem.getTag(), z, definition.getObjectName());
 		this.definition = definition;
-		MapHandler.setEntityAtPosition(x, y, z, this);
+		MapHandler.setEntityAtPosition(instanceNumber, x, y, z, this);
+	}
+	
+	public GameObject(int instanceNumber, int x, int y, int z, ObjectDefinition definition) {
+		super(x, y, z, ClosedIDSystem.getTag(), z, definition.getObjectName());
+		this.instanceNumber = instanceNumber;
+		this.definition = definition;
+		MapHandler.setEntityAtPosition(instanceNumber, x, y, z, this);
 	}
 
 	public ObjectDefinition getDefinition() {

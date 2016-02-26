@@ -164,21 +164,23 @@ public final class UserManager {
 	 * @return always true. (currently)
 	 */
 	public static boolean logOut(final String username) {
-		if (isLoggedIn(username)) {
-			User user = getUserForUsername(username);
-			try {
-				saveUser(user);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			removeUserFromTables(user);
-			System.out.println(user.getRights() + " " + user + " logged out.");
-			user.cleanUp();
+		if (!isLoggedIn(username)) {
+			return true;
 		}
+		User user = getUserForUsername(username);
+		assert user != null;
+		try {
+			saveUser(user);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		removeUserFromTables(user);
+		System.out.println(user.getRights() + " " + user + " logged out.");
+		user.cleanUp();
 		return true;
 	}
 
-	public static void reloadRights() throws IOException {
+	private static void reloadRights() throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(Config.PERMISSIONS_PATH));
 		String line = "";
 		Rights currentRights = Rights.PLAYER;
@@ -196,7 +198,6 @@ public final class UserManager {
 			}
 		}
 		reader.close();
-		System.out.println("Loaded rights.");
 	}
 
 	/**
@@ -212,7 +213,7 @@ public final class UserManager {
 		}
 	}
 
-	public static void setRights(String playerName, Rights rights) {
+	public static void setRights(String username, Rights rights) {
 		File permissionsFile = new File(Config.PERMISSIONS_PATH);
 		File tempFile = new File(Config.PERMISSIONS_PATH + "_temp");
 		try {
@@ -228,11 +229,11 @@ public final class UserManager {
 					writer.newLine();
 					continue;
 				}
-				if ((line.equalsIgnoreCase(playerName))) {
+				if ((line.equalsIgnoreCase(username))) {
 					continue;
 				}
 				if (writeNextLine) {
-					writer.write(playerName);
+					writer.write(username);
 					writer.newLine();
 					writer.write(line);
 					writer.newLine();
@@ -246,12 +247,12 @@ public final class UserManager {
 			writer.close();
 			reader.close();
 			tempFile.renameTo(permissionsFile);
-			if (isLoggedIn(playerName)) {
-				getUserForUsername(playerName).setRights(rights);
+			if (isLoggedIn(username)) {
+				getUserForUsername(username).setRights(rights);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.err.println("Failed to set rights for user " + playerName);
+			System.err.println("Failed to set rights for user " + username);
 		}
 	}
 
@@ -261,6 +262,7 @@ public final class UserManager {
 	 * @param user
 	 */
 	private static void addUserToTables(final User user) { // Add user to tables.
+		assert user != null;
 		USER_TABLE.put(user.getUsername().toLowerCase(), user);
 		IP_TABLE.put(((Connection) user.getConnection()).getServerSideIP(), user);
 	}
@@ -295,6 +297,7 @@ public final class UserManager {
 	 *            user to remove from tables.
 	 */
 	private static void removeUserFromTables(final User user) {
+		assert user != null;
 		USER_TABLE.remove(user.getUsername().toLowerCase());
 		IP_TABLE.remove(((Connection) user.getConnection()).getServerSideIP());
 	}
@@ -308,6 +311,7 @@ public final class UserManager {
 	 * @throws IOException
 	 */
 	private static void saveUser(final User user) throws FileNotFoundException, IOException {
+		assert user != null;
 		File userSaveDirectory = new File(Config.USER_FILE_PATH);
 		if (!userSaveDirectory.exists()) {
 			userSaveDirectory.mkdirs();

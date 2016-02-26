@@ -10,6 +10,7 @@ public abstract class Entity {
 	protected transient int instanceNumber = 0;
 	protected String name = "Null";
 	protected volatile boolean needsDisposal = false;
+	protected volatile boolean onMap = false;
 
 	public Entity() {
 		instanceNumber = 0;

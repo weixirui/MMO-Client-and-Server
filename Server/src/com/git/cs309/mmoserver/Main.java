@@ -14,6 +14,19 @@ import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.io.Logger;
 import com.git.cs309.mmoserver.util.TickProcess;
 
+
+/*
+ * TODO Section:
+ * Implement party system
+ * Fix Maps so that more than one Entity can exist on same tile
+ * Add more packet outputs for various things
+ * Add more packets to output MORE various things
+ * Add and send map packet, which tells client player is in new map
+ */
+
+
+
+
 /**
  * 
  * @author Group 21

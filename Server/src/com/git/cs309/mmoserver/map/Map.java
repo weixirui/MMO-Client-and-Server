@@ -6,6 +6,7 @@ import java.util.Set;
 import com.git.cs309.mmoserver.connection.Connection;
 import com.git.cs309.mmoserver.entity.Entity;
 import com.git.cs309.mmoserver.entity.EntityType;
+import com.git.cs309.mmoserver.entity.characters.user.PlayerCharacter;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.entity.objects.GameObject;
 import com.git.cs309.mmoserver.packets.EntityUpdatePacket;
@@ -22,7 +23,8 @@ public final class Map {
 	private final int width;
 	private final int height;
 	private volatile Entity[][] entityMap;
-	private volatile Set<Entity> entitySet = new HashSet<Entity>();
+	private volatile Set<Entity> entitySet = new HashSet<>();
+	private volatile Set<PlayerCharacter> playerSet = new HashSet<>();
 
 	@Override
 	public boolean equals(Object other) {
@@ -58,11 +60,9 @@ public final class Map {
 		return xOrigin + width >= x && x >= xOrigin && yOrigin + height >= y && y >= yOrigin;
 	}
 
-	private void sendEntitiesToEntity(Entity entity) {
-		if (entity.getEntityType() != EntityType.PLAYER) {
-			return;
-		}
-		Connection userConnection = (Connection) UserManager.getUserForUserID(entity.getUniqueID()).getConnection();
+	private void sendEntitiesToPlayer(PlayerCharacter player) {
+		Connection userConnection = (Connection) UserManager.getUserForUserID(player.getUniqueID()).getConnection();
+		assert userConnection != null;
 		for (Entity e : entitySet) {
 			switch (e.getEntityType()) {
 			case OBJECT:
@@ -84,16 +84,13 @@ public final class Map {
 	}
 
 	public void sendPacketToPlayers(Packet packet) {
-		for (Entity e : entitySet) {
-			if (e.getEntityType() != EntityType.PLAYER) {
-				continue;
-			}
+		for (PlayerCharacter e : playerSet) {
 			Connection userConnection = (Connection) UserManager.getUserForUserID(e.getUniqueID()).getConnection();
 			userConnection.addOutgoingPacket(packet);
 		}
 	}
 
-	private void sendEntityToEntities(Entity entity) {
+	private void sendEntityToPlayers(Entity entity) {
 		switch (entity.getEntityType()) {
 		case OBJECT:
 			GameObject object = (GameObject) entity;
@@ -113,28 +110,56 @@ public final class Map {
 	}
 
 	public void moveEntity(final int oX, final int oY, final int dX, final int dY) {
+		assert containsPoint(oX, oY) && containsPoint(dX, dY);
+		Entity entity = getEntity(oX, oY);
+		assert entity != null;
 		sendPacketToPlayers(
-				new EntityUpdatePacket(null, EntityUpdatePacket.MOVED, entityMap[oX][oY].getUniqueID(), dX, dY));
-		entityMap[dX][dY] = entityMap[oX][oY];
-		entityMap[oX][oY] = null;
+				new EntityUpdatePacket(null, EntityUpdatePacket.MOVED, entity.getUniqueID(), dX, dY));
+		if (entity.getEntityType() != EntityType.PLAYER) {
+			entityMap[dX][dY] = entityMap[oX][oY];
+			entityMap[oX][oY] = null;
+		}
 	}
 
-	public void setEntityOnGlobal(final int x, final int y, final Entity entity) {
-		if (entity != null && !entitySet.contains(entity)) {
-			//TODO send map packet
-			sendEntitiesToEntity(entity);
-			sendEntityToEntities(entity);
-		} else if (getEntityOnGlobal(x, y) != null && entity == null) { //Leaving map
-			sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.REMOVED,
-					getEntityOnGlobal(x, y).getUniqueID(), x, y));
-		}
+	public void putEntity(final int x, final int y, final Entity entity) {
 		assert (containsPoint(x, y));
+		assert entity != null && !entitySet.contains(entity);
+		//TODO send actual map packet
+		sendEntityToPlayers(entity);
+		if (entity.getEntityType() == EntityType.PLAYER) {
+			sendEntitiesToPlayer((PlayerCharacter) entity);
+			entitySet.add(entity);
+			playerSet.add((PlayerCharacter) entity);
+			return;
+		}
+		entitySet.add(entity);
 		entityMap[x - xOrigin][y - yOrigin] = entity;
 	}
 
-	public Entity getEntityOnGlobal(final int x, final int y) {
+	public void removeEntity(final int x, final int y) {
 		assert (containsPoint(x, y));
-		return entityMap[x - xOrigin][y - yOrigin];
+		Entity entity = getEntity(x, y);
+		assert entity != null;
+		if (entity.getEntityType() == EntityType.PLAYER)
+			playerSet.remove((PlayerCharacter) entity);
+		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.REMOVED, entity.getUniqueID(), x, y));
+		entitySet.remove(entity);
+		if (entity.getEntityType() != EntityType.PLAYER)
+			entityMap[x - xOrigin][y - yOrigin] = null;
+	}
+
+	public Entity getEntity(final int x, final int y) {
+		assert (containsPoint(x, y));
+		Entity e = entityMap[x - xOrigin][y - yOrigin];
+		if (e != null) {
+			return e;
+		}
+		for (Entity entity : entitySet) {
+			if (entity.getX() == x && entity.getY() == y) {
+				return entity;
+			}
+		}
+		return null;
 	}
 
 	public int getWidth() {
