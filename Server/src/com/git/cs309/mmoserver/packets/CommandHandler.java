@@ -35,9 +35,6 @@ public final class CommandHandler {
 			case AdminCommandPacket.RESTART_CYCLE_PROCESS_MANAGER:
 				Main.loadAndStartCycleProcessManager();
 				break;
-			case AdminCommandPacket.RESTART_NPC_MANAGER:
-				Main.loadAndStartNPCManager();
-				break;
 			case AdminCommandPacket.BAN_USER:
 				user = UserManager.getUserForUserID(userID);
 				if (user == null) {

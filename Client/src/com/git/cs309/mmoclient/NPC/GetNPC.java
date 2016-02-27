@@ -38,7 +38,7 @@ public class GetNPC {
 		int money=0;
 		int islive=0;
 		String talk="";
-		Node node = (Node) doc.getFirstChild();
+		Node node = doc.getFirstChild();
 		System.out.println(node.getNodeName());
 		NodeList nodes = node.getChildNodes();
 		for(int i=0;i<nodes.getLength();i++){

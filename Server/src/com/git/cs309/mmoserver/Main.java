@@ -8,10 +8,11 @@ import com.git.cs309.mmoserver.connection.ConnectionAcceptor;
 import com.git.cs309.mmoserver.connection.ConnectionManager;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.entity.characters.CharacterManager;
-import com.git.cs309.mmoserver.entity.characters.npc.NPCManager;
+import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.io.Logger;
+import com.git.cs309.mmoserver.map.MapFactory;
 import com.git.cs309.mmoserver.util.TickProcess;
 
 /*
@@ -58,7 +59,6 @@ public final class Main {
 
 	private static volatile ConnectionManager connectionManager = null;
 	private static volatile CycleProcessManager cycleProcessManager = null;
-	private static volatile NPCManager npcManager = null;
 
 	// Is server running.
 	private static volatile boolean running = true;
@@ -99,10 +99,6 @@ public final class Main {
 
 	public static CycleProcessManager getCycleProcessManager() {
 		return cycleProcessManager;
-	}
-
-	public static NPCManager getNPCManager() {
-		return npcManager;
 	}
 
 	/**
@@ -146,10 +142,6 @@ public final class Main {
 
 	//Turns out that using the default system loader will just re-reference already loaded classes. Would need to create and use a different classloader
 	//Will do, if I can find time to do something ridiculous like that. Keeping them like this for time being (not singletons, that is)
-	public static void loadAndStartNPCManager() {
-		npcManager = new NPCManager();
-		npcManager.initialize();
-	}
 
 	/**
 	 * Main method, duh.
@@ -195,7 +187,8 @@ public final class Main {
 	 */
 	private static void loadAndStartClasses() {
 		ModerationHandler.loadModerations();
-		loadAndStartNPCManager();
+		NPCFactory.getInstance();
+		MapFactory.getInstance();
 		loadAndStartConnectionManager();
 		loadAndStartCycleProcessManager();
 		loadAndStartCharacterManager();

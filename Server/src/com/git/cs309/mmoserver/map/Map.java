@@ -1,6 +1,8 @@
 package com.git.cs309.mmoserver.map;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.git.cs309.mmoserver.connection.Connection;
@@ -17,29 +19,20 @@ import com.git.cs309.mmoserver.entity.characters.Character;
 
 public final class Map {
 	private final int instanceNumber;
-	private final int xOrigin; // (0, 0) on this graphs actual X value as far as whole map is concerned
-	private final int yOrigin; // (0, 0) on this graphs actual Y value as far as whole map is concerned
-	private final int z;
-	private final int width;
-	private final int height;
+	private final MapDefinition definition;
 	private volatile Entity[][] entityMap;
 	private volatile Set<Entity> entitySet = new HashSet<>();
 	private volatile Set<PlayerCharacter> playerSet = new HashSet<>();
 
-	public Map(final int instanceNumber, final int xOrigin, final int yOrigin, final int z, final int width,
-			final int height) {
+	public Map(final MapDefinition definition, final int instanceNumber) {
 		this.instanceNumber = instanceNumber;
-		this.xOrigin = xOrigin;
-		this.yOrigin = yOrigin;
-		this.z = z;
-		this.width = width;
-		this.height = height;
-		entityMap = new Entity[width][height];
+		this.definition = definition;
+		entityMap = new Entity[definition.getWidth()][definition.getHeight()];
 		setMapToNulls();
 	}
 
 	public boolean containsPoint(final int x, final int y) {
-		return xOrigin + width >= x && x >= xOrigin && yOrigin + height >= y && y >= yOrigin;
+		return getXOrigin() + getWidth() >= x && x >= getXOrigin() && getYOrigin() + getHeight() >= y && y >= getYOrigin();
 	}
 
 	@Override
@@ -48,13 +41,12 @@ public final class Map {
 			return false;
 		}
 		Map otherMap = (Map) other;
-		return otherMap.instanceNumber == instanceNumber && otherMap.z == z && otherMap.xOrigin == xOrigin
-				&& otherMap.yOrigin == yOrigin;
+		return otherMap.instanceNumber == instanceNumber && otherMap.definition.equals(definition);
 	}
 
 	public Entity getEntity(final int x, final int y) {
 		assert (containsPoint(x, y));
-		Entity e = entityMap[x - xOrigin][y - yOrigin];
+		Entity e = entityMap[x - getXOrigin()][y - getYOrigin()];
 		if (e != null) {
 			return e;
 		}
@@ -65,9 +57,24 @@ public final class Map {
 		}
 		return null;
 	}
+	
+	public Entity[] getEntities(final int x, final int y) {
+		assert (containsPoint(x, y));
+		Entity e = entityMap[x - getXOrigin()][y - getYOrigin()];
+		if (e != null) {
+			return new Entity[] {e};
+		}
+		List<Entity> entities = new ArrayList<>();
+		for (Entity entity : entitySet) {
+			if (entity.getX() == x && entity.getY() == y) {
+				entities.add(entity);
+			}
+		}
+		return entities.toArray(new Entity[entities.size()]);
+	}
 
 	public int getHeight() {
-		return height;
+		return definition.getHeight();
 	}
 
 	public final int getInstanceNumber() {
@@ -75,19 +82,19 @@ public final class Map {
 	}
 
 	public int getWidth() {
-		return width;
+		return definition.getWidth();
 	}
 
 	public final int getXOrigin() {
-		return xOrigin;
+		return definition.getxOrigin();
 	}
 
 	public final int getYOrigin() {
-		return yOrigin;
+		return definition.getyOrigin();
 	}
 
 	public int getZ() {
-		return z;
+		return definition.getZ();
 	}
 
 	public void moveEntity(final int oX, final int oY, final int dX, final int dY) {
@@ -113,7 +120,7 @@ public final class Map {
 			return;
 		}
 		entitySet.add(entity);
-		entityMap[x - xOrigin][y - yOrigin] = entity;
+		entityMap[x - getXOrigin()][y - getYOrigin()] = entity;
 	}
 
 	public void removeEntity(final int x, final int y) {
@@ -125,7 +132,7 @@ public final class Map {
 		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.REMOVED, entity.getUniqueID(), x, y));
 		entitySet.remove(entity);
 		if (entity.getEntityType() != EntityType.PLAYER)
-			entityMap[x - xOrigin][y - yOrigin] = null;
+			entityMap[x - getXOrigin()][y - getYOrigin()] = null;
 	}
 
 	public void sendPacketToPlayers(Packet packet) {

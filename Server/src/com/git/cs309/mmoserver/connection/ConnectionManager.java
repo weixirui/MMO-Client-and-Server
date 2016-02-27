@@ -155,6 +155,17 @@ public final class ConnectionManager extends TickProcess {
 		}
 	}
 
+	/**
+	 * Only sends the packet to connections with rights at or above the rights
+	 * specified. Admins will get all mod and player packets sent through this,
+	 * and mods will only get mod and player packets. Players will only get
+	 * player packets.
+	 * 
+	 * @param packet
+	 *            packet to be sent.
+	 * @param rights
+	 *            rights required to recieve the packet.
+	 */
 	public void sendPacketToConnectionsWithRights(final Packet packet, final Rights rights) {
 		synchronized (connections) {
 			for (Connection connection : connections) {

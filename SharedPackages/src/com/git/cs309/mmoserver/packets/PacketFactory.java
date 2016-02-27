@@ -24,8 +24,6 @@ public final class PacketFactory {
 			return new ServerModuleStatusPacket(source, bytes);
 		case PacketType.USER_STATUS_PACKET_BYTE:
 			return new UserStatusPacket(source, bytes);
-		case PacketType.CHARACTER_STATUS_PACKET_BYTE:
-			return new CharacterStatusPacket(source, bytes);
 		case PacketType.ENTITY_CLICK_PACKET_BYTE:
 			return new EntityClickPacket(source, bytes);
 		case PacketType.ENTITY_UPDATE_PACKET_BYTE:

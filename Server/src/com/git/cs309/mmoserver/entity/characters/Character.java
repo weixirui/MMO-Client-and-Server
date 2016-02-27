@@ -23,7 +23,6 @@ public abstract class Character extends Entity {
 
 	public Character(final int x, final int y, final int z, final IDTag idTag, final int entityID, final String name) {
 		super(x, y, z, idTag, entityID, name);
-		System.out.println("Calling from character");
 		Main.getCharacterManager().addCharacter(this);
 	}
 

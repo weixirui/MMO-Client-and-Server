@@ -34,7 +34,11 @@ public final class Config {
 	//Desired tick delay
 	public static final long MILLISECONDS_PER_TICK = MILLISECONDS_PER_SECOND / TICK_RATE;
 
-	public static final String NPC_DEFINITION_PATH = "./data/cfg/npc_definitions.cfg";
+	public static final String NPC_DEFINITION_PATH = "./data/cfg/NPCDefinitions.xml";
+	
+	public static final String OBJECT_DEFINITION_PATH = "./data/cfg/ObjectDefinitions.xml";
+	
+	public static final String MAP_DEFINITIONS_FOLDER = "./data/map/";
 
 	//Max packets/tick before automatically closes connection.
 	public static final int PACKETS_PER_TICK_BEFORE_KICK = 5;

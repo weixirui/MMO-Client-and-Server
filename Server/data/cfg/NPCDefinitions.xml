@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<npc>
+  <name>Wolf</name>
+  <id>1</id>
+  <health>10</health>
+  <level>1</level>
+  <accuracy>70</accuracy>
+  <strength>10</strength>
+  <defence>10</defence>
+</npc>

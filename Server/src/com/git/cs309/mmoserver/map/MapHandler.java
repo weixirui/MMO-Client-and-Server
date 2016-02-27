@@ -40,11 +40,10 @@ public final class MapHandler {
 		map.moveEntity(oX, oY, dX, dY);
 	}
 
-	public static final void setEntityAtPosition(final int instanceNumber, final int x, final int y, final int z,
+	public static final void putEntityAtPosition(final int instanceNumber, final int x, final int y, final int z,
 			final Entity entity) {
 		Map map = getMapContainingPosition(instanceNumber, x, y, z);
 		if (map == null) {
-			//Maybe TRY and create a new map
 			return;
 		}
 		assert (map.getEntity(x, y) == null); // Cannot place an entity where there is already an entity
