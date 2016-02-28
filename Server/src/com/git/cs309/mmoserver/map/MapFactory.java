@@ -7,10 +7,10 @@ import java.util.HashMap;
 import com.git.cs309.mmoserver.Config;
 
 public final class MapFactory {
-	private static final MapFactory SINGLETON = new MapFactory(Config.MAP_DEFINITIONS_FOLDER);
+	private static final MapFactory INSTANCE = new MapFactory(Config.MAP_DEFINITIONS_FOLDER);
 
 	public static final MapFactory getInstance() {
-		return SINGLETON;
+		return INSTANCE;
 	}
 	
 	public static final MapFactory newInstance(final String mapFolder) {
@@ -34,14 +34,20 @@ public final class MapFactory {
 				if (definition == null) {
 					continue;
 				}
-				mapDefinitions.put(definition.getMapName(), definition);
+				mapDefinitions.put(definition.getMapName().toLowerCase(), definition);
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (RuntimeException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 	
 	public final Map createMap(final String mapName, final int instanceNumber) {
-		
+		MapDefinition definition = mapDefinitions.get(mapName.toLowerCase());
+		if (definition == null) {
+			throw new RuntimeException("No map definition for map name: "+mapName);
+		}
+		return new Map(definition, instanceNumber);
 	}
 }

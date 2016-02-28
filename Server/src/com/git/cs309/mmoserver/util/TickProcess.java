@@ -6,6 +6,7 @@ import javax.swing.JButton;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.connection.ConnectionManager;
 import com.git.cs309.mmoserver.entity.characters.user.Rights;
 import com.git.cs309.mmoserver.packets.ServerModuleStatusPacket;
 
@@ -130,7 +131,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 			average = cumulative / count;
 			count = 0;
 			cumulative = 0;
-			Main.getConnectionManager().sendPacketToConnectionsWithRights(
+			ConnectionManager.getInstance().sendPacketToConnectionsWithRights(
 					new ServerModuleStatusPacket(null, name, average / (Config.MILLISECONDS_PER_TICK * 1000000.0f)),
 					Rights.ADMIN);
 		}

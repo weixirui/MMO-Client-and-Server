@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.entity.characters.user.Rights;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.packets.PacketHandler;
@@ -29,20 +28,18 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *         work, so it can still take on new connections.
  */
 public final class ConnectionManager extends TickProcess {
+	private static final ConnectionManager INSTANCE = new ConnectionManager();
+	
+	public static final ConnectionManager getInstance() {
+		return INSTANCE;
+	}
+	
 	private final Map<String, Connection> connectionMap = new HashMap<>(); // Could hold both username -> connection and ip -> connection. But will probably only hold ip -> connection, since that's all that's needed.
 	private final List<Connection> connections = new ArrayList<>(Config.MAX_CONNECTIONS);
 	private Object waitObject = new Object();
 
 	public ConnectionManager() {
 		super("ConnectionManager");
-		ConnectionManager predecessor = Main.getConnectionManager();
-		if (predecessor != null) {
-			waitObject = predecessor.waitObject;
-			connectionMap.putAll(predecessor.connectionMap);
-			connections.addAll(predecessor.connections);
-			predecessor.forceStop();
-		}
-		predecessor = null;
 	}
 
 	/**

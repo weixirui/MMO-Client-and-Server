@@ -7,6 +7,11 @@ import java.util.Set;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.cycle.CycleProcess;
+import com.git.cs309.mmoserver.cycle.CycleProcessManager;
+import com.git.cs309.mmoserver.entity.EntityType;
+import com.git.cs309.mmoserver.entity.characters.npc.NPC;
+import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.util.TickProcess;
 
@@ -17,17 +22,16 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *         TickProcess implementation that manages all Character objects.
  */
 public final class CharacterManager extends TickProcess {
+	private static final CharacterManager INSTANCE = new CharacterManager();
+	
+	public static final CharacterManager getInstance() {
+		return INSTANCE;
+	}
 
 	private final Set<Character> characterSet = new HashSet<>(); // All registered characters
 
-	public CharacterManager() {
+	private CharacterManager() {
 		super("CharacterManager");
-		CharacterManager predecessor = Main.getCharacterManager();
-		if (predecessor != null) {
-			characterSet.addAll(predecessor.characterSet);
-			predecessor.forceStop();
-		}
-		predecessor = null;
 	}
 
 	/**
@@ -40,7 +44,7 @@ public final class CharacterManager extends TickProcess {
 	public void addCharacter(final Character character) { // Add new character to characterSet
 		synchronized (characterSet) {
 			characterSet.add(character);
-			MapHandler.putEntityAtPosition(character.getInstanceNumber(), character.getX(), character.getY(),
+			MapHandler.getInstance().putEntityAtPosition(character.getInstanceNumber(), character.getX(), character.getY(),
 					character.getZ(), character);
 		}
 	}
@@ -53,8 +57,30 @@ public final class CharacterManager extends TickProcess {
 	public void removeCharacter(final Character character) {
 		synchronized (characterSet) {
 			characterSet.remove(character);
-			MapHandler.putEntityAtPosition(character.getInstanceNumber(), character.getX(), character.getY(),
+			MapHandler.getInstance().putEntityAtPosition(character.getInstanceNumber(), character.getX(), character.getY(),
 					character.getZ(), null);
+			if (character.getEntityType() == EntityType.NPC && ((NPC) character).isAutoRespawn()) {
+				CycleProcessManager.getInstance().addProcess(new CycleProcess() {
+					final long startTick = Main.getTickCount();
+					long currentTick = Main.getTickCount();
+					final NPC npc = (NPC) character;
+					@Override
+					public void end() {
+						NPCFactory.getInstance().createNPC(npc.getName(), npc.getSpawnX(), npc.getY(), npc.getZ(), npc.getInstanceNumber());
+					}
+
+					@Override
+					public boolean finished() {
+						return currentTick - startTick == (Config.TICKS_PER_MINUTE * npc.getRespawnTimer());
+					}
+
+					@Override
+					public void process() {
+						currentTick = Main.getTickCount();
+					}
+					
+				});
+			}
 		}
 	}
 

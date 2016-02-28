@@ -16,6 +16,8 @@ import com.git.cs309.mmoserver.packets.ExtensiveCharacterPacket;
 import com.git.cs309.mmoserver.packets.ExtensiveObjectPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.entity.characters.Character;
+import com.git.cs309.mmoserver.entity.characters.npc.NPC;
+import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 
 public final class Map {
 	private final int instanceNumber;
@@ -29,6 +31,23 @@ public final class Map {
 		this.definition = definition;
 		entityMap = new Entity[definition.getWidth()][definition.getHeight()];
 		setMapToNulls();
+		MapHandler.getInstance().addMap(this);
+	}
+	
+	void loadSpawns() {
+		for (Spawn spawn : definition.getSpawns()) {
+			switch (spawn.getType()) {
+			case Spawn.CHARACTER:
+				NPCFactory.getInstance().createNPC(spawn.getName(), spawn.getX(), spawn.getY(), definition.getZ(), instanceNumber);
+				break;
+			case Spawn.OBJECT:
+			case Spawn.NULL:
+				break;
+			default:
+				System.err.println("No case for spawn type when loading map spawns: "+spawn.getType());
+				break;
+			}
+		}
 	}
 
 	public boolean containsPoint(final int x, final int y) {
@@ -176,7 +195,7 @@ public final class Map {
 			//TODO Implement
 			break;
 		case NPC:
-			Character character = (Character) entity;
+			NPC character = (NPC) entity;
 			sendPacketToPlayers(new ExtensiveCharacterPacket(null, character.getUniqueID(), character.getStaticID(),
 					character.getX(), character.getY(), character.getHealth(), character.getMaxHealth(),
 					character.getLevel(), character.getName()));

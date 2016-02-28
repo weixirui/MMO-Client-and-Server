@@ -1,6 +1,7 @@
 package com.git.cs309.mmoserver.entity.characters;
 
-import com.git.cs309.mmoserver.Main;
+import java.awt.EventQueue;
+
 import com.git.cs309.mmoserver.entity.Entity;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
@@ -23,7 +24,14 @@ public abstract class Character extends Entity {
 
 	public Character(final int x, final int y, final int z, final IDTag idTag, final int entityID, final String name) {
 		super(x, y, z, idTag, entityID, name);
-		Main.getCharacterManager().addCharacter(this);
+		EventQueue.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				CharacterManager.getInstance().addCharacter(Character.this);
+			}
+			
+		});
 	}
 
 	public void applyDamage(int damageAmount) {

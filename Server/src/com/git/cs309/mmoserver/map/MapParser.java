@@ -12,6 +12,11 @@ import java.util.Set;
 
 public final class MapParser {
 
+	//Reserved Characters:
+	public static final char EMPTY_SPACE = ' ';
+	public static final char COORDINATE_SEPARATOR = '|';
+	public static final char MULTIPLE_SPAWN_SEPARATOR = ',';
+	
 	private static final class SpawnCharacter {
 		private final char character;
 		private final String name;
@@ -37,7 +42,10 @@ public final class MapParser {
 		int yOrigin = 0;
 		int z = 0;
 		String line = "";
-		while ((line = fileReader.readLine()) != null && !line.equalsIgnoreCase("[EOF]")) {
+		int lineNumber = 0;
+		int y = 0;
+		while ((line = fileReader.readLine()) != null) {
+			lineNumber++;
 			if (line.startsWith("//")) {
 				continue;
 			}
@@ -67,7 +75,8 @@ public final class MapParser {
 					continue;
 				}
 			} catch (NumberFormatException e) {
-				System.out.println(file.getName() + " contains an error on this line: " + line);
+				fileReader.close();
+				throw new RuntimeException(file.getName() + " contains number format exception on line " + lineNumber);
 			}
 			if (line.contains(":=")) { // Spawn chars
 				try {
@@ -78,20 +87,47 @@ public final class MapParser {
 				}
 				continue;
 			}
+			line = line.replace(""+COORDINATE_SEPARATOR, "");
+			char[] chars = line.toCharArray();
+			for (int x = 0, i = 0; x < width && i < chars.length; i++, x++) {
+				if (chars[i] == MULTIPLE_SPAWN_SEPARATOR) {
+					x -= 2;
+					continue;
+				}
+				if (chars[i] == EMPTY_SPACE) {
+					continue;
+				}
+				SpawnCharacter thisSpawn = spawnChars.get(chars[x]);
+				if (thisSpawn == null) {
+					continue;
+				}
+				switch (thisSpawn.type) {
+				//Ignoring Spawn.NULL, since they are map elements that we don't need to keep track of on server
+				case Spawn.OBJECT:
+				case Spawn.CHARACTER:
+					spawns.add(new Spawn(thisSpawn.type, thisSpawn.name, x + xOrigin, y + yOrigin));
+					break;
+				}
+			}
+			y++;
 		}
 		fileReader.close();
 		if (spawnChars.size() == 0) {
-			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file, true));
-			for (int y = 0; y < height; y++) {
-				for (int x = 0; x < width; x++) {
-					fileWriter.write("| ");
-				}
-				fileWriter.write("|");
-				fileWriter.newLine();
-			}
-			fileWriter.close();
+			outlineMap(file, width, height);
 		}
-		return null;
+		return new MapDefinition(name, xOrigin, yOrigin, z, width, height, spawns);
+	}
+	
+	private static final void outlineMap(final File file, final int width, final int height) throws IOException {
+		BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file, true));
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				fileWriter.write("| ");
+			}
+			fileWriter.write("|");
+			fileWriter.newLine();
+		}
+		fileWriter.close();
 	}
 
 	private static final SpawnCharacter spawnCharacterFromLine(String line) {
@@ -101,12 +137,14 @@ public final class MapParser {
 			//w := Wolf npc
 			String cname = tokens[2].replace("_", "");
 			switch (tokens[3].toLowerCase()) {
+			case "npc":
+				return new SpawnCharacter(character, cname, Spawn.CHARACTER);
 			case "obj":
 				return new SpawnCharacter(character, cname, Spawn.OBJECT);
 			case "nul":
 				return new SpawnCharacter(character, cname, Spawn.NULL);
 			default:
-				System.out.println("No case for SpawnCharacter type: " + tokens[3]);
+				System.err.println("No case for SpawnCharacter type: " + tokens[3]);
 			}
 		} catch (ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();

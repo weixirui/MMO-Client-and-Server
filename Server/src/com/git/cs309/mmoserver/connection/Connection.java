@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.Socket;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.entity.characters.user.User;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.packets.PacketFactory;
@@ -108,7 +107,7 @@ public class Connection extends AbstractConnection {
 	public void run() {
 		int packetsThisTick;
 		//ConnectionManager singleton to wait on.
-		final Object waitObject = Main.getConnectionManager().getWaitObject();
+		final Object waitObject = ConnectionManager.getInstance().getWaitObject();
 		while (!socket.isClosed() && !closeRequested) {
 			synchronized (waitObject) {
 				try {

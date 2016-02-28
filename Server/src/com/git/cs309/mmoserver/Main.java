@@ -13,6 +13,7 @@ import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.io.Logger;
 import com.git.cs309.mmoserver.map.MapFactory;
+import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.util.TickProcess;
 
 /*
@@ -55,11 +56,6 @@ import com.git.cs309.mmoserver.util.TickProcess;
  */
 public final class Main {
 
-	private static volatile CharacterManager characterManager = null;
-
-	private static volatile ConnectionManager connectionManager = null;
-	private static volatile CycleProcessManager cycleProcessManager = null;
-
 	// Is server running.
 	private static volatile boolean running = true;
 
@@ -89,18 +85,6 @@ public final class Main {
 		}
 	}
 
-	public static CharacterManager getCharacterManager() {
-		return characterManager;
-	}
-
-	public static ConnectionManager getConnectionManager() {
-		return connectionManager;
-	}
-
-	public static CycleProcessManager getCycleProcessManager() {
-		return cycleProcessManager;
-	}
-
 	/**
 	 * Getter method for tickCount.
 	 * 
@@ -126,18 +110,6 @@ public final class Main {
 	 */
 	public static boolean isRunning() {
 		return running;
-	}
-
-	public static void loadAndStartCharacterManager() {
-		characterManager = new CharacterManager();
-	}
-
-	public static void loadAndStartConnectionManager() {
-		connectionManager = new ConnectionManager();
-	}
-
-	public static void loadAndStartCycleProcessManager() {
-		cycleProcessManager = new CycleProcessManager();
 	}
 
 	//Turns out that using the default system loader will just re-reference already loaded classes. Would need to create and use a different classloader
@@ -189,9 +161,10 @@ public final class Main {
 		ModerationHandler.loadModerations();
 		NPCFactory.getInstance();
 		MapFactory.getInstance();
-		loadAndStartConnectionManager();
-		loadAndStartCycleProcessManager();
-		loadAndStartCharacterManager();
+		MapHandler.getInstance().loadMaps();
+		ConnectionManager.getInstance();
+		CycleProcessManager.getInstance();
+		CharacterManager.getInstance();
 	}
 
 	private static void runServer() {

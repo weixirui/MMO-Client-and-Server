@@ -3,9 +3,9 @@ package com.git.cs309.mmoserver.entity.characters.user;
 import java.io.Serializable;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.Character;
+import com.git.cs309.mmoserver.entity.characters.CharacterManager;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
 /**
@@ -81,7 +81,7 @@ public class PlayerCharacter extends Character implements Serializable {
 	public void enterGame(final IDTag idTag) {
 		assert created;
 		setIDTag(idTag);
-		Main.getCharacterManager().addCharacter(this);
+		CharacterManager.getInstance().addCharacter(this);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class PlayerCharacter extends Character implements Serializable {
 	 */
 	public void exitGame() {
 		setIDTag(null);
-		Main.getCharacterManager().removeCharacter(this);
+		CharacterManager.getInstance().removeCharacter(this);
 	}
 
 	@Override

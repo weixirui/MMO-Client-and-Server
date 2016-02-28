@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.util.TickProcess;
 
 /**
@@ -19,17 +18,17 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *         if a condition is met.
  */
 public final class CycleProcessManager extends TickProcess {
+	private static final CycleProcessManager INSTANCE = new CycleProcessManager();
+	
+	public static final CycleProcessManager getInstance() {
+		return INSTANCE;
+	}
+	
 	private final Set<CycleProcess> processes = new HashSet<>(); // Set of processes.
 
 	//Private so that only this class can access constructor.
-	public CycleProcessManager() {
+	private CycleProcessManager() {
 		super("CycleProcessManager");
-		CycleProcessManager predecessor = Main.getCycleProcessManager();
-		if (predecessor != null) {
-			processes.addAll(predecessor.processes); // Carry over all the old processes
-			predecessor.forceStop();
-		}
-		predecessor = null;
 	}
 
 	/**

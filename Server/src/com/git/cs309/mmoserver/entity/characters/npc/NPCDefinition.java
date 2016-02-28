@@ -25,9 +25,13 @@ public final class NPCDefinition {
 	private final String name;
 	//Strength of the NPC, on a scale of 0 - Integer.MAX_VALUE
 	private final int strength;
+	//Should NPCs with this definition be automatically respawned.
+	private final boolean autoRespawn;
+	//Time in minutes before NPC respawns
+	private final int respawnTimer;
 
 	public NPCDefinition(final String name, final int id, final int maxHealth, final int strength, final int accuracy,
-			final int defence, final int level) {
+			final int defence, final int level, final boolean autoRespawn, final int respawnTimer) {
 		this.name = name;
 		this.id = id;
 		this.maxHealth = maxHealth;
@@ -35,6 +39,8 @@ public final class NPCDefinition {
 		this.accuracy = accuracy;
 		this.defence = defence;
 		this.level = level;
+		this.autoRespawn = autoRespawn;
+		this.respawnTimer = respawnTimer;
 		assert (id >= 0) && (maxHealth > 0) && (strength >= 0) && (accuracy >= 0 && accuracy <= 100) && (defence >= 0)
 				&& (level > 0);
 	}
@@ -65,5 +71,13 @@ public final class NPCDefinition {
 
 	public int getStrength() {
 		return strength;
+	}
+
+	public boolean isAutoRespawn() {
+		return autoRespawn;
+	}
+
+	public int getRespawnTimer() {
+		return respawnTimer;
 	}
 }

@@ -21,11 +21,31 @@ import com.git.cs309.mmoserver.util.ClosedIDSystem;
  */
 public class NPC extends Character {
 	private final NPCDefinition definition; // The NPC definition of this NPC
-
+	private final int spawnX;
+	private final int spawnZ;
+	private final int spawnY;
+	private final boolean autoRespawn;
+	
 	public NPC(int x, int y, int z, final NPCDefinition definition, int instanceNumber) {
 		super(x, y, z, ClosedIDSystem.getTag(), definition.getID(), definition.getName());
+		assert definition != null;
+		this.spawnX = x;
+		this.spawnY = y;
+		this.spawnZ = z;
 		this.definition = definition;
 		this.instanceNumber = instanceNumber;
+		this.autoRespawn = true;
+	}
+	
+	public NPC(int x, int y, int z, final NPCDefinition definition, int instanceNumber, boolean autoRespawn) {
+		super(x, y, z, ClosedIDSystem.getTag(), definition.getID(), definition.getName());
+		assert definition != null;
+		this.spawnX = x;
+		this.spawnY = y;
+		this.spawnZ = z;
+		this.definition = definition;
+		this.instanceNumber = instanceNumber;
+		this.autoRespawn = autoRespawn;
 	}
 
 	@Override
@@ -51,6 +71,26 @@ public class NPC extends Character {
 	@Override
 	public String toString() {
 		return definition.getName() + ":" + getUniqueID();
+	}
+
+	public int getSpawnX() {
+		return spawnX;
+	}
+
+	public int getSpawnZ() {
+		return spawnZ;
+	}
+
+	public int getSpawnY() {
+		return spawnY;
+	}
+
+	public boolean isAutoRespawn() {
+		return autoRespawn && definition.isAutoRespawn();
+	}
+	
+	public int getRespawnTimer() {
+		return definition.getRespawnTimer();
 	}
 
 }

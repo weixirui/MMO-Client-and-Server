@@ -2,6 +2,9 @@ package com.git.cs309.mmoserver.packets;
 
 import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.connection.Connection;
+import com.git.cs309.mmoserver.connection.ConnectionManager;
+import com.git.cs309.mmoserver.cycle.CycleProcessManager;
+import com.git.cs309.mmoserver.entity.characters.CharacterManager;
 import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
 import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler.ModerationType;
 import com.git.cs309.mmoserver.entity.characters.user.Rights;
@@ -27,13 +30,16 @@ public final class CommandHandler {
 				Main.requestExit();
 				break;
 			case AdminCommandPacket.RESTART_CHARACTER_MANAGER:
-				Main.loadAndStartCharacterManager();
+				CharacterManager.getInstance().forceStop();
+				CharacterManager.getInstance().start();
 				break;
 			case AdminCommandPacket.RESTART_CONNECTION_MANAGER:
-				Main.loadAndStartConnectionManager();
+				ConnectionManager.getInstance().forceStop();
+				ConnectionManager.getInstance().start();
 				break;
 			case AdminCommandPacket.RESTART_CYCLE_PROCESS_MANAGER:
-				Main.loadAndStartCycleProcessManager();
+				CycleProcessManager.getInstance().forceStop();
+				CycleProcessManager.getInstance().start();
 				break;
 			case AdminCommandPacket.BAN_USER:
 				user = UserManager.getUserForUserID(userID);
