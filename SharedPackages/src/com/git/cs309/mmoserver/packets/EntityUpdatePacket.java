@@ -22,15 +22,16 @@ public class EntityUpdatePacket extends Packet {
 	private final int x;
 	private final int y;
 	private final byte args;
-	
-	public EntityUpdatePacket(AbstractConnection source, final byte args, final int uniqueID, final int x, final int y) {
+
+	public EntityUpdatePacket(AbstractConnection source, final byte args, final int uniqueID, final int x,
+			final int y) {
 		super(source);
 		this.args = args;
 		this.uniqueID = uniqueID;
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	public EntityUpdatePacket(AbstractConnection source, final byte[] bytes) {
 		super(source);
 		this.args = bytes[1];
@@ -39,21 +40,31 @@ public class EntityUpdatePacket extends Packet {
 		x = ints[1];
 		y = ints[2];
 	}
-	
-	public int getX() {
-		return x;
+
+	public byte getArgs() {
+		return args;
 	}
-	
-	public int getY() {
-		return y;
+
+	@Override
+	public PacketType getPacketType() {
+		return PacketType.ENTITY_UPDATE_PACKET;
 	}
-	
+
 	public int getUniqueID() {
 		return uniqueID;
 	}
-	
-	public byte getArgs() {
-		return args;
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	@Override
+	public int sizeOf() {
+		return 14;
 	}
 
 	@Override
@@ -66,15 +77,5 @@ public class EntityUpdatePacket extends Packet {
 			bytes[index++] = b;
 		}
 		return bytes;
-	}
-
-	@Override
-	public PacketType getPacketType() {
-		return PacketType.ENTITY_UPDATE_PACKET;
-	}
-
-	@Override
-	public int sizeOf() {
-		return 14;
 	}
 }

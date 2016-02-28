@@ -24,7 +24,7 @@ public class Logger {
 			logPathFile.mkdirs();
 			File logFile = new File(Config.LOG_BASE_PATH + Calendar.getInstance().get(Calendar.YEAR) + "/"
 					+ getMonthAsString() + "/" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-					+ (isErr ? " error " : "") + " logs - " + getDayAsString() + ".log");
+					+ (isErr ? " error" : "") + " logs - " + getDayAsString() + ".log");
 			try {
 				logFile.createNewFile();
 			} catch (IOException e) {
@@ -36,7 +36,7 @@ public class Logger {
 		private static String getDayAsString() {
 			switch (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
 			case Calendar.SUNDAY:
-				return "January";
+				return "Sunday";
 			case Calendar.MONDAY:
 				return "Monday";
 			case Calendar.TUESDAY:

@@ -4,21 +4,17 @@
   <object>
     <name>Tree</name>
     <id>0</id>
-    <walkable>false</walkable>
   </object>
   <object>
     <name>Rock</name>
     <id>1</id>
-    <walkable>false</walkable>
   </object>
   <object>
     <name>Dungeon Entrance</name>
     <id>2</id>
-    <walkable>false</walkable>
   </object>
   <object>
     <name>Boundary</name>
     <id>3</id>
-    <walkable>false</walkable>
   </object>
 </definitions>

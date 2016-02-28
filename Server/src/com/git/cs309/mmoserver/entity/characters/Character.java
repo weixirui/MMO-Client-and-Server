@@ -30,7 +30,7 @@ public abstract class Character extends Entity {
 			public void run() {
 				CharacterManager.getInstance().addCharacter(Character.this);
 			}
-			
+
 		});
 	}
 

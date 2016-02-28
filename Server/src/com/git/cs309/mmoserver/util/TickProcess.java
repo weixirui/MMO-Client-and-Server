@@ -64,13 +64,15 @@ public abstract class TickProcess extends Observable implements Runnable {
 		return isStopped;
 	}
 
+	public abstract void printStatus();
+
 	@Override
 	public final void run() { // Final to ensure that this can't be overriden, to ensure that all extending classes follow the rules.
 		final Object tickNotifier = Main.getTickNotifier(); // Acquire the tickNotifier object from Main.
 		isStopped = false;
 		forceStop = false;
-		System.out.println("Running " + this + "...");
-		while (Main.isRunning() && !forceStop) { // While server is running...
+		println("Running " + this + "...");
+		while (Main.isRunning() || !forceStop) { // While server is running...
 			try {
 				synchronized (tickNotifier) {
 					try {
@@ -98,7 +100,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 		isStopped = true;
 		setChanged();
 		notifyObservers();
-		System.out.println(this + " has stopped running.");
+		println(this + " has stopped running.");
 	}
 
 	public final void start() {
@@ -135,6 +137,10 @@ public abstract class TickProcess extends Observable implements Runnable {
 					new ServerModuleStatusPacket(null, name, average / (Config.MILLISECONDS_PER_TICK * 1000000.0f)),
 					Rights.ADMIN);
 		}
+	}
+
+	protected final void println(String message) {
+		System.out.println("[" + this + "] " + message);
 	}
 
 	protected abstract void tickTask();

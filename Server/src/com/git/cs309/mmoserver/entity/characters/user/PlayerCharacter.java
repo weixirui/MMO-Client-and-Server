@@ -6,6 +6,7 @@ import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.Character;
 import com.git.cs309.mmoserver.entity.characters.CharacterManager;
+import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
 /**
@@ -95,6 +96,12 @@ public class PlayerCharacter extends Character implements Serializable {
 	@Override
 	public EntityType getEntityType() {
 		return EntityType.PLAYER;
+	}
+
+	@Override
+	public Packet getExtensivePacket() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public byte getGender() {

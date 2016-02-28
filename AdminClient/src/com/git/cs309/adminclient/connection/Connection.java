@@ -2,16 +2,10 @@ package com.git.cs309.adminclient.connection;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
-
-import javax.swing.JOptionPane;
 
 import com.git.cs309.adminclient.packets.PacketHandler;
 import com.git.cs309.mmoserver.connection.AbstractConnection;
 import com.git.cs309.mmoserver.packets.Packet;
-import com.git.cs309.mmoserver.packets.PacketFactory;
-import com.git.cs309.mmoserver.util.EndOfStreamReachedException;
-import com.git.cs309.mmoserver.util.StreamUtils;
 
 public class Connection extends AbstractConnection {
 
@@ -20,20 +14,22 @@ public class Connection extends AbstractConnection {
 	}
 
 	@Override
-	public void run() {
-		while (!this.disconnected) {
-			try {
-				Packet packet = PacketFactory.buildPacket(StreamUtils.readBlockFromStream(input), this);
-				PacketHandler.handlePacket(packet);
-			} catch (EndOfStreamReachedException e) {
-				JOptionPane.showMessageDialog(null, "The connection has been lost.");
-				System.exit(1);
-			} catch (SocketException e) {
-				JOptionPane.showMessageDialog(null, "The connection has probably been lost.");
-				System.exit(1);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+	public void iterationStartBlock() {
+		//Don't need anything.
+	}
+
+	@Override
+	public int maxPacketsPerIteration() {
+		return Integer.MAX_VALUE;
+	}
+
+	@Override
+	public void postRun() {
+		//Dont need anything
+	}
+
+	@Override
+	public void handlePacket(Packet arg0) {
+		PacketHandler.handlePacket(arg0);
 	}
 }

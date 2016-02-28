@@ -1,8 +1,13 @@
 package com.git.cs309.mmoserver;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import com.git.cs309.mmoserver.connection.ConnectionAcceptor;
 import com.git.cs309.mmoserver.connection.ConnectionManager;
@@ -11,6 +16,7 @@ import com.git.cs309.mmoserver.entity.characters.CharacterManager;
 import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
+import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
 import com.git.cs309.mmoserver.io.Logger;
 import com.git.cs309.mmoserver.map.MapFactory;
 import com.git.cs309.mmoserver.map.MapHandler;
@@ -159,7 +165,16 @@ public final class Main {
 	 */
 	private static void loadAndStartClasses() {
 		ModerationHandler.loadModerations();
-		NPCFactory.getInstance();
+		try {
+			NPCFactory.getInstance().loadDefinitions();
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		try {
+			GameObjectFactory.getInstance().loadDefinitions();
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
 		MapFactory.getInstance();
 		MapHandler.getInstance().loadMaps();
 		ConnectionManager.getInstance();
@@ -168,7 +183,6 @@ public final class Main {
 	}
 
 	private static void runServer() {
-		TICK_RELIANT_LIST.clear();
 		running = true;
 		loadAndStartClasses(); // Call initialize block, which will initialize things
 		// that should be initialized before starting server.
@@ -208,10 +222,15 @@ public final class Main {
 			tickTimes += (System.currentTimeMillis() - start);
 			ticks++;
 			tickCount++;
-			if (ticks == Config.TICKS_PER_MINUTE * 5) {
-				System.out.println("Average tick consumption over 5 minutes: "
+			if (ticks == Config.TICKS_PER_MINUTE * Config.STATUS_PRINT_RATE) {
+				System.out.println(" ");
+				System.out.println("Average tick consumption over " + Config.STATUS_PRINT_RATE + " minutes: "
 						+ String.format("%.3f", ((tickTimes / (float) (Config.MILLISECONDS_PER_TICK * ticks))) * 100.0f)
 						+ "%.");
+				for (TickProcess process : TICK_RELIANT_LIST) {
+					process.printStatus();
+				}
+				System.out.println(" ");
 				ticks = 0;
 				tickTimes = 0L;
 			}

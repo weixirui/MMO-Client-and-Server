@@ -7,6 +7,8 @@ import com.git.cs309.mmoserver.entity.EntityType;
  * 
  */
 import com.git.cs309.mmoserver.entity.characters.Character;
+import com.git.cs309.mmoserver.packets.ExtensiveCharacterPacket;
+import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
 
 /**
@@ -25,7 +27,7 @@ public class NPC extends Character {
 	private final int spawnZ;
 	private final int spawnY;
 	private final boolean autoRespawn;
-	
+
 	public NPC(int x, int y, int z, final NPCDefinition definition, int instanceNumber) {
 		super(x, y, z, ClosedIDSystem.getTag(), definition.getID(), definition.getName());
 		assert definition != null;
@@ -36,7 +38,7 @@ public class NPC extends Character {
 		this.instanceNumber = instanceNumber;
 		this.autoRespawn = true;
 	}
-	
+
 	public NPC(int x, int y, int z, final NPCDefinition definition, int instanceNumber, boolean autoRespawn) {
 		super(x, y, z, ClosedIDSystem.getTag(), definition.getID(), definition.getName());
 		assert definition != null;
@@ -54,6 +56,12 @@ public class NPC extends Character {
 	}
 
 	@Override
+	public Packet getExtensivePacket() {
+		return new ExtensiveCharacterPacket(null, getUniqueID(), definition.getID(), x, y, getHealth(), getMaxHealth(),
+				definition.getLevel(), definition.getName());
+	}
+
+	@Override
 	public int getLevel() {
 		return definition.getLevel();
 	}
@@ -61,6 +69,26 @@ public class NPC extends Character {
 	@Override
 	public int getMaxHealth() {
 		return definition.getMaxHealth();
+	}
+
+	public int getRespawnTimer() {
+		return definition.getRespawnTimer();
+	}
+
+	public int getSpawnX() {
+		return spawnX;
+	}
+
+	public int getSpawnY() {
+		return spawnY;
+	}
+
+	public int getSpawnZ() {
+		return spawnZ;
+	}
+
+	public boolean isAutoRespawn() {
+		return autoRespawn && definition.isAutoRespawn();
 	}
 
 	@Override
@@ -71,26 +99,6 @@ public class NPC extends Character {
 	@Override
 	public String toString() {
 		return definition.getName() + ":" + getUniqueID();
-	}
-
-	public int getSpawnX() {
-		return spawnX;
-	}
-
-	public int getSpawnZ() {
-		return spawnZ;
-	}
-
-	public int getSpawnY() {
-		return spawnY;
-	}
-
-	public boolean isAutoRespawn() {
-		return autoRespawn && definition.isAutoRespawn();
-	}
-	
-	public int getRespawnTimer() {
-		return definition.getRespawnTimer();
 	}
 
 }

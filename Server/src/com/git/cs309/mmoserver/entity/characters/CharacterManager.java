@@ -23,7 +23,7 @@ import com.git.cs309.mmoserver.util.TickProcess;
  */
 public final class CharacterManager extends TickProcess {
 	private static final CharacterManager INSTANCE = new CharacterManager();
-	
+
 	public static final CharacterManager getInstance() {
 		return INSTANCE;
 	}
@@ -44,8 +44,8 @@ public final class CharacterManager extends TickProcess {
 	public void addCharacter(final Character character) { // Add new character to characterSet
 		synchronized (characterSet) {
 			characterSet.add(character);
-			MapHandler.getInstance().putEntityAtPosition(character.getInstanceNumber(), character.getX(), character.getY(),
-					character.getZ(), character);
+			MapHandler.getInstance().putEntityAtPosition(character.getInstanceNumber(), character.getX(),
+					character.getY(), character.getZ(), character);
 		}
 	}
 
@@ -54,19 +54,26 @@ public final class CharacterManager extends TickProcess {
 		//Not required
 	}
 
+	@Override
+	public void printStatus() {
+		println("Total characters: " + characterSet.size());
+	}
+
 	public void removeCharacter(final Character character) {
 		synchronized (characterSet) {
 			characterSet.remove(character);
-			MapHandler.getInstance().putEntityAtPosition(character.getInstanceNumber(), character.getX(), character.getY(),
-					character.getZ(), null);
+			MapHandler.getInstance().removeEntityAtPosition(character.getInstanceNumber(), character.getX(),
+					character.getY(), character.getZ());
 			if (character.getEntityType() == EntityType.NPC && ((NPC) character).isAutoRespawn()) {
 				CycleProcessManager.getInstance().addProcess(new CycleProcess() {
 					final long startTick = Main.getTickCount();
 					long currentTick = Main.getTickCount();
 					final NPC npc = (NPC) character;
+
 					@Override
 					public void end() {
-						NPCFactory.getInstance().createNPC(npc.getName(), npc.getSpawnX(), npc.getY(), npc.getZ(), npc.getInstanceNumber());
+						NPCFactory.getInstance().createNPC(npc.getName(), npc.getSpawnX(), npc.getY(), npc.getZ(),
+								npc.getInstanceNumber());
 					}
 
 					@Override
@@ -78,7 +85,7 @@ public final class CharacterManager extends TickProcess {
 					public void process() {
 						currentTick = Main.getTickCount();
 					}
-					
+
 				});
 			}
 		}

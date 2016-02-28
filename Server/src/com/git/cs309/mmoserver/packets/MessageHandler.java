@@ -19,8 +19,9 @@ public final class MessageHandler {
 		if (lowercaseMessage.startsWith("/p ") || lowercaseMessage.startsWith("/party ")) { // Party messages
 			//TODO Send message to party members only
 		} else if (lowercaseMessage.startsWith("/y ") || lowercaseMessage.startsWith("/yell ")) { // Global (yell) chat
-			ConnectionManager.getInstance().sendPacketToAllConnections(new MessagePacket(null, MessagePacket.GLOBAL_CHAT,
-					username + ": " + messagePacket.getMessage().replace("/yell ", "").replace("/y ", "")));
+			ConnectionManager.getInstance()
+					.sendPacketToAllConnections(new MessagePacket(null, MessagePacket.GLOBAL_CHAT,
+							username + ": " + messagePacket.getMessage().replace("/yell ", "").replace("/y ", "")));
 		} else if (lowercaseMessage.startsWith("/w ") || lowercaseMessage.startsWith("/whisper ")) { // Whisper chat
 			String[] split = messagePacket.getMessage().split(" ");
 			if (split.length < 2) {
@@ -47,7 +48,9 @@ public final class MessageHandler {
 				return;
 			}
 			PlayerCharacter player = userConnection.getUser().getCurrentCharacter();
-			MapHandler.getInstance().getMapContainingPosition(player.getInstanceNumber(), player.getX(), player.getY(), player.getZ()).sendPacketToPlayers(new MessagePacket(null, MessagePacket.LOCAL_CHAT,
+			MapHandler.getInstance()
+					.getMapContainingPosition(player.getInstanceNumber(), player.getX(), player.getY(), player.getZ())
+					.sendPacketToPlayers(new MessagePacket(null, MessagePacket.LOCAL_CHAT,
 							username + ": " + messagePacket.getMessage()));
 		}
 	}

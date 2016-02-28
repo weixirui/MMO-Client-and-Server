@@ -23,8 +23,11 @@ public class PlayerCharacterPacket extends Packet {
 	private final int gloves;
 	private final int boots;
 	private final String name;
-	
-	public PlayerCharacterPacket(AbstractConnection source, final byte gender, final int uniqueID, final int x, final int y, final int health, final int maxHealth, final int level, final int headPiece, final int chestPiece, final int leftHand, final int rightHand, final int cape, final int leggings, final int gloves, final int boots, final String name) {
+
+	public PlayerCharacterPacket(AbstractConnection source, final byte gender, final int uniqueID, final int x,
+			final int y, final int health, final int maxHealth, final int level, final int headPiece,
+			final int chestPiece, final int leftHand, final int rightHand, final int cape, final int leggings,
+			final int gloves, final int boots, final String name) {
 		super(source);
 		this.gender = gender;
 		this.uniqueID = uniqueID;
@@ -43,9 +46,9 @@ public class PlayerCharacterPacket extends Packet {
 		this.gloves = gloves;
 		this.name = name;
 	}
-	
+
 	public PlayerCharacterPacket(AbstractConnection source, final byte[] bytes) {
-		super (source);
+		super(source);
 		gender = bytes[1];
 		int[] ints = BinaryOperations.intArrayFromBytes(bytes, 2, 14);
 		uniqueID = ints[0];
@@ -69,19 +72,52 @@ public class PlayerCharacterPacket extends Packet {
 		name = String.valueOf(chars);
 	}
 
-	@Override
-	public byte[] toBytes() {
-		byte[] bytes = new byte[sizeOf()];
-		int index = 0;
-		bytes[index++] = getPacketType().getTypeByte();
-		bytes[index++] = gender;
-		for (byte b : BinaryOperations.toBytes(uniqueID, x, y, health, maxHealth, level, headPiece, chestPiece, leftHand, rightHand, cape, leggings, boots, gloves)) {
-			bytes[index++] = b;
-		}
-		for (char c : name.toCharArray()) {
-			bytes[index++] = (byte) c;
-		}
-		return bytes;
+	public int getBoots() {
+		return boots;
+	}
+
+	public int getCape() {
+		return cape;
+	}
+
+	public int getChestPiece() {
+		return chestPiece;
+	}
+
+	public byte getGender() {
+		return gender;
+	}
+
+	public int getGloves() {
+		return gloves;
+	}
+
+	public int getHeadPiece() {
+		return headPiece;
+	}
+
+	public int getHealth() {
+		return health;
+	}
+
+	public int getLeftHand() {
+		return leftHand;
+	}
+
+	public int getLeggings() {
+		return leggings;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	@Override
@@ -89,13 +125,8 @@ public class PlayerCharacterPacket extends Packet {
 		return PacketType.PLAYER_CHARACTER_PACKET;
 	}
 
-	@Override
-	public int sizeOf() {
-		return 58 + name.length();
-	}
-
-	public byte getGender() {
-		return gender;
+	public int getRightHand() {
+		return rightHand;
 	}
 
 	public int getUniqueID() {
@@ -110,52 +141,25 @@ public class PlayerCharacterPacket extends Packet {
 		return y;
 	}
 
-	public int getHealth() {
-		return health;
+	@Override
+	public int sizeOf() {
+		return 58 + name.length();
 	}
 
-	public int getMaxHealth() {
-		return maxHealth;
-	}
-
-	public int getLevel() {
-		return level;
-	}
-
-	public int getHeadPiece() {
-		return headPiece;
-	}
-
-	public int getChestPiece() {
-		return chestPiece;
-	}
-
-	public int getLeftHand() {
-		return leftHand;
-	}
-
-	public int getRightHand() {
-		return rightHand;
-	}
-
-	public int getCape() {
-		return cape;
-	}
-
-	public int getLeggings() {
-		return leggings;
-	}
-
-	public int getBoots() {
-		return boots;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public int getGloves() {
-		return gloves;
+	@Override
+	public byte[] toBytes() {
+		byte[] bytes = new byte[sizeOf()];
+		int index = 0;
+		bytes[index++] = getPacketType().getTypeByte();
+		bytes[index++] = gender;
+		for (byte b : BinaryOperations.toBytes(uniqueID, x, y, health, maxHealth, level, headPiece, chestPiece,
+				leftHand, rightHand, cape, leggings, boots, gloves)) {
+			bytes[index++] = b;
+		}
+		for (char c : name.toCharArray()) {
+			bytes[index++] = (byte) c;
+		}
+		return bytes;
 	}
 
 }

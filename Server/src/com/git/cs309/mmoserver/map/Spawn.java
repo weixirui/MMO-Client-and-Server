@@ -8,7 +8,7 @@ public final class Spawn {
 	private final String name;
 	private final int x;
 	private final int y;
-	
+
 	public Spawn(final byte type, final String name, final int x, final int y) {
 		this.type = type;
 		this.name = name;
@@ -16,12 +16,12 @@ public final class Spawn {
 		this.y = y;
 	}
 
-	public byte getType() {
-		return type;
-	}
-
 	public String getName() {
 		return name;
+	}
+
+	public byte getType() {
+		return type;
 	}
 
 	public int getX() {

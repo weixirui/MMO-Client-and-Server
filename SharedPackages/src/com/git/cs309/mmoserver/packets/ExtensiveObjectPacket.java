@@ -4,16 +4,14 @@ import com.git.cs309.mmoserver.connection.AbstractConnection;
 import com.git.cs309.mmoserver.util.BinaryOperations;
 
 public class ExtensiveObjectPacket extends Packet {
-	
-	public ExtensiveObjectPacket(AbstractConnection connection, int uniqueID, int staticID, int x, int y, String name) {
-		super(connection);
-		this.uniqueID = uniqueID;
-		this.staticID = staticID;
-		this.x = x;
-		this.y = y;
-		this.name = name;
-	}
-	
+
+	private final int x;
+
+	private final int y;
+
+	private final int uniqueID;
+	private final int staticID;
+	private final String name;
 	public ExtensiveObjectPacket(AbstractConnection connection, byte[] bytes) {
 		super(connection);
 		int[] ints = BinaryOperations.intArrayFromBytes(bytes, 1, 4);
@@ -27,13 +25,41 @@ public class ExtensiveObjectPacket extends Packet {
 		}
 		name = String.valueOf(chars);
 	}
-	
-	private final int x;
-	private final int y;
-	private final int uniqueID;
-	private final int staticID;
-	private final String name;
-	
+	public ExtensiveObjectPacket(AbstractConnection connection, int uniqueID, int staticID, int x, int y, String name) {
+		super(connection);
+		this.uniqueID = uniqueID;
+		this.staticID = staticID;
+		this.x = x;
+		this.y = y;
+		this.name = name;
+	}
+
+	@Override
+	public PacketType getPacketType() {
+		return PacketType.EXTENSIVE_OBJECT_PACKET;
+	}
+
+	public int getStaticID() {
+		return staticID;
+	}
+
+	public int getUniqueID() {
+		return uniqueID;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	@Override
+	public int sizeOf() {
+		return 17 + name.length();
+	}
+
 	@Override
 	public byte[] toBytes() {
 		byte[] bytes = new byte[sizeOf()];
@@ -46,32 +72,6 @@ public class ExtensiveObjectPacket extends Packet {
 			bytes[index++] = (byte) c;
 		}
 		return bytes;
-	}
-	
-	public int getX() {
-		return x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
-	public int getUniqueID() {
-		return uniqueID;
-	}
-	
-	public int getStaticID() {
-		return staticID;
-	}
-
-	@Override
-	public PacketType getPacketType() {
-		return PacketType.EXTENSIVE_OBJECT_PACKET;
-	}
-
-	@Override
-	public int sizeOf() {
-		return 17 + name.length();
 	}
 
 }

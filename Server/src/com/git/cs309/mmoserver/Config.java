@@ -28,8 +28,8 @@ public final class Config {
 	public static final int MILLISECONDS_PER_MINUTE = 60000;
 
 	public static final int MILLISECONDS_PER_SECOND = 1000;
-	
-	public static final int MINUTES_PER_NPC_RESPAWN = 2;
+
+	public static final int STATUS_PRINT_RATE = 1; // Minutes between status prints.
 
 	public static final int TICK_RATE = 125; // Ticks per second. Must divide evenly into 1000 for accurate results. (since it uses integer math, the resulting time calculations will be inaccurate)
 
@@ -37,9 +37,9 @@ public final class Config {
 	public static final long MILLISECONDS_PER_TICK = MILLISECONDS_PER_SECOND / TICK_RATE;
 
 	public static final String NPC_DEFINITION_PATH = "./data/cfg/NPCDefinitions.xml";
-	
+
 	public static final String OBJECT_DEFINITION_PATH = "./data/cfg/ObjectDefinitions.xml";
-	
+
 	public static final String MAP_DEFINITIONS_FOLDER = "./data/map/";
 
 	//Max packets/tick before automatically closes connection.

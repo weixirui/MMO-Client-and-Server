@@ -55,13 +55,16 @@ public class ClientGUI extends JFrame {
 	private static final ClientGUI SINGLETON = new ClientGUI();
 
 	private static JTextArea chatBox;
+
 	public static void addMessage(String message) {
 		chatBox.append(message + "\n");
 		chatBox.setCaretPosition(chatBox.getText().length());
 	}
+
 	public static ClientGUI getSingleton() {
 		return SINGLETON;
 	}
+
 	private List<ServerModuleComponent> serverModuleList = new ArrayList<>();
 
 	private ListModel<UserComponent> userModel = new ListModel<>();

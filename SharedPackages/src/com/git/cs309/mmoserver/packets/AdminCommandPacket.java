@@ -7,6 +7,7 @@ public class AdminCommandPacket extends Packet {
 	public static final int RESTART_SERVER = 1;
 	public static final int RESTART_CONNECTION_MANAGER = 2;
 	public static final int RESTART_CYCLE_PROCESS_MANAGER = 3;
+	public static final int RESTART_CHARACTER_MANAGER = 4;
 	public static final int RESTART_NPC_MANAGER = 5;
 	public static final int BAN_USER = 6;
 	public static final int IP_BAN_USER = 7;

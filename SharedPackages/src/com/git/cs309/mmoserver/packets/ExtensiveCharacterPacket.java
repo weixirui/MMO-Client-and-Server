@@ -12,19 +12,7 @@ public class ExtensiveCharacterPacket extends Packet {
 	private final int maxHealth;
 	private final int level;
 	private final String characterName;
-	
-	public ExtensiveCharacterPacket(AbstractConnection connection, final int uniqueID, final int characterID, final int x, final int y, final int health, final int maxHealth, final int level, final String characterName) {
-		super(connection);
-		this.x = x;
-		this.y = y;
-		this.uniqueID = uniqueID;
-		this.characterID = characterID;
-		this.health = health;
-		this.maxHealth = maxHealth;
-		this.level = level;
-		this.characterName = characterName;
-	}
-	
+
 	public ExtensiveCharacterPacket(AbstractConnection connection, final byte[] bytes) {
 		super(connection);
 		int[] ints = BinaryOperations.intArrayFromBytes(bytes, 1, 7);
@@ -41,7 +29,59 @@ public class ExtensiveCharacterPacket extends Packet {
 		}
 		characterName = String.valueOf(chars);
 	}
-	
+
+	public ExtensiveCharacterPacket(AbstractConnection connection, final int uniqueID, final int characterID,
+			final int x, final int y, final int health, final int maxHealth, final int level,
+			final String characterName) {
+		super(connection);
+		this.x = x;
+		this.y = y;
+		this.uniqueID = uniqueID;
+		this.characterID = characterID;
+		this.health = health;
+		this.maxHealth = maxHealth;
+		this.level = level;
+		this.characterName = characterName;
+	}
+
+	public int getCharacterID() {
+		return characterID;
+	}
+
+	public String getCharacterName() {
+		return characterName;
+	}
+
+	public int getHealth() {
+		return health;
+	}
+
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	@Override
+	public PacketType getPacketType() {
+		return PacketType.EXTENSIVE_CHARACTER_PACKET;
+	}
+
+	public int getUniqueID() {
+		return uniqueID;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	@Override
+	public int sizeOf() {
+		return 29 + characterName.length();
+	}
+
 	@Override
 	public byte[] toBytes() {
 		byte[] bytes = new byte[sizeOf()];
@@ -54,44 +94,6 @@ public class ExtensiveCharacterPacket extends Packet {
 			bytes[index++] = (byte) c;
 		}
 		return bytes;
-	}
-
-	@Override
-	public PacketType getPacketType() {
-		return PacketType.EXTENSIVE_CHARACTER_PACKET;
-	}
-
-	@Override
-	public int sizeOf() {
-		return 29 + characterName.length();
-	}
-
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public int getUniqueID() {
-		return uniqueID;
-	}
-
-	public int getCharacterID() {
-		return characterID;
-	}
-
-	public int getHealth() {
-		return health;
-	}
-
-	public int getMaxHealth() {
-		return maxHealth;
-	}
-
-	public String getCharacterName() {
-		return characterName;
 	}
 
 }

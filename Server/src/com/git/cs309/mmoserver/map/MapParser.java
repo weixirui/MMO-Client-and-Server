@@ -12,11 +12,6 @@ import java.util.Set;
 
 public final class MapParser {
 
-	//Reserved Characters:
-	public static final char EMPTY_SPACE = ' ';
-	public static final char COORDINATE_SEPARATOR = '|';
-	public static final char MULTIPLE_SPAWN_SEPARATOR = ',';
-	
 	private static final class SpawnCharacter {
 		private final char character;
 		private final String name;
@@ -28,6 +23,11 @@ public final class MapParser {
 			this.type = type;
 		}
 	}
+	//Reserved Characters:
+	public static final char EMPTY_SPACE = ' ';
+	public static final char COORDINATE_SEPARATOR = '|';
+
+	public static final char MULTIPLE_SPAWN_SEPARATOR = ',';
 
 	public static final MapDefinition parseMapDefinitionFromFile(final File file) throws IOException {
 		if (file == null)
@@ -87,7 +87,7 @@ public final class MapParser {
 				}
 				continue;
 			}
-			line = line.replace(""+COORDINATE_SEPARATOR, "");
+			line = line.replace("" + COORDINATE_SEPARATOR, "");
 			char[] chars = line.toCharArray();
 			for (int x = 0, i = 0; x < width && i < chars.length; i++, x++) {
 				if (chars[i] == MULTIPLE_SPAWN_SEPARATOR) {
@@ -97,7 +97,7 @@ public final class MapParser {
 				if (chars[i] == EMPTY_SPACE) {
 					continue;
 				}
-				SpawnCharacter thisSpawn = spawnChars.get(chars[x]);
+				SpawnCharacter thisSpawn = spawnChars.get(chars[i]);
 				if (thisSpawn == null) {
 					continue;
 				}
@@ -117,7 +117,7 @@ public final class MapParser {
 		}
 		return new MapDefinition(name, xOrigin, yOrigin, z, width, height, spawns);
 	}
-	
+
 	private static final void outlineMap(final File file, final int width, final int height) throws IOException {
 		BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file, true));
 		for (int y = 0; y < height; y++) {
@@ -135,7 +135,7 @@ public final class MapParser {
 			char character = line.charAt(0);
 			String[] tokens = line.split(" ");
 			//w := Wolf npc
-			String cname = tokens[2].replace("_", "");
+			String cname = tokens[2].replace("_", " ");
 			switch (tokens[3].toLowerCase()) {
 			case "npc":
 				return new SpawnCharacter(character, cname, Spawn.CHARACTER);

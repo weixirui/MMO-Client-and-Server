@@ -20,5 +20,10 @@ public abstract class Packet implements ByteFormatted {
 
 	public abstract PacketType getPacketType();
 
+	public final void send() {
+		assert source != null;
+		source.addOutgoingPacket(this);
+	}
+
 	public abstract int sizeOf();
 }

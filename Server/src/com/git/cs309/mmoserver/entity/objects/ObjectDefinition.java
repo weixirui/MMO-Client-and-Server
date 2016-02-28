@@ -5,7 +5,7 @@ public final class ObjectDefinition {
 	private final String objectName;
 	private final boolean walkable;
 
-	public ObjectDefinition(final int objectID, final String objectName, final boolean walkable) {
+	public ObjectDefinition(final String objectName, final int objectID, final boolean walkable) {
 		this.objectID = objectID;
 		this.objectName = objectName;
 		this.walkable = walkable;

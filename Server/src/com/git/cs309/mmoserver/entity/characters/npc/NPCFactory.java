@@ -23,24 +23,54 @@ public final class NPCFactory {
 		return INSTANCE;
 	}
 
-	public static final NPCFactory newInstance(final String definitionFile) {
-		return new NPCFactory(definitionFile);
-	}
-
-	private final Map<String, NPCDefinition> nameMap = new HashMap<>();
-	private final Map<Integer, NPCDefinition> idMap = new HashMap<>();
+	private final Map<String, NPCDefinition> definitionsByName = new HashMap<>();
+	private final Map<Integer, NPCDefinition> definitionsByID = new HashMap<>();
+	private final String definitionPath;
 
 	private NPCFactory(final String definitionFile) {
-		try {
-			loadDefinitions(definitionFile);
-		} catch (SAXException | IOException | ParserConfigurationException e) {
-			e.printStackTrace();
-		}
+		this.definitionPath = definitionFile;
 	}
 
-	private final void loadDefinitions(final String definitionFile)
-			throws SAXException, IOException, ParserConfigurationException {
-		Document definitionsDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(definitionFile);
+	public synchronized final NPC createNPC(final int id, final int x, final int y, final int z,
+			final int instanceNumber) {
+		NPCDefinition definition = definitionsByID.get(id);
+		if (definition == null) {
+			throw new DefinitionMissingException("No definition could be found for NPC with id: " + id + "");
+		}
+		return new NPC(x, y, z, definition, instanceNumber);
+	}
+
+	public synchronized final NPC createNPC(final int id, final int x, final int y, final int z,
+			final int instanceNumber, final boolean autoRespawn) {
+		NPCDefinition definition = definitionsByID.get(id);
+		if (definition == null) {
+			throw new DefinitionMissingException("No definition could be found for NPC with id: " + id + "");
+		}
+		return new NPC(x, y, z, definition, instanceNumber, autoRespawn);
+	}
+
+	public synchronized final NPC createNPC(final String npcName, final int x, final int y, final int z,
+			final int instanceNumber) {
+		NPCDefinition definition = definitionsByName.get(npcName.toLowerCase());
+		if (definition == null) {
+			throw new DefinitionMissingException("No definition could be found for NPC \"" + npcName + "\"");
+		}
+		return new NPC(x, y, z, definition, instanceNumber);
+	}
+
+	public synchronized final NPC createNPC(final String npcName, final int x, final int y, final int z,
+			final int instanceNumber, final boolean autoRespawn) {
+		NPCDefinition definition = definitionsByName.get(npcName.toLowerCase());
+		if (definition == null) {
+			throw new DefinitionMissingException("No definition could be found for NPC \"" + npcName + "\"");
+		}
+		return new NPC(x, y, z, definition, instanceNumber, autoRespawn);
+	}
+
+	public synchronized final void loadDefinitions() throws SAXException, IOException, ParserConfigurationException {
+		definitionsByName.clear();
+		definitionsByID.clear();
+		Document definitionsDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(definitionPath);
 		Node rootNode = definitionsDocument.getFirstChild();
 		NodeList baseNodes = rootNode.getChildNodes();
 		for (int i = 0; i < baseNodes.getLength(); i++) {
@@ -87,43 +117,13 @@ public final class NPCFactory {
 						e.printStackTrace();
 					}
 				}
-				NPCDefinition definition = new NPCDefinition(WordUtils.capitalizeText(name), id, health, strength, accuracy, defence, level, autoRespawn, respawnTimer);
-				nameMap.put(name.toLowerCase(), definition);
-				idMap.put(id, definition);
+				NPCDefinition definition = new NPCDefinition(WordUtils.capitalizeText(name), id, health, strength,
+						accuracy, defence, level, autoRespawn, respawnTimer);
+				definitionsByName.put(name.toLowerCase(), definition);
+				definitionsByID.put(id, definition);
 				break;
 			}
 		}
-	}
-
-	public final NPC createNPC(final String npcName, final int x, final int y, final int z, final int instanceNumber) {
-		NPCDefinition definition = nameMap.get(npcName.toLowerCase());
-		if (nameMap == null) {
-			throw new DefinitionMissingException("No definition could be found for NPC \""+npcName+"\"");
-		}
-		return new NPC(x, y, z, definition, instanceNumber);
-	}
-	
-	public final NPC createNPC(final int id, final int x, final int y, final int z, final int instanceNumber) {
-		NPCDefinition definition = idMap.get(id);
-		if (nameMap == null) {
-			throw new DefinitionMissingException("No definition could be found for NPC with id: "+id+"");
-		}
-		return new NPC(x, y, z, definition, instanceNumber);
-	}
-	
-	public final NPC createNPC(final String npcName, final int x, final int y, final int z, final int instanceNumber, final boolean autoRespawn) {
-		NPCDefinition definition = nameMap.get(npcName.toLowerCase());
-		if (nameMap == null) {
-			throw new DefinitionMissingException("No definition could be found for NPC \""+npcName+"\"");
-		}
-		return new NPC(x, y, z, definition, instanceNumber, autoRespawn);
-	}
-	
-	public final NPC createNPC(final int id, final int x, final int y, final int z, final int instanceNumber, final boolean autoRespawn) {
-		NPCDefinition definition = idMap.get(id);
-		if (nameMap == null) {
-			throw new DefinitionMissingException("No definition could be found for NPC with id: "+id+"");
-		}
-		return new NPC(x, y, z, definition, instanceNumber, autoRespawn);
+		System.out.println("Loaded " + definitionsByName.size() + " NPC definitions.");
 	}
 }

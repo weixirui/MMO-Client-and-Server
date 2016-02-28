@@ -6,12 +6,9 @@ import java.net.Socket;
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.entity.characters.user.User;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
-import com.git.cs309.mmoserver.packets.PacketFactory;
+import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
-import com.git.cs309.mmoserver.util.CorruptDataException;
-import com.git.cs309.mmoserver.util.EndOfStreamReachedException;
-import com.git.cs309.mmoserver.util.StreamUtils;
 
 /**
  * 
@@ -23,8 +20,6 @@ import com.git.cs309.mmoserver.util.StreamUtils;
  *         </p>
  */
 public class Connection extends AbstractConnection {
-	//Whether or not the Connection should try and close
-	private volatile boolean closeRequested = false;
 	//Whether or not the Connection has logged into a User
 	private volatile boolean loggedIn = false;
 	//The User belonging to this Connection. Null until loggedIn
@@ -94,6 +89,11 @@ public class Connection extends AbstractConnection {
 		return user;
 	}
 
+	@Override
+	public void handlePacket(Packet arg0) {
+		//Packets are handled elsewhere.
+	}
+
 	/**
 	 * Checks whether or not this Connection has logged into a User.
 	 * 
@@ -104,53 +104,29 @@ public class Connection extends AbstractConnection {
 	}
 
 	@Override
-	public void run() {
-		int packetsThisTick;
-		//ConnectionManager singleton to wait on.
-		final Object waitObject = ConnectionManager.getInstance().getWaitObject();
-		while (!socket.isClosed() && !closeRequested) {
-			synchronized (waitObject) {
-				try {
-					waitObject.wait(); // Wait for connection manager to notify us of new tick.
-				} catch (InterruptedException e) {
-					// We shouldn't care too much if it gets interrupted.
-				}
-			}
-			packet = null;
-			packetsThisTick = 0;
+	public void iterationStartBlock() {
+		Object waitObject = ConnectionManager.getInstance().getWaitObject();
+		synchronized (waitObject) {
 			try {
-				do {
-					try {
-						packet = PacketFactory.buildPacket(StreamUtils.readBlockFromStream(input), this);
-					} catch (CorruptDataException | NegativeArraySizeException | ArrayIndexOutOfBoundsException e) { // Just general exception that might occur for bad packets.
-						System.err.println(e.getMessage());
-					} catch (EndOfStreamReachedException e) { // End of the stream was reached, meaning there's no more data, ever.
-						System.err.println(e.getMessage());
-						closeRequested = true;
-						break;
-					} catch (IOException e) { // Should only be Connection reset
-						System.err.println(e.getMessage());
-						closeRequested = true;
-						break;
-					}
-					if (++packetsThisTick == Config.PACKETS_PER_TICK_BEFORE_KICK) {
-						System.out.println(
-								this + " exceeded the maximum packets per tick limit. Packets: " + packetsThisTick);
-						closeRequested = true;
-						break;
-					}
-				} while (!socket.isClosed() && input.available() != 0 && !closeRequested);
-			} catch (IOException e) {
-				e.printStackTrace();
+				waitObject.wait(); // Wait for connection manager to notify us of new tick.
+			} catch (InterruptedException e) {
+				// We shouldn't care too much if it gets interrupted.
 			}
 		}
+	}
+
+	@Override
+	public int maxPacketsPerIteration() {
+		return Config.PACKETS_PER_TICK_BEFORE_KICK;
+	}
+
+	@Override
+	public void postRun() {
 		loggedIn = false;
 		user = UserManager.getUserForIP(getServerSideIP());
 		if (user != null) {
 			UserManager.logOut(user.getUsername());
 		}
-		close();
-		disconnected = true;
 	}
 
 	/**

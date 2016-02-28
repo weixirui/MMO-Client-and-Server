@@ -5,18 +5,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.connection.Connection;
 import com.git.cs309.mmoserver.entity.Entity;
 import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.user.PlayerCharacter;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
-import com.git.cs309.mmoserver.entity.objects.GameObject;
+import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
 import com.git.cs309.mmoserver.packets.EntityUpdatePacket;
-import com.git.cs309.mmoserver.packets.ExtensiveCharacterPacket;
-import com.git.cs309.mmoserver.packets.ExtensiveObjectPacket;
 import com.git.cs309.mmoserver.packets.Packet;
-import com.git.cs309.mmoserver.entity.characters.Character;
-import com.git.cs309.mmoserver.entity.characters.npc.NPC;
 import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 
 public final class Map {
@@ -33,25 +30,10 @@ public final class Map {
 		setMapToNulls();
 		MapHandler.getInstance().addMap(this);
 	}
-	
-	void loadSpawns() {
-		for (Spawn spawn : definition.getSpawns()) {
-			switch (spawn.getType()) {
-			case Spawn.CHARACTER:
-				NPCFactory.getInstance().createNPC(spawn.getName(), spawn.getX(), spawn.getY(), definition.getZ(), instanceNumber);
-				break;
-			case Spawn.OBJECT:
-			case Spawn.NULL:
-				break;
-			default:
-				System.err.println("No case for spawn type when loading map spawns: "+spawn.getType());
-				break;
-			}
-		}
-	}
 
 	public boolean containsPoint(final int x, final int y) {
-		return getXOrigin() + getWidth() >= x && x >= getXOrigin() && getYOrigin() + getHeight() >= y && y >= getYOrigin();
+		return getXOrigin() + getWidth() >= x && x >= getXOrigin() && getYOrigin() + getHeight() >= y
+				&& y >= getYOrigin();
 	}
 
 	@Override
@@ -61,6 +43,21 @@ public final class Map {
 		}
 		Map otherMap = (Map) other;
 		return otherMap.instanceNumber == instanceNumber && otherMap.definition.equals(definition);
+	}
+
+	public Entity[] getEntities(final int x, final int y) {
+		assert (containsPoint(x, y));
+		Entity e = entityMap[x - getXOrigin()][y - getYOrigin()];
+		if (e != null) {
+			return new Entity[] { e };
+		}
+		List<Entity> entities = new ArrayList<>();
+		for (Entity entity : entitySet) {
+			if (entity.getX() == x && entity.getY() == y) {
+				entities.add(entity);
+			}
+		}
+		return entities.toArray(new Entity[entities.size()]);
 	}
 
 	public Entity getEntity(final int x, final int y) {
@@ -75,21 +72,6 @@ public final class Map {
 			}
 		}
 		return null;
-	}
-	
-	public Entity[] getEntities(final int x, final int y) {
-		assert (containsPoint(x, y));
-		Entity e = entityMap[x - getXOrigin()][y - getYOrigin()];
-		if (e != null) {
-			return new Entity[] {e};
-		}
-		List<Entity> entities = new ArrayList<>();
-		for (Entity entity : entitySet) {
-			if (entity.getX() == x && entity.getY() == y) {
-				entities.add(entity);
-			}
-		}
-		return entities.toArray(new Entity[entities.size()]);
 	}
 
 	public int getHeight() {
@@ -147,11 +129,14 @@ public final class Map {
 		Entity entity = getEntity(x, y);
 		assert entity != null;
 		if (entity.getEntityType() == EntityType.PLAYER)
-			playerSet.remove((PlayerCharacter) entity);
+			playerSet.remove(entity);
 		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.REMOVED, entity.getUniqueID(), x, y));
 		entitySet.remove(entity);
 		if (entity.getEntityType() != EntityType.PLAYER)
 			entityMap[x - getXOrigin()][y - getYOrigin()] = null;
+		if (playerSet.size() == 0 && instanceNumber != Config.GLOBAL_INSTANCE) {
+			MapHandler.getInstance().removeMap(this);
+		}
 	}
 
 	public void sendPacketToPlayers(Packet packet) {
@@ -165,48 +150,45 @@ public final class Map {
 		Connection userConnection = (Connection) UserManager.getUserForUserID(player.getUniqueID()).getConnection();
 		assert userConnection != null;
 		for (Entity e : entitySet) {
-			switch (e.getEntityType()) {
-			case OBJECT:
-				GameObject object = (GameObject) e;
-				userConnection.addOutgoingPacket(new ExtensiveObjectPacket(null, object.getUniqueID(),
-						object.getStaticID(), object.getX(), object.getY(), object.getName()));
-				break;
-			case PLAYER:
-				//TODO Implement
-				break;
-			case NPC:
-				Character character = (Character) e;
-				userConnection.addOutgoingPacket(new ExtensiveCharacterPacket(null, character.getUniqueID(),
-						character.getStaticID(), character.getX(), character.getY(), character.getHealth(),
-						character.getMaxHealth(), character.getLevel(), character.getName()));
-				break;
-			}
+			userConnection.addOutgoingPacket(e.getExtensivePacket());
 		}
 	}
 
 	private void sendEntityToPlayers(Entity entity) {
-		switch (entity.getEntityType()) {
-		case OBJECT:
-			GameObject object = (GameObject) entity;
-			sendPacketToPlayers(new ExtensiveObjectPacket(null, object.getUniqueID(), object.getStaticID(),
-					object.getX(), object.getY(), object.getName()));
-			break;
-		case PLAYER:
-			//TODO Implement
-			break;
-		case NPC:
-			NPC character = (NPC) entity;
-			sendPacketToPlayers(new ExtensiveCharacterPacket(null, character.getUniqueID(), character.getStaticID(),
-					character.getX(), character.getY(), character.getHealth(), character.getMaxHealth(),
-					character.getLevel(), character.getName()));
-			break;
-		}
+		sendPacketToPlayers(entity.getExtensivePacket());
 	}
 
 	private void setMapToNulls() {
 		for (int i = 0; i < entityMap.length; i++) {
 			for (int j = 0; j < entityMap[i].length; j++) {
 				entityMap[i][j] = null;
+			}
+		}
+	}
+
+	protected void cleanUp() {
+		assert (playerSet.size() == 0);
+		for (Entity e : entitySet) {
+			e.cleanUp();
+		}
+	}
+
+	void loadSpawns() {
+		for (Spawn spawn : definition.getSpawns()) {
+			switch (spawn.getType()) {
+			case Spawn.CHARACTER:
+				NPCFactory.getInstance().createNPC(spawn.getName(), spawn.getX(), spawn.getY(), definition.getZ(),
+						instanceNumber);
+				break;
+			case Spawn.OBJECT:
+				GameObjectFactory.getInstance().createGameObject(spawn.getName(), spawn.getX(), spawn.getY(),
+						definition.getZ(), instanceNumber);
+				break;
+			case Spawn.NULL:
+				break;
+			default:
+				System.err.println("No case for spawn type when loading map spawns: " + spawn.getType());
+				break;
 			}
 		}
 	}

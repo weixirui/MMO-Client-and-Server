@@ -19,4 +19,13 @@
     <strength>0</strength>
     <defence>0</defence>
   </npc>
+  <npc>
+    <name>Armor Smith</name>
+    <id>3</id>
+    <health>1</health>
+    <level>1</level>
+    <accuracy>0</accuracy>
+    <strength>0</strength>
+    <defence>0</defence>
+  </npc>
 </definitions>

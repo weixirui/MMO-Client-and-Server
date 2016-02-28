@@ -69,15 +69,15 @@ public final class NPCDefinition {
 		return name;
 	}
 
+	public int getRespawnTimer() {
+		return respawnTimer;
+	}
+
 	public int getStrength() {
 		return strength;
 	}
 
 	public boolean isAutoRespawn() {
 		return autoRespawn;
-	}
-
-	public int getRespawnTimer() {
-		return respawnTimer;
 	}
 }

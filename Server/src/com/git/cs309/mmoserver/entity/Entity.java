@@ -2,6 +2,7 @@ package com.git.cs309.mmoserver.entity;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
 public abstract class Entity {
@@ -42,11 +43,13 @@ public abstract class Entity {
 			return false;
 		}
 		Entity entity = (Entity) other;
-		return entity.x == x && entity.y == y && entity.z == z && entity.idTag.equals(idTag)
-				&& name.equals(entity.name);
+		return entity.x == x && entity.y == y && entity.z == z && entity.idTag.equals(idTag) && name.equals(entity.name)
+				&& getEntityType() == entity.getEntityType();
 	}
 
 	public abstract EntityType getEntityType();
+
+	public abstract Packet getExtensivePacket();
 
 	public final int getInstanceNumber() {
 		return instanceNumber;
