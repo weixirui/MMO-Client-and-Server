@@ -30,6 +30,6 @@ public class Connection extends AbstractConnection {
 
 	@Override
 	public void handlePacket(Packet arg0) {
-		PacketHandler.handlePacket(arg0);
+		PacketHandler.getInstance().handlePacket(arg0);
 	}
 }

@@ -4,14 +4,26 @@ import javax.swing.JOptionPane;
 
 import com.git.cs309.mmoclient.gui.GameGUI;
 import com.git.cs309.mmoclient.gui.LoginGUI;
+import com.git.cs309.mmoserver.packets.AbstractPacketHandler;
 import com.git.cs309.mmoserver.packets.ErrorPacket;
 import com.git.cs309.mmoserver.packets.MessagePacket;
 import com.git.cs309.mmoserver.packets.EventPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 
-public final class PacketHandler {
+public final class PacketHandler extends AbstractPacketHandler {
 	
-	public static void handlePacket(final Packet packet) {
+	private static final PacketHandler INSTANCE = new PacketHandler();
+	
+	public static final PacketHandler getInstance() {
+		return INSTANCE;
+	}
+	
+	private PacketHandler() {
+		
+	}
+
+	@Override
+	public void handlePacketBlock(Packet packet) {
 		switch (packet.getPacketType()) {
 		case MESSAGE_PACKET:
 			MessagePacket messagePacket = (MessagePacket) packet;
@@ -57,15 +69,34 @@ public final class PacketHandler {
 		case TEST_PACKET:
 			System.out.println("No code for test packet");
 			break;
-		case SERVER_MODULE_STATUS_PACKET: // No need to do anything with these packets, they're for the admin client or only expected for the client to send to server.
-		case INTERFACE_CLICK_PACKET:
-		case LOGIN_PACKET:
-		case USER_STATUS_PACKET:
 		case ADMIN_COMMAND_PACKET:
+			break;
+		case CHARACTER_STATUS_PACKET:
+			break;
 		case ENTITY_CLICK_PACKET:
-			break; 
+			break;
+		case INTERFACE_CLICK_PACKET:
+			break;
+		case ITEM_CONTAINER_PACKET:
+			break;
+		case LOGIN_PACKET:
+			break;
+		case MOVE_PACKET:
+			break;
+		case NEW_MAP_PACKET:
+			break;
+		case NULL_PACKET:
+			break;
+		case PLAYER_EQUIPMENT_PACKET:
+			break;
+		case SELF_PACKET:
+			break;
+		case SERVER_MODULE_STATUS_PACKET:
+			break;
+		case USER_STATUS_PACKET:
+			break;
 		default:
-			System.out.println("Recieved unexpected packet type: "+packet.getPacketType());
+			System.err.println("No case for packet type: "+packet.getPacketType());
 			break;
 		}
 	}

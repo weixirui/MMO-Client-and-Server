@@ -3,14 +3,26 @@ package com.git.cs309.adminclient.packets;
 import com.git.cs309.adminclient.gui.ClientGUI;
 import com.git.cs309.adminclient.gui.LoginGUI;
 import com.git.cs309.adminclient.gui.ServerModuleComponent;
+import com.git.cs309.mmoserver.packets.AbstractPacketHandler;
 import com.git.cs309.mmoserver.packets.EventPacket;
 import com.git.cs309.mmoserver.packets.MessagePacket;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.packets.ServerModuleStatusPacket;
 
-public final class PacketHandler {
-
-	public static void handlePacket(final Packet packet) {
+public final class PacketHandler extends AbstractPacketHandler {
+	
+	private static final PacketHandler INSTANCE = new PacketHandler();
+	
+	public static final PacketHandler getInstance() {
+		return INSTANCE;
+	}
+	
+	private PacketHandler() {
+		
+	}
+	
+	@Override
+	public void handlePacketBlock(Packet packet) {
 		switch (packet.getPacketType()) {
 		case MESSAGE_PACKET:
 			MessagePacket message = (MessagePacket) packet;
@@ -55,6 +67,44 @@ public final class PacketHandler {
 				component.setDrag(smsp.getDrag());
 			}
 			ClientGUI.getSingleton().repaint();
+			break;
+		case ADMIN_COMMAND_PACKET:
+			break;
+		case CHARACTER_STATUS_PACKET:
+			break;
+		case ENTITY_CLICK_PACKET:
+			break;
+		case ENTITY_UPDATE_PACKET:
+			break;
+		case ERROR_PACKET:
+			break;
+		case EXTENSIVE_CHARACTER_PACKET:
+			break;
+		case EXTENSIVE_OBJECT_PACKET:
+			break;
+		case INTERFACE_CLICK_PACKET:
+			break;
+		case ITEM_CONTAINER_PACKET:
+			break;
+		case LOGIN_PACKET:
+			break;
+		case MOVE_PACKET:
+			break;
+		case NEW_MAP_PACKET:
+			break;
+		case NULL_PACKET:
+			break;
+		case PLAYER_CHARACTER_PACKET:
+			break;
+		case PLAYER_EQUIPMENT_PACKET:
+			break;
+		case SELF_PACKET:
+			break;
+		case TEST_PACKET:
+			break;
+		case USER_STATUS_PACKET:
+			break;
+		default:
 			break;
 		}
 	}
