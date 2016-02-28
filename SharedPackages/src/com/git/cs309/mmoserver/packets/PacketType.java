@@ -2,18 +2,18 @@ package com.git.cs309.mmoserver.packets;
 
 public enum PacketType {
 
-	SELF_PACKET((byte) 21), MOVE_PACKET((byte) 20), NEW_MAP_PACKET((byte) 19), ITEM_CONTAINER_PACKET(
-			(byte) 18), PLAYER_EQUIPMENT_PACKET((byte) 17), CHARACTER_STATUS_PACKET((byte) 16), PLAYER_CHARACTER_PACKET(
-					(byte) 15), EXTENSIVE_CHARACTER_PACKET((byte) 14), EXTENSIVE_OBJECT_PACKET(
-							(byte) 12), ENTITY_UPDATE_PACKET((byte) 7), ENTITY_CLICK_PACKET(
-									(byte) 5), INTERFACE_CLICK_PACKET((byte) 12), USER_STATUS_PACKET(
-											(byte) 10), SERVER_MODULE_STATUS_PACKET((byte) 9), ADMIN_COMMAND_PACKET(
-													(byte) 8), TEST_PACKET((byte) 6), EVENT_PACKET(
-															(byte) 4), ERROR_PACKET((byte) 3), LOGIN_PACKET(
-																	(byte) 2), MESSAGE_PACKET((byte) 1), NULL_PACKET(
-																			(byte) 0);
+	SIMPLE_REQUEST_PACKET((byte) 21), SELF_PACKET((byte) 11), MOVE_PACKET((byte) 20), NEW_MAP_PACKET(
+			(byte) 19), ITEM_CONTAINER_PACKET((byte) 18), PLAYER_EQUIPMENT_PACKET((byte) 17), CHARACTER_STATUS_PACKET(
+					(byte) 16), PLAYER_CHARACTER_PACKET((byte) 15), EXTENSIVE_CHARACTER_PACKET(
+							(byte) 14), EXTENSIVE_OBJECT_PACKET((byte) 12), ENTITY_UPDATE_PACKET(
+									(byte) 7), ENTITY_CLICK_PACKET((byte) 5), INTERFACE_CLICK_PACKET(
+											(byte) 12), USER_STATUS_PACKET((byte) 10), SERVER_MODULE_STATUS_PACKET(
+													(byte) 9), ADMIN_COMMAND_PACKET((byte) 8), TEST_PACKET(
+															(byte) 6), EVENT_PACKET((byte) 4), ERROR_PACKET(
+																	(byte) 3), LOGIN_PACKET((byte) 2), MESSAGE_PACKET(
+																			(byte) 1), NULL_PACKET((byte) 0);
 
-	//Currently unused bytes: 21-255
+	//Currently unused bytes: 22-255
 	public static final byte NULL_PACKET_BYTE = 0;
 	public static final byte MESSAGE_PACKET_BYTE = 1;
 	public static final byte LOGIN_PACKET_BYTE = 2;
@@ -35,6 +35,7 @@ public enum PacketType {
 	public static final byte NEW_MAP_PACKET_BYTE = 19;
 	public static final byte MOVE_PACKET_BYTE = 20;
 	public static final byte SELF_PACKET_BYTE = 11;
+	public static final byte SIMPLE_REQUEST_PACKET_BYTE = 21;
 	//Packets needing implementation:
 	/*
 	 * ItemContainerPacket

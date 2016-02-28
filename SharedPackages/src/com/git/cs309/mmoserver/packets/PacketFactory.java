@@ -44,6 +44,8 @@ public final class PacketFactory {
 			return new SelfPacket(source, bytes);
 		case PacketType.MOVE_PACKET_BYTE:
 			return new MovePacket(source, bytes);
+		case PacketType.SIMPLE_REQUEST_PACKET_BYTE:
+			return new SimpleRequestPacket(source, bytes);
 		default:
 			System.out.println("No case for type byte: " + bytes[0]);
 			return null;

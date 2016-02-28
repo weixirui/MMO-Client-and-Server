@@ -21,8 +21,8 @@ public abstract class AbstractConnection extends Thread {
 	protected final String ip;
 	protected volatile boolean disconnected = false;
 	protected volatile boolean closeRequested = false;
-	protected volatile Queue<Packet> incommingPackets = new CycleQueue<>(10); // Making this volatile should allow for other threads to access it properly, as well as be changed by this thread properly.
-	protected volatile Queue<Packet> outgoingPackets = new CycleQueue<>(10);
+	protected volatile Queue<Packet> incommingPackets = new CycleQueue<>(50); // Making this volatile should allow for other threads to access it properly, as well as be changed by this thread properly.
+	protected volatile Queue<Packet> outgoingPackets = new CycleQueue<>(50);
 
 	protected volatile Thread outgoingThread = new Thread() {
 		@Override

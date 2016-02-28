@@ -18,6 +18,7 @@ import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
 import com.git.cs309.mmoserver.io.Logger;
+import com.git.cs309.mmoserver.items.ItemFactory;
 import com.git.cs309.mmoserver.map.MapFactory;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.util.TickProcess;
@@ -172,6 +173,11 @@ public final class Main {
 		}
 		try {
 			GameObjectFactory.getInstance().loadDefinitions();
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		try {
+			ItemFactory.getInstance().loadDefinitions();
 		} catch (SAXException | IOException | ParserConfigurationException e) {
 			e.printStackTrace();
 		}

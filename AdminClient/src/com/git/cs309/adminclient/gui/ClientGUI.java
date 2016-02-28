@@ -160,7 +160,7 @@ public class ClientGUI extends JFrame {
 						chatBox.setCaretPosition(0);
 					} else {
 						AdminClient.getConnection()
-								.addOutgoingPacket(new MessagePacket(null, MessagePacket.GLOBAL_CHAT, message));
+								.addOutgoingPacket(new MessagePacket(null, MessagePacket.GLOBAL_CHAT, "/y "+message));
 					}
 				}
 			}

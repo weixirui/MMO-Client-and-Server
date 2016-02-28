@@ -27,21 +27,40 @@ public final class PacketHandler extends AbstractPacketHandler {
 		case LOGIN_PACKET:
 			LoginHandler.handleLoginPacket((LoginPacket) packet);
 			break;
-		case ERROR_PACKET:
-			//Not gunna do anything for Error packet since the server shouldn't be getting them in the first place.
-			break;
-		case TEST_PACKET:
-			TestPacket testPacket = (TestPacket) packet;
-			switch (testPacket.getTest()) {
-			case 0:
-				throw new RuntimeException("Just a test.");
-			}
-			break;
+//		case TEST_PACKET:
+//			TestPacket testPacket = (TestPacket) packet;
+//			switch (testPacket.getTest()) {
+//			case 0:
+//				throw new RuntimeException("Just a test.");s
+//			}
+//			break;
 		case ADMIN_COMMAND_PACKET:
 			CommandHandler.handleCommandPacket(packet);
 			break;
+		case MOVE_PACKET:
+			break;
+		case ENTITY_CLICK_PACKET:
+			break;
+		case INTERFACE_CLICK_PACKET:
+			break;
+		//These next few packets shouldn't occur on the server-side, since they're meant for the client.
+		case NEW_MAP_PACKET:
+		case ERROR_PACKET:
+		case NULL_PACKET:
+		case PLAYER_CHARACTER_PACKET:
+		case PLAYER_EQUIPMENT_PACKET:
+		case SELF_PACKET:
+		case SERVER_MODULE_STATUS_PACKET:
+		case USER_STATUS_PACKET:
+		case CHARACTER_STATUS_PACKET:
+		case ENTITY_UPDATE_PACKET:
+		case EVENT_PACKET:
+		case EXTENSIVE_CHARACTER_PACKET:
+		case EXTENSIVE_OBJECT_PACKET:
+		case ITEM_CONTAINER_PACKET:
+			break;
 		default:
-			System.err.println("No case for type: " + packet.getPacketType() + " in PacketHandler.handlePacket");
+			break;
 		}
 	}
 }

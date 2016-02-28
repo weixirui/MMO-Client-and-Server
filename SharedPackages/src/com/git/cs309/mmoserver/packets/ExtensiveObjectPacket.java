@@ -12,6 +12,7 @@ public class ExtensiveObjectPacket extends Packet {
 	private final int uniqueID;
 	private final int staticID;
 	private final String name;
+
 	public ExtensiveObjectPacket(AbstractConnection connection, byte[] bytes) {
 		super(connection);
 		int[] ints = BinaryOperations.intArrayFromBytes(bytes, 1, 4);
@@ -25,6 +26,7 @@ public class ExtensiveObjectPacket extends Packet {
 		}
 		name = String.valueOf(chars);
 	}
+
 	public ExtensiveObjectPacket(AbstractConnection connection, int uniqueID, int staticID, int x, int y, String name) {
 		super(connection);
 		this.uniqueID = uniqueID;
