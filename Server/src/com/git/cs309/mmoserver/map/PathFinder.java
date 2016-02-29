@@ -1,0 +1,127 @@
+package com.git.cs309.mmoserver.map;
+
+import java.util.Queue;
+
+import com.git.cs309.mmoserver.Config;
+import com.git.cs309.mmoserver.util.CycleQueue;
+import com.git.cs309.mmoserver.util.MathUtils;
+
+public final class PathFinder {
+	public static final class Tile {
+		private final int x, y;
+
+		int getX() {
+			return x;
+		}
+
+		int getY() {
+			return y;
+		}
+
+		public Tile(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		@Override
+		public boolean equals(Object other) {
+			if (!(other instanceof Tile)) {
+				return false;
+			}
+			Tile cell = (Tile) other;
+			return cell.x == x && cell.y == y;
+		}
+	}
+
+	public static final Queue<Tile> getPathToPoint(final Map map, final int x1, final int y1, final int x2,
+			final int y2) {
+		return getPath(map, x1, y1, x2, y2);
+	}
+
+	//Uses an implementation of Lee's algorithm
+	private static final Queue<Tile> getPath(final Map map, final int x1, final int y1, final int x2, final int y2) {
+		int[][] grid = map.getPathingMap();
+		int originX = (x1 - map.getXOrigin());
+		int originY = (y1 - map.getYOrigin());
+		grid[x2 - map.getXOrigin()][y2 - map.getXOrigin()] = -3;
+		grid[originX][originY] = 0;
+		boolean stop = false;
+		int sX;
+		int sY;
+		int eX;
+		int eY;
+		int sX2;
+		int sY2;
+		int eX2;
+		int eY2;
+		int step;
+		for (step = 0; step < Config.PATHIN_MAX_DISTANCE && !stop; step++) {
+			sX = originX - step;
+			sY = originY - step;
+			eX = originX + step;
+			eY = originY + step;
+			for (int x = sX; x <= eX; x++) {
+				for (int y = sY; y <= eY; y++) {
+					if ((x != sX && x != eX) && (y != sY && y != eY)) {
+						continue;
+					}
+					sX2 = x - 1;
+					sY2 = y - 1;
+					eX2 = x + 1;
+					eY2 = y + 1;
+					for (int x3 = sX2; x3 <= eX2; x3++) {
+						for (int y3 = sY2; y3 <= eY2; y3++) {
+							if (x3 - 1 < 0 || y3 - 1 < 0 || x3 >= grid.length || y3 >= grid[x3].length) {
+								continue;
+							}
+							if (grid[x3][y3] == -3) {
+								stop = true;
+								continue;
+							}
+							if (grid[x3][y3] != -1) {
+								continue;
+							}
+							grid[x3][y3] = step + 1;
+						}
+					}
+				}
+			}
+		}
+		if (!stop) {
+			return new CycleQueue<Tile>(0); //Empty List
+		}
+		step -= 1;
+		int lX = (x2 - map.getXOrigin());
+		int lY = (y2 - map.getYOrigin());
+		double closestDistance;
+		int tX = 0;
+		int tY = 0;
+		double distance;
+		CycleQueue<Tile> walkingQueue = new CycleQueue<>(step + 1);
+		walkingQueue.add(new Tile(lX, lY));
+		while (step > 0) {
+			closestDistance = grid.length * 2;
+			for (int x = lX - 1; x <= lX + 1; x++) {
+				for (int y = lY - 1; y <= lY + 1; y++) {
+					if (x < 0 || x >= grid.length || y < 0 || y >= grid[x].length || grid[x][y] > step) {
+						continue;
+					}
+					distance = MathUtils.distance(x, y, originX, originY);
+					if (distance < closestDistance) {
+						tX = x;
+						tY = y;
+						closestDistance = distance;
+					}
+				}
+			}
+			assert closestDistance != grid.length * 2;
+			walkingQueue.add(new Tile(tX, tY));
+			lX = tX;
+			lY = tY;
+			step--;
+		}
+		walkingQueue.reverse();
+		return walkingQueue;
+	}
+
+}

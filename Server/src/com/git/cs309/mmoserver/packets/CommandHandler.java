@@ -12,7 +12,7 @@ import com.git.cs309.mmoserver.entity.characters.user.User;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 
 public final class CommandHandler {
-	public static final void handleCommandPacket(final Packet packet) {
+	public static final void handlePacket(final Packet packet) {
 		switch (packet.getPacketType()) {
 		case ADMIN_COMMAND_PACKET:
 			AdminCommandPacket adminPacket = (AdminCommandPacket) packet;

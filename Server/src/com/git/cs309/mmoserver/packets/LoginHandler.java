@@ -6,7 +6,7 @@ import com.git.cs309.mmoserver.entity.characters.user.UserAlreadyLoggedInExcepti
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 
 public final class LoginHandler {
-	public static final void handleLoginPacket(LoginPacket loginPacket) {
+	public static final void handlePacket(LoginPacket loginPacket) {
 		try {
 			if (!UserManager.logIn(loginPacket)) {
 				System.err.println("Failed to log in user \"" + loginPacket.getUsername() + "\".");

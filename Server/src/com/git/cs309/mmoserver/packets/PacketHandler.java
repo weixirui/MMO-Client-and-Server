@@ -22,10 +22,10 @@ public final class PacketHandler extends AbstractPacketHandler {
 	public void handlePacketBlock(Packet packet) {
 		switch (packet.getPacketType()) { // Case for each type of packet.
 		case MESSAGE_PACKET:
-			MessageHandler.handleMessagePacket((MessagePacket) packet);
+			MessageHandler.handlePacket((MessagePacket) packet);
 			break;
 		case LOGIN_PACKET:
-			LoginHandler.handleLoginPacket((LoginPacket) packet);
+			LoginHandler.handlePacket((LoginPacket) packet);
 			break;
 //		case TEST_PACKET:
 //			TestPacket testPacket = (TestPacket) packet;
@@ -35,13 +35,19 @@ public final class PacketHandler extends AbstractPacketHandler {
 //			}
 //			break;
 		case ADMIN_COMMAND_PACKET:
-			CommandHandler.handleCommandPacket(packet);
+			CommandHandler.handlePacket(packet);
 			break;
 		case MOVE_PACKET:
+			MoveHandler.handlePacket((MovePacket) packet);
 			break;
 		case ENTITY_CLICK_PACKET:
+			EntityClickHandler.handlePacket((EntityClickPacket) packet);
 			break;
 		case INTERFACE_CLICK_PACKET:
+			InterfaceClickHandler.handlePacket((InterfaceClickPacket) packet);
+			break;
+		case SIMPLE_REQUEST_PACKET:
+			RequestHandler.handlePacket((SimpleRequestPacket) packet);
 			break;
 		//These next few packets shouldn't occur on the server-side, since they're meant for the client.
 		case NEW_MAP_PACKET:
@@ -58,6 +64,8 @@ public final class PacketHandler extends AbstractPacketHandler {
 		case EXTENSIVE_CHARACTER_PACKET:
 		case EXTENSIVE_OBJECT_PACKET:
 		case ITEM_CONTAINER_PACKET:
+			break;
+		case TEST_PACKET:
 			break;
 		default:
 			break;

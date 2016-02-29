@@ -8,7 +8,7 @@ import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.map.MapHandler;
 
 public final class MessageHandler {
-	public static final void handleMessagePacket(MessagePacket messagePacket) {
+	public static final void handlePacket(MessagePacket messagePacket) {
 		Connection userConnection = (Connection) messagePacket.getConnection();
 		if (!userConnection.isLoggedIn()) {
 			return; // No need to handle message packets for users not logged in yet.

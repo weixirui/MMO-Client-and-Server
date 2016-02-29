@@ -11,7 +11,7 @@ public abstract class Entity {
 	protected int entityID = -1;
 	protected transient int instanceNumber = Config.GLOBAL_INSTANCE;
 	protected String name = "Null";
-	protected volatile boolean needsDisposal = false;
+	protected volatile transient boolean needsDisposal = false;
 
 	public Entity() {
 		instanceNumber = 0;

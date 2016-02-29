@@ -9,7 +9,7 @@ public class InterfaceClickPacket extends Packet {
 	public static final int CHARACTER_3_SLOT = 2;
 	public static final int CHARACTER_4_SLOT = 3;
 	public static final int CHARACTER_5_SLOT = 4;
-	public static final int CONFIRM_CHARACTER_CREATION = 5;
+	//public static final int CONFIRM_CHARACTER_CREATION = 5;
 	public static final int OKAY_BUTTON = 6;
 	public static final int CANCEL_BUTTON = 7;
 	public static final int SKILL_ACTION_1 = 8;
@@ -22,12 +22,12 @@ public class InterfaceClickPacket extends Packet {
 	public static final int UTILITY_SKILL_2 = 15;
 	public static final int UTILITY_SKILL_3 = 16;
 	public static final int ELITE_SKILL = 17;
-	public static final int CHARACTER_STATS_OPEN = 18;
-	public static final int PARTY_MENU_OPEN = 19;
-	public static final int FRIENDS_LIST_OPEN = 20;
-	public static final int IGNORE_LIST_OPEN = 21;
+	//public static final int CHARACTER_STATS_OPEN = 18;
+	//public static final int PARTY_MENU_OPEN = 19;
+	//public static final int FRIENDS_LIST_OPEN = 20;
+	//public static final int IGNORE_LIST_OPEN = 21;
 	public static final int ITEM_CLICK = 22;
-	public static final int ITEM_MENU_CLICK = 23;
+	public static final int MENU_CLICK = 23;
 	public static final int WEAPON_SWAP = 24;
 	private final int interfaceID;
 	private final int clickArgs1;

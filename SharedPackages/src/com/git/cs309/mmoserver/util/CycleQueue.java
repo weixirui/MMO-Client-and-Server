@@ -24,6 +24,16 @@ public final class CycleQueue<T> implements Queue<T> {
 		array = new Object[totalAmount];
 		this.deleteWhenFull = deleteWhenFull;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public void reverse() {
+		ensureCorners();
+		for (int i = 0; i < size / 2; i++) {
+			Object o = get(i);
+			set(i, get(size - (i + 1)));
+			set(size - (i + 1), (T) o);
+		}
+	}
 
 	@Override
 	public synchronized boolean add(T e) {
@@ -92,6 +102,11 @@ public final class CycleQueue<T> implements Queue<T> {
 	public synchronized T get(int index) {
 		index = (index + takeIndex) % array.length;
 		return (T) array[index];
+	}
+	
+	private synchronized void set(int index, T object) {
+		index = (index + takeIndex) % array.length;
+		array[index] = object;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.git.cs309.mmoserver.map;
 
+import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,13 +23,23 @@ public final class Map {
 	private volatile Entity[][] entityMap;
 	private volatile Set<Entity> entitySet = new HashSet<>();
 	private volatile Set<PlayerCharacter> playerSet = new HashSet<>();
+	private final int[][] pathingMap;
 
 	public Map(final MapDefinition definition, final int instanceNumber) {
 		this.instanceNumber = instanceNumber;
 		this.definition = definition;
 		entityMap = new Entity[definition.getWidth()][definition.getHeight()];
+		pathingMap = new int[definition.getWidth()][definition.getHeight()];
 		setMapToNulls();
 		MapHandler.getInstance().addMap(this);
+	}
+	
+	public int[][] getPathingMap() {
+		int[][] copy = new int[pathingMap.length][pathingMap[0].length];
+		for (int i = 0; i < pathingMap.length; i++) {
+			System.arraycopy(pathingMap[i], 0, copy[i], 0, pathingMap[i].length);
+		}
+		return copy;
 	}
 
 	public boolean containsPoint(final int x, final int y) {
@@ -58,6 +69,20 @@ public final class Map {
 			}
 		}
 		return entities.toArray(new Entity[entities.size()]);
+	}
+	
+	public boolean walkable(final int x, final int y) {
+		assert (containsPoint(x, y));
+		Entity e = entityMap[x - getXOrigin()][y - getYOrigin()];
+		if (e != null) {
+			return e.canWalkThrough();
+		}
+		for (Entity entity : entitySet) {
+			if (entity.getX() == x && entity.getY() == y && !entity.canWalkThrough()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public Entity getEntity(final int x, final int y) {
@@ -106,6 +131,8 @@ public final class Map {
 		if (entity.getEntityType() != EntityType.PLAYER) {
 			entityMap[dX][dY] = entityMap[oX][oY];
 			entityMap[oX][oY] = null;
+			pathingMap[dX][dY] = -2;
+			pathingMap[oX][oY] = -1;
 		}
 	}
 
@@ -122,6 +149,7 @@ public final class Map {
 		}
 		entitySet.add(entity);
 		entityMap[x - getXOrigin()][y - getYOrigin()] = entity;
+		pathingMap[x - getXOrigin()][y - getYOrigin()] = -2;
 	}
 
 	public void removeEntity(final int x, final int y) {
@@ -132,8 +160,10 @@ public final class Map {
 			playerSet.remove(entity);
 		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.REMOVED, entity.getUniqueID(), x, y));
 		entitySet.remove(entity);
-		if (entity.getEntityType() != EntityType.PLAYER)
+		if (entity.getEntityType() != EntityType.PLAYER) {
 			entityMap[x - getXOrigin()][y - getYOrigin()] = null;
+			pathingMap[x - getXOrigin()][y - getYOrigin()] = -1;
+		}
 		if (playerSet.size() == 0 && instanceNumber != Config.GLOBAL_INSTANCE) {
 			MapHandler.getInstance().removeMap(this);
 		}
@@ -162,6 +192,7 @@ public final class Map {
 		for (int i = 0; i < entityMap.length; i++) {
 			for (int j = 0; j < entityMap[i].length; j++) {
 				entityMap[i][j] = null;
+				pathingMap[i][j] = -1;
 			}
 		}
 	}
@@ -191,5 +222,21 @@ public final class Map {
 				break;
 			}
 		}
+		EventQueue.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				for (Spawn spawn : definition.getSpawns()) {
+					switch (spawn.getType()) {
+					case Spawn.CHARACTER:
+						System.out.println("Pathing from pc spawn to "+spawn.getX()+", "+spawn.getY());
+						PathFinder.getPathToPoint(Map.this, 0, 0, spawn.getX(), spawn.getY());
+						System.out.println("");
+						break;
+					}
+				}
+			}
+			
+		});
 	}
 }

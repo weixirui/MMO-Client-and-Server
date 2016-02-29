@@ -58,6 +58,8 @@ public final class Config {
 	public static final int PLAYER_START_Y = 0;
 
 	public static final int PLAYER_START_Z = 0;
+	
+	public static final int PATHIN_MAX_DISTANCE = Integer.MAX_VALUE;
 
 	public static final int REGEN_AMOUNT = 1;
 
