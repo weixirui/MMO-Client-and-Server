@@ -22,6 +22,7 @@ import com.git.cs309.mmoserver.Config;
  *         system is if the tags aren't returned, so make sure they are. I even
  *         wrote a custom data type to house the tags so that removal doesn't
  *         take O(n) time, where n is the number of items in queue.
+ *         </p>
  * 
  */
 public final class ClosedIDSystem {

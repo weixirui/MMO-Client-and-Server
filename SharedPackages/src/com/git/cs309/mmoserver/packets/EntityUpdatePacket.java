@@ -1,54 +1,48 @@
 package com.git.cs309.mmoserver.packets;
 
 import com.git.cs309.mmoserver.connection.AbstractConnection;
+import com.git.cs309.mmoserver.util.BinaryOperations;
 
 public class EntityUpdatePacket extends Packet {
-	private final int positionX, positionY, destX, destY, uniqueId, entityId, anim, health;
+	public static final byte MOVED = 1;
+	public static final byte REMOVED = 3;
+	public static final byte WALKING = 2;
+	public static final byte STATIC = 4;
+	public static final byte SKILL_ACTION_1 = 5;
+	public static final byte SKILL_ACTION_2 = 6;
+	public static final byte SKILL_ACTION_3 = 7;
+	public static final byte SKILL_ACTION_4 = 8;
+	public static final byte SKILL_ACTION_5 = 9;
+	public static final byte HEALING_SKILL = 10;
+	public static final byte UTILITY_SKILL_1 = 11;
+	public static final byte UTILITY_SKILL_2 = 12;
+	public static final byte UTILITY_SKILL_3 = 13;
+	public static final byte ELITE_SKILL = 14;
+	private final int uniqueID;
+	private final int x;
+	private final int y;
+	private final byte args;
 
-	public EntityUpdatePacket(AbstractConnection source, final int entityId, final int positionX, final int positionY,
-			final int destX, final int destY, final int uniqueId, final int anim, final int health) {
+	public EntityUpdatePacket(AbstractConnection source, final byte args, final int uniqueID, final int x,
+			final int y) {
 		super(source);
-		this.positionX = positionX;
-		this.positionY = positionY;
-		this.destX = destX;
-		this.destY = destY;
-		this.uniqueId = uniqueId;
-		this.entityId = entityId;
-		this.anim = anim;
-		this.health = health;
+		this.args = args;
+		this.uniqueID = uniqueID;
+		this.x = x;
+		this.y = y;
 	}
 
-	public EntityUpdatePacket(final byte[] bytes, AbstractConnection source) {
+	public EntityUpdatePacket(AbstractConnection source, final byte[] bytes) {
 		super(source);
-		int index = 1;
-		this.positionX = (bytes[index++] << 24) | (bytes[index++] << 16) | (bytes[index++] << 8) | bytes[index++];
-		this.positionY = (bytes[index++] << 24) | (bytes[index++] << 16) | (bytes[index++] << 8) | bytes[index++];
-		this.destX = (bytes[index++] << 24) | (bytes[index++] << 16) | (bytes[index++] << 8) | bytes[index++];
-		this.destY = (bytes[index++] << 24) | (bytes[index++] << 16) | (bytes[index++] << 8) | bytes[index++];
-		this.uniqueId = (bytes[index++] << 24) | (bytes[index++] << 16) | (bytes[index++] << 8) | bytes[index++];
-		this.anim = (bytes[index++] << 24) | (bytes[index++] << 16) | (bytes[index++] << 8) | bytes[index++];
-		this.health = (bytes[index++] << 24) | (bytes[index++] << 16) | (bytes[index++] << 8) | bytes[index++];
-		this.entityId = (bytes[index++] << 24) | (bytes[index++] << 16) | (bytes[index++] << 8) | bytes[index++];
+		this.args = bytes[1];
+		int[] ints = BinaryOperations.intArrayFromBytes(bytes, 2);
+		uniqueID = ints[0];
+		x = ints[1];
+		y = ints[2];
 	}
 
-	public int getAnim() {
-		return anim;
-	}
-
-	public int getDestX() {
-		return destX;
-	}
-
-	public int getDestY() {
-		return destY;
-	}
-
-	public int getEntityID() {
-		return entityId;
-	}
-
-	public int getHealth() {
-		return health;
+	public byte getArgs() {
+		return args;
 	}
 
 	@Override
@@ -56,31 +50,32 @@ public class EntityUpdatePacket extends Packet {
 		return PacketType.ENTITY_UPDATE_PACKET;
 	}
 
-	public int getPositionX() {
-		return positionX;
-	}
-
-	public int getPositionY() {
-		return positionY;
-	}
-
 	public int getUniqueID() {
-		return uniqueId;
+		return uniqueID;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	@Override
+	public int sizeOf() {
+		return 14;
 	}
 
 	@Override
 	public byte[] toBytes() {
-		byte[] bytes = new byte[29];
+		byte[] bytes = new byte[sizeOf()];
 		int index = 0;
-		int[] ints = { positionX, positionY, destX, destY, uniqueId, anim, health, entityId };
 		bytes[index++] = getPacketType().getTypeByte();
-		for (int i = 0; i < ints.length; i++) {
-			bytes[index++] = (byte) (ints[i] >> 24);
-			bytes[index++] = (byte) ((ints[i] >> 16) & 0xFF);
-			bytes[index++] = (byte) ((ints[i] >> 8) & 0xFF);
-			bytes[index++] = (byte) (ints[i] & 0xFF);
+		bytes[index++] = args;
+		for (byte b : BinaryOperations.toBytes(uniqueID, x, y)) {
+			bytes[index++] = b;
 		}
 		return bytes;
 	}
-
 }

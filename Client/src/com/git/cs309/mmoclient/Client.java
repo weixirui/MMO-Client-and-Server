@@ -14,15 +14,7 @@ public final class Client {
 	private static volatile Connection connection;
 	private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
 	private static boolean debug = false;
-
-	public static Connection getConnection() {
-		return connection;
-	}
-
-	public static Dimension getScreenSize() {
-		return SCREEN_SIZE;
-	}
-
+	
 	public static void main(String[] args) {
 		for (String arg : args) {
 			switch (arg.toLowerCase()) {
@@ -38,5 +30,17 @@ public final class Client {
 			return;
 		}
 		LoginGUI.getSingleton().setVisible(true);
+	}
+	
+	public static boolean isDebug() {
+		return debug;
+	}
+	
+	public static Connection getConnection() {
+		return connection;
+	}
+	
+	public static Dimension getScreenSize() {
+		return SCREEN_SIZE;
 	}
 }

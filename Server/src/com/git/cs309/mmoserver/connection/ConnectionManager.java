@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
-import com.git.cs309.mmoserver.characters.user.Rights;
+import com.git.cs309.mmoserver.entity.characters.user.Rights;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.packets.PacketHandler;
 import com.git.cs309.mmoserver.packets.PacketType;
@@ -29,19 +28,20 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *         work, so it can still take on new connections.
  */
 public final class ConnectionManager extends TickProcess {
+	private static final ConnectionManager INSTANCE = new ConnectionManager();
+
+	public static final ConnectionManager getInstance() {
+		return INSTANCE;
+	}
+
 	private final Map<String, Connection> connectionMap = new HashMap<>(); // Could hold both username -> connection and ip -> connection. But will probably only hold ip -> connection, since that's all that's needed.
 	private final List<Connection> connections = new ArrayList<>(Config.MAX_CONNECTIONS);
 	private Object waitObject = new Object();
+	private long ticks;
+	private long packetTotals;
 
 	public ConnectionManager() {
 		super("ConnectionManager");
-		ConnectionManager predecessor = Main.getConnectionManager();
-		if (predecessor != null) {
-			waitObject = predecessor.waitObject;
-			connectionMap.putAll(predecessor.connectionMap);
-			connections.addAll(predecessor.connections);
-		}
-		predecessor = null;
 	}
 
 	/**
@@ -53,11 +53,11 @@ public final class ConnectionManager extends TickProcess {
 	 */
 	public void addConnection(final Connection connection) {
 		synchronized (connectionMap) {
-			connectionMap.put(connection.getIP(), connection); // Add connection to "IP->Connection" map
+			connectionMap.put(connection.getServerSideIP(), connection); // Add connection to "IP->Connection" map
 		}
 		synchronized (connections) {
 			connections.add(connection); // Add connection to list.
-			System.out.println("Connection joined: " + connection.getIP());
+			println("Connection joined: " + connection.getServerSideIP());
 		}
 	}
 
@@ -104,21 +104,29 @@ public final class ConnectionManager extends TickProcess {
 		}
 	}
 
+	@Override
+	public void printStatus() {
+		println("Total connections: " + connections.size());
+		println("Average packets per tick: " + ((float) (packetTotals / ticks)));
+		ticks = 0;
+		packetTotals = 0;
+	}
+
 	/**
 	 * Removes a connection from the list and map.
 	 * 
 	 * @param connection
 	 *            connection to remove.
-	 * @return the same connection.
 	 */
-	public Connection removeConnection(final Connection connection) {
+	public void removeConnection(final Connection connection) {
 		synchronized (connectionMap) {
-			connectionMap.remove(connection.getIP());
+			connectionMap.remove(connection.getServerSideIP());
 		}
 		synchronized (connections) {
 			connections.remove(connection);
 		}
-		return connection;
+		println("Connection disconnected: " + connection.getServerSideIP());
+		connection.cleanUp();
 	}
 
 	/**
@@ -126,9 +134,8 @@ public final class ConnectionManager extends TickProcess {
 	 * 
 	 * @param ip
 	 *            IP of connection to remove
-	 * @return the connection for the IP
 	 */
-	public Connection removeConnection(final String ip) {
+	public void removeConnection(final String ip) {
 		Connection connection = getConnectionForIP(ip);
 		synchronized (connectionMap) {
 			connectionMap.remove(connection);
@@ -136,7 +143,8 @@ public final class ConnectionManager extends TickProcess {
 		synchronized (connections) {
 			connections.remove(connection);
 		}
-		return connection;
+		println("Connection disconnected: " + connection.getServerSideIP());
+		connection.cleanUp();
 	}
 
 	/**
@@ -154,6 +162,17 @@ public final class ConnectionManager extends TickProcess {
 		}
 	}
 
+	/**
+	 * Only sends the packet to connections with rights at or above the rights
+	 * specified. Admins will get all mod and player packets sent through this,
+	 * and mods will only get mod and player packets. Players will only get
+	 * player packets.
+	 * 
+	 * @param packet
+	 *            packet to be sent.
+	 * @param rights
+	 *            rights required to recieve the packet.
+	 */
 	public void sendPacketToConnectionsWithRights(final Packet packet, final Rights rights) {
 		synchronized (connections) {
 			for (Connection connection : connections) {
@@ -170,11 +189,12 @@ public final class ConnectionManager extends TickProcess {
 		synchronized (connections) {
 			for (int i = 0; i < connections.size(); i++) {
 				if (connections.get(i).isDisconnected()) {
-					System.out.println("Connection disconnected: " + removeConnection(connections.get(i--)).getIP()); // Send message and remove.
+					removeConnection(connections.get(i--));
 					continue;
 				}
-				Packet packet = connections.get(i).getPacket();
-				if (packet != null && packet.getPacketType() != PacketType.NULL_PACKET) {
+				Packet packet = null;
+				while ((packet = connections.get(i).getPacket()) != null
+						&& packet.getPacketType() != PacketType.NULL_PACKET) {
 					packets.add(packet);
 				}
 			}
@@ -183,8 +203,10 @@ public final class ConnectionManager extends TickProcess {
 			waitObject.notifyAll(); // Since all connections are waiting on this class's singleton, notifyAll wakes them up so they can start reading packets again.
 		}
 		for (Packet packet : packets) {
-			PacketHandler.handlePacket(packet); // Handle all the packets.
+			PacketHandler.getInstance().handlePacket(packet); // Handle all the packets.
 		}
+		packetTotals += packets.size();
+		ticks++;
 		packets.clear();
 	}
 }

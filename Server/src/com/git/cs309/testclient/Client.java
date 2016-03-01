@@ -8,6 +8,7 @@ import com.git.cs309.mmoserver.packets.LoginPacket;
 import com.git.cs309.mmoserver.packets.MessagePacket;
 import com.git.cs309.mmoserver.util.StreamUtils;
 
+@SuppressWarnings("unused")
 public class Client {
 	//Just a basic client for various server/client interaction testing.
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {

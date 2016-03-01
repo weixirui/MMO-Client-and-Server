@@ -16,18 +16,38 @@ public final class PacketFactory {
 			return new ErrorPacket(bytes, source);
 		case PacketType.EVENT_PACKET_BYTE:
 			return new EventPacket(bytes, source);
-		case PacketType.ENTITY_UPDATE_PACKET_BYTE:
-			return new EntityUpdatePacket(bytes, source);
 		case PacketType.TEST_PACKET_BYTE:
 			return new TestPacket(source, bytes);
-		case PacketType.CHARACTER_SELECTED_PACKET_BYTE:
-			return new CharacterSelectedPacket(source, bytes);
 		case PacketType.ADMIN_COMMAND_PACKET_BYTE:
 			return new AdminCommandPacket(source, bytes);
 		case PacketType.SERVER_MODULE_STATUS_PACKET_BYTE:
 			return new ServerModuleStatusPacket(source, bytes);
 		case PacketType.USER_STATUS_PACKET_BYTE:
 			return new UserStatusPacket(source, bytes);
+		case PacketType.ENTITY_CLICK_PACKET_BYTE:
+			return new EntityClickPacket(source, bytes);
+		case PacketType.ENTITY_UPDATE_PACKET_BYTE:
+			return new EntityUpdatePacket(source, bytes);
+		case PacketType.EXTENSIVE_OBJECT_PACKET_BYTE:
+			return new ExtensiveObjectPacket(source, bytes);
+		case PacketType.EXTENSIVE_CHARACTER_PACKET_BYTE:
+			return new ExtensiveCharacterPacket(source, bytes);
+		case PacketType.EXTENSIVE_PLAYER_CHARACTER_PACKET_BYTE:
+			return new ExtensivePlayerCharacterPacket(source, bytes);
+		case PacketType.CHARACTER_STATUS_PACKET_BYTE:
+			return new CharacterStatusPacket(source, bytes);
+		case PacketType.PLAYER_EQUIPMENT_PACKET_BYTE:
+			return new PlayerEquipmentPacket(source, bytes);
+		case PacketType.NEW_MAP_PACKET_BYTE:
+			return new NewMapPacket(source, bytes);
+		case PacketType.SELF_PACKET_BYTE:
+			return new SelfPacket(source, bytes);
+		case PacketType.MOVE_PACKET_BYTE:
+			return new MovePacket(source, bytes);
+		case PacketType.SIMPLE_REQUEST_PACKET_BYTE:
+			return new SimpleRequestPacket(source, bytes);
+		case PacketType.ITEM_CONTAINER_PACKET_BYTE:
+			return new ItemContainerPacket(source, bytes);
 		default:
 			System.out.println("No case for type byte: " + bytes[0]);
 			return null;

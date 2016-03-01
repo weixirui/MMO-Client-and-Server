@@ -41,22 +41,6 @@ public final class ConnectionAcceptor implements Runnable {
 		// Can only be instantiated internally.
 	}
 
-	private void addConnection(Connection connection) throws IOException {
-		if (Main.getConnectionManager().ipConnected(connection.getIP())) { // Is a socket with same IP already connected?
-			connection.forceOutgoingPacket(new ErrorPacket(null, ErrorPacket.GENERAL_ERROR,
-					"Failed to connect because your ip is already logged in.")); // Send error packet.
-			connection.close(); // Close connection.
-			return;
-		}
-		if (Main.getConnectionManager().full()) { // Are we at max connections?
-			connection.forceOutgoingPacket(
-					new ErrorPacket(null, ErrorPacket.GENERAL_ERROR, "Failed to connect because server is full.")); // Send error packet
-			connection.close(); // Close
-			return;
-		}
-		Main.getConnectionManager().addConnection(connection); // Made it to end, so add to manager.
-	}
-
 	/**
 	 * Run method.
 	 */
@@ -92,5 +76,24 @@ public final class ConnectionAcceptor implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void addConnection(Connection connection) throws IOException {
+		//For now, allowing multiple connections from same IP
+		/*
+		 * if (Main.getConnectionManager().ipConnected(connection.getIP())) { //
+		 * Is a socket with same IP already connected?
+		 * connection.forceOutgoingPacket(new ErrorPacket(null,
+		 * ErrorPacket.GENERAL_ERROR,
+		 * "Failed to connect because your ip is already logged in.")); // Send
+		 * error packet. connection.close(); // Close connection. return; }
+		 */
+		if (ConnectionManager.getInstance().full()) { // Are we at max connections?
+			connection.forceOutgoingPacket(
+					new ErrorPacket(null, ErrorPacket.GENERAL_ERROR, "Failed to connect because server is full.")); // Send error packet
+			connection.close(); // Close
+			return;
+		}
+		ConnectionManager.getInstance().addConnection(connection); // Made it to end, so add to manager.
 	}
 }
