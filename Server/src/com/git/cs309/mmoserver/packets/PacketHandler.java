@@ -67,6 +67,11 @@ public final class PacketHandler extends AbstractPacketHandler {
 			break;
 		case TEST_PACKET:
 			break;
+		case CHARACTER_SELECTION_DATA_PACKET:
+			break;
+		case NEW_CHARACTER_DATA_PACKET:
+			NewCharacterDataPacket data = (NewCharacterDataPacket) packet;
+			break;
 		default:
 			break;
 		}

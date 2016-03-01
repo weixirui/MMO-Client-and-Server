@@ -56,6 +56,13 @@ public final class User implements Serializable {
 			character.cleanUp();
 		}
 	}
+	
+	public void createCharacter(String name, byte gender, int eyeColor, int skinColor, int hairColor, int hairStyle) {
+		assert creatingCharacterIndex != -1;
+		playerCharacters[creatingCharacterIndex].createCharacter(name, gender, eyeColor, skinColor, hairColor, hairStyle);
+		creatingCharacterIndex = -1;
+		enterGame(creatingCharacterIndex);
+	}
 
 	public void enterGame(int characterIndex) {
 		if (!playerCharacters[characterIndex].isCreated()) {

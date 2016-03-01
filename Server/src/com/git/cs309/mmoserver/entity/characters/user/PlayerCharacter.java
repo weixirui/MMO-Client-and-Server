@@ -13,6 +13,7 @@ import com.git.cs309.mmoserver.items.ItemContainer;
 import com.git.cs309.mmoserver.items.ItemStack;
 import com.git.cs309.mmoserver.map.Map;
 import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.packets.ExtensivePlayerCharacterPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
@@ -37,8 +38,13 @@ public class PlayerCharacter extends Character implements Serializable {
 	private static final long serialVersionUID = 5948438982722793742L;
 	private boolean created = false;
 	private ItemContainer inventory = new ItemContainer(40);
+	private Equipment equipment = new Equipment();
 
 	private byte gender = -1; // 0 - Male, 1 - Female
+	private int eyeColor = 0;
+	private int skinColor = 0;
+	private int hairColor = 0;
+	private int hairStyle = 0;
 
 	public PlayerCharacter() {
 		super(); //Ensure calls constructor
@@ -52,6 +58,22 @@ public class PlayerCharacter extends Character implements Serializable {
 		this.name = "Null";
 		deleteCharacter();
 	}
+	
+	public int getEyeColor() {
+		return eyeColor;
+	}
+	
+	public int getSkinColor() {
+		return skinColor;
+	}
+	
+	public int getHairColor() {
+		return hairColor;
+	}
+	
+	public int getHairStyle() {
+		return hairStyle;
+	}
 
 	/**
 	 * All this method does is make it so this character object is playable. It
@@ -62,10 +84,14 @@ public class PlayerCharacter extends Character implements Serializable {
 	 * @param gender
 	 *            gender of the new character
 	 */
-	public void createCharacter(final String characterName, final byte gender) {
+	public void createCharacter(final String characterName, final byte gender, int eyeColor, int skinColor, int hairColor, int hairStyle) {
 		name = characterName;
 		this.gender = gender;
 		this.created = true;
+		this.eyeColor = eyeColor;
+		this.skinColor = skinColor;
+		this.hairColor = hairColor;
+		this.hairStyle = hairStyle;
 	}
 
 	/**
@@ -113,8 +139,10 @@ public class PlayerCharacter extends Character implements Serializable {
 
 	@Override
 	public Packet getExtensivePacket() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ExtensivePlayerCharacterPacket(null, gender, getUniqueID(), getX(), getY(), getHealth(), getMaxHealth(), getLevel(), equipment.getEquipment(Equipment.HELMET_SLOT).getId(),
+				equipment.getEquipment(Equipment.CHEST_SLOT).getId(), equipment.getEquipment(Equipment.LEFT_HAND).getId(), equipment.getEquipment(Equipment.RIGHT_HAND).getId(),
+				equipment.getEquipment(Equipment.CAPE_SLOT).getId(), equipment.getEquipment(Equipment.LEGS_SLOT).getId(), equipment.getEquipment(Equipment.GLOVES_SLOT).getId(),
+				equipment.getEquipment(Equipment.BOOTS_SLOT).getId(), eyeColor, skinColor, hairColor, hairStyle, name);
 	}
 
 	public byte getGender() {
