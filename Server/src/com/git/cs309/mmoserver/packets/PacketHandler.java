@@ -1,5 +1,8 @@
 package com.git.cs309.mmoserver.packets;
 
+import com.git.cs309.mmoserver.connection.Connection;
+import com.git.cs309.mmoserver.entity.characters.user.User;
+
 /**
  * 
  * @author Group 21
@@ -71,6 +74,8 @@ public final class PacketHandler extends AbstractPacketHandler {
 			break;
 		case NEW_CHARACTER_DATA_PACKET:
 			NewCharacterDataPacket data = (NewCharacterDataPacket) packet;
+			User user = ((Connection) data.getConnection()).getUser();
+			user.createCharacter(data.getName(), data.getGender(), data.getEyeColor(), data.getSkinColor(), data.getHairColor(), data.getHairStyle());
 			break;
 		default:
 			break;
