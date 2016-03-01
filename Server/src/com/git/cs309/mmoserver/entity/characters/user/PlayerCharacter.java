@@ -129,8 +129,8 @@ public class PlayerCharacter extends Character implements Serializable {
 	 * Nulls the ID Tag and removes character from manages.
 	 */
 	public void exitGame() {
-		setIDTag(null);
 		CharacterManager.getInstance().removeCharacter(this);
+		setIDTag(null);
 	}
 
 	@Override
