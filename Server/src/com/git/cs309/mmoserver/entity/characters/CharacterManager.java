@@ -7,11 +7,6 @@ import java.util.Set;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
-import com.git.cs309.mmoserver.cycle.CycleProcess;
-import com.git.cs309.mmoserver.cycle.CycleProcessManager;
-import com.git.cs309.mmoserver.entity.EntityType;
-import com.git.cs309.mmoserver.entity.characters.npc.NPC;
-import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.util.TickProcess;
 
@@ -64,30 +59,6 @@ public final class CharacterManager extends TickProcess {
 			characterSet.remove(character);
 			MapHandler.getInstance().removeEntityAtPosition(character.getInstanceNumber(), character.getX(),
 					character.getY(), character.getZ());
-			if (character.getEntityType() == EntityType.NPC && ((NPC) character).isAutoRespawn()) {
-				CycleProcessManager.getInstance().addProcess(new CycleProcess() {
-					final long startTick = Main.getTickCount();
-					long currentTick = Main.getTickCount();
-					final NPC npc = (NPC) character;
-
-					@Override
-					public void end() {
-						NPCFactory.getInstance().createNPC(npc.getName(), npc.getSpawnX(), npc.getY(), npc.getZ(),
-								npc.getInstanceNumber());
-					}
-
-					@Override
-					public boolean finished() {
-						return currentTick - startTick == (Config.TICKS_PER_MINUTE * npc.getRespawnTimer());
-					}
-
-					@Override
-					public void process() {
-						currentTick = Main.getTickCount();
-					}
-
-				});
-			}
 		}
 	}
 

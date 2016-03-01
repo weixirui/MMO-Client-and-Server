@@ -75,6 +75,8 @@ public final class Config {
 	public static final int TICKS_PER_REGEN = (int) ((2 * MILLISECONDS_PER_MINUTE) / MILLISECONDS_PER_TICK);
 	
 	public static final int TICKS_BEFORE_PLAYER_RESPAWN = (TICKS_PER_MINUTE / 60) * 5;
+	
+	public static final int TICKS_TILL_ITEM_DESPAWN = TICKS_PER_MINUTE * 5;
 
 	public static final String USER_FILE_PATH = "./data/users/";
 }

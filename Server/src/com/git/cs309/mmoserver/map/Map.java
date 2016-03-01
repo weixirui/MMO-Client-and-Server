@@ -184,7 +184,7 @@ public final class Map {
 		assert containsPoint(x, y) && walkable(x, y);
 		GroundItemStack stack = getGroundItemStack(x, y);
 		if (stack == null) {
-			groundItems[x][y] = new GroundItemStack(x, y);
+			groundItems[x][y] = new GroundItemStack(x, y, this);
 			groundItems[x][y].addItemStack(items);
 		} else {
 			stack.addItemStack(items);
@@ -214,6 +214,10 @@ public final class Map {
 			//TODO Send updated stack to player.
 			return item;
 		}
+	}
+	
+	public void itemStackChanged(final int x, final int y) {
+		//TODO send updated stack to players
 	}
 	
 	public GroundItemStack getGroundItemStack(final int x, final int y) {

@@ -39,7 +39,16 @@ public final class MapHandler {
 				return map;
 			}
 		}
-		return null;
+		throw new RuntimeException("No map for position.");
+	}
+	
+	public final Map getMapContainingEntity(final Entity entity) {
+		for (Map map : maps) {
+			if (map.getZ() == entity.getZ() && map.containsPoint(entity.getX(), entity.getY()) && map.getInstanceNumber() == entity.getInstanceNumber()) {
+				return map;
+			}
+		}
+		throw new RuntimeException("Entity is not in a map.");
 	}
 
 	public final void loadMaps() {

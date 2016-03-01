@@ -1,6 +1,9 @@
 package com.git.cs309.mmoserver.entity.characters.npc;
 
 import com.git.cs309.mmoserver.Config;
+import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.cycle.CycleProcess;
+import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.entity.EntityType;
 /**
  *
@@ -8,6 +11,10 @@ import com.git.cs309.mmoserver.entity.EntityType;
  * 
  */
 import com.git.cs309.mmoserver.entity.characters.Character;
+import com.git.cs309.mmoserver.entity.characters.npc.dropsystem.DropSystem;
+import com.git.cs309.mmoserver.items.ItemStack;
+import com.git.cs309.mmoserver.map.Map;
+import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.packets.ExtensiveCharacterPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
@@ -132,7 +139,33 @@ public class NPC extends Character {
 
 	@Override
 	protected void onDeath() {
-		//TODO Create items from drop manager
+		Map map = MapHandler.getInstance().getMapContainingEntity(this);
+		for (ItemStack stack : DropSystem.getInstance().getDropsForNPC(getName())) {
+			map.putItemStack(getX(), getY(), stack);
+		}
+		if (isAutoRespawn()) {
+			CycleProcessManager.getInstance().addProcess(new CycleProcess() {
+				final long startTick = Main.getTickCount();
+				long currentTick = Main.getTickCount();
+
+				@Override
+				public void end() {
+					NPCFactory.getInstance().createNPC(NPC.this.getName(), NPC.this.getSpawnX(), NPC.this.getY(), NPC.this.getZ(),
+							NPC.this.getInstanceNumber());
+				}
+
+				@Override
+				public boolean finished() {
+					return currentTick - startTick == (Config.TICKS_PER_MINUTE * NPC.this.getRespawnTimer());
+				}
+
+				@Override
+				public void process() {
+					currentTick = Main.getTickCount();
+				}
+
+			});
+		}
 	}
 
 }

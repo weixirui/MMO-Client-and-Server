@@ -147,7 +147,7 @@ public class PlayerCharacter extends Character implements Serializable {
 
 	@Override
 	protected void onDeath() {
-		Map map = MapHandler.getInstance().getMapContainingPosition(instanceNumber, getX(), getY(), getZ());
+		Map map = MapHandler.getInstance().getMapContainingEntity(PlayerCharacter.this);
 		for (ItemStack stack : inventory.removeAllAsList()) {
 			map.putItemStack(getX(), getY(), stack);
 		}
