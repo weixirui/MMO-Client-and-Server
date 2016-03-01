@@ -10,6 +10,7 @@ import com.git.cs309.mmoserver.connection.Connection;
 import com.git.cs309.mmoserver.entity.Entity;
 import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.user.PlayerCharacter;
+import com.git.cs309.mmoserver.entity.characters.user.User;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
 import com.git.cs309.mmoserver.items.GroundItemStack;
@@ -260,7 +261,14 @@ public final class Map {
 
 	public void sendPacketToPlayers(Packet packet) {
 		for (PlayerCharacter e : playerSet) {
-			Connection userConnection = (Connection) UserManager.getUserForUserID(e.getUniqueID()).getConnection();
+			User user = UserManager.getUserForUserID(e.getUniqueID());
+			if (user == null) {
+				continue;
+			}
+			Connection userConnection = (Connection) user.getConnection();
+			if (userConnection == null) {
+				continue;
+			}
 			userConnection.addOutgoingPacket(packet);
 		}
 	}
