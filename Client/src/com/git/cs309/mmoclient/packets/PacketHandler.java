@@ -59,6 +59,19 @@ public final class PacketHandler extends AbstractPacketHandler {
 				break;
 			}
 			break;
+		case ENTITY_UPDATE_PACKET:
+			//This packet means that something has happened to an entity that already exists.
+			throw new RuntimeException("Handle updating entities here");
+		case EXTENSIVE_CHARACTER_PACKET:
+			//This packet is telling the client that there is a new character that needs to be managed by the client.
+			throw new RuntimeException("Handle new characters.");
+		case EXTENSIVE_OBJECT_PACKET:
+			throw new RuntimeException("Handle new objects here.");
+		case EXTENSIVE_PLAYER_CHARACTER_PACKET:
+			throw new RuntimeException("Handle new players here.");
+		case TEST_PACKET:
+			System.out.println("No code for test packet");
+			break;
 		case ADMIN_COMMAND_PACKET:
 			break;
 		case CHARACTER_STATUS_PACKET:

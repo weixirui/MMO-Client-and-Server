@@ -19,6 +19,8 @@ public final class Config {
 	public static final int MAX_CONNECTIONS = 1000;
 
 	public static final int MAX_ENTITIES = 4000;
+	
+	public static final int MAX_NAME_LENGTH = 14;
 
 	//This class is just temporary storage for configuration stuff, like maxes and mins
 	//Test Push
