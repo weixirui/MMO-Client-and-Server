@@ -60,8 +60,8 @@ public final class User implements Serializable {
 	public void createCharacter(String name, byte gender, int eyeColor, int skinColor, int hairColor, int hairStyle) {
 		assert creatingCharacterIndex != -1;
 		playerCharacters[creatingCharacterIndex].createCharacter(name, gender, eyeColor, skinColor, hairColor, hairStyle);
-		creatingCharacterIndex = -1;
 		enterGame(creatingCharacterIndex);
+		creatingCharacterIndex = -1;
 	}
 
 	public void enterGame(int characterIndex) {
