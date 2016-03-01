@@ -1,8 +1,11 @@
 package com.git.cs309.mmoclient.gui;
 
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
+
+import com.git.cs309.mmoclient.gui.characterselection.SelectionCharacterComponent;
 
 public class CharacterSelectionGUI extends JFrame {
 
@@ -17,9 +20,16 @@ public class CharacterSelectionGUI extends JFrame {
 		return SINGLETON;
 	}
 	
+	private final SelectionCharacterComponent[] components = new SelectionCharacterComponent[5];
+	
 	private CharacterSelectionGUI() {
 		this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setLayout(new GridLayout(0, 5));
+		for (int i = 0; i < 5; i++) {
+			components[i] = new SelectionCharacterComponent(i);
+			add(components[i]);
+		}
 	}
 
 }

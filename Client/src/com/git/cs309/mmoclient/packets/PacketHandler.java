@@ -8,6 +8,7 @@ import com.git.cs309.mmoclient.gui.LoginGUI;
 import com.git.cs309.mmoserver.packets.AbstractPacketHandler;
 import com.git.cs309.mmoserver.packets.ErrorPacket;
 import com.git.cs309.mmoserver.packets.MessagePacket;
+import com.git.cs309.mmoserver.packets.NewCharacterDataPacket;
 import com.git.cs309.mmoserver.packets.EventPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 
@@ -54,19 +55,14 @@ public final class PacketHandler extends AbstractPacketHandler {
 				LoginGUI.getSingleton().setVisible(false);
 				CharacterSelectionGUI.getSingleton().setVisible(true);
 				break;
+			case EventPacket.CREATE_CHARACTER:
+				packet.getConnection().addOutgoingPacket(new NewCharacterDataPacket(null, 0, 0, 0, 0, NewCharacterDataPacket.MALE, "Bob"));
+				break;
 			default:
 				System.err.println("No case for event code: "+eventPacket.getEventCode());
 				break;
 			}
 			break;
-		case ENTITY_UPDATE_PACKET:
-			//This packet means that something has happened to an entity that already exists.
-			throw new RuntimeException("Handle updating entities here");
-		case EXTENSIVE_CHARACTER_PACKET:
-			//This packet is telling the client that there is a new character that needs to be managed by the client.
-			throw new RuntimeException("Handle new characters.");
-		case EXTENSIVE_OBJECT_PACKET:
-			throw new RuntimeException("Handle new objects here.");
 		case EXTENSIVE_PLAYER_CHARACTER_PACKET:
 			throw new RuntimeException("Handle new players here.");
 		case TEST_PACKET:
@@ -96,8 +92,6 @@ public final class PacketHandler extends AbstractPacketHandler {
 			break;
 		case NULL_PACKET:
 			break;
-		case PLAYER_CHARACTER_PACKET:
-			break;
 		case PLAYER_EQUIPMENT_PACKET:
 			break;
 		case SELF_PACKET:
@@ -108,9 +102,11 @@ public final class PacketHandler extends AbstractPacketHandler {
 			break;
 		case SIMPLE_REQUEST_PACKET:
 			break;
-		case TEST_PACKET:
-			break;
 		case USER_STATUS_PACKET:
+			break;
+		case CHARACTER_SELECTION_DATA_PACKET:
+			break;
+		case NEW_CHARACTER_DATA_PACKET:
 			break;
 		default:
 			break;
