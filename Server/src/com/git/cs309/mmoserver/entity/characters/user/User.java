@@ -46,9 +46,9 @@ public final class User implements Serializable {
 	}
 
 	public void cleanUp() {
-		idTag.returnTag();
 		exitCurrentCharacter();
 		cleanUpCharacters();
+		idTag.returnTag();
 	}
 
 	public void cleanUpCharacters() {
