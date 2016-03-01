@@ -198,7 +198,9 @@ public final class Map {
 		if (stack == null) {
 			return null;
 		} else {
-			return stack.removeStack(0);
+			ItemStack item = stack.removeStack(0);
+			//TODO Send updated stack to player.
+			return item;
 		}
 	}
 	
@@ -208,7 +210,9 @@ public final class Map {
 		if (stack == null) {
 			return null;
 		} else {
-			return stack.removeStack(index);
+			ItemStack item = stack.removeStack(index);
+			//TODO Send updated stack to player.
+			return item;
 		}
 	}
 	

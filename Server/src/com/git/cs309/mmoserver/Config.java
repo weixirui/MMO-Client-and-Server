@@ -46,6 +46,8 @@ public final class Config {
 	public static final String OBJECT_DEFINITION_PATH = "./data/cfg/ObjectDefinitions.xml";
 	
 	public static final String ITEM_DEFINITION_PATH = "./data/cfg/ItemDefinitions.xml";
+	
+	public static final String NPC_DROPS_PATH = "./data/cfg/NPCDrops.xml";
 
 	public static final String MAP_DEFINITIONS_FOLDER = "./data/map/";
 
