@@ -58,19 +58,19 @@ public class PlayerCharacter extends Character implements Serializable {
 		this.name = "Null";
 		deleteCharacter();
 	}
-	
+
 	public int getEyeColor() {
 		return eyeColor;
 	}
-	
+
 	public int getSkinColor() {
 		return skinColor;
 	}
-	
+
 	public int getHairColor() {
 		return hairColor;
 	}
-	
+
 	public int getHairStyle() {
 		return hairStyle;
 	}
@@ -84,7 +84,8 @@ public class PlayerCharacter extends Character implements Serializable {
 	 * @param gender
 	 *            gender of the new character
 	 */
-	public void createCharacter(final String characterName, final byte gender, int eyeColor, int skinColor, int hairColor, int hairStyle) {
+	public void createCharacter(final String characterName, final byte gender, int eyeColor, int skinColor,
+			int hairColor, int hairStyle) {
 		name = characterName;
 		this.gender = gender;
 		this.created = true;
@@ -106,7 +107,7 @@ public class PlayerCharacter extends Character implements Serializable {
 		this.created = false;
 		inventory.deleteAll();
 	}
-	
+
 	public ItemContainer getInventory() {
 		return inventory;
 	}
@@ -139,10 +140,26 @@ public class PlayerCharacter extends Character implements Serializable {
 
 	@Override
 	public Packet getExtensivePacket() {
-		return new ExtensivePlayerCharacterPacket(null, gender, getUniqueID(), getX(), getY(), getHealth(), getMaxHealth(), getLevel(), equipment.getEquipment(Equipment.HELMET_SLOT).getId(),
-				equipment.getEquipment(Equipment.CHEST_SLOT).getId(), equipment.getEquipment(Equipment.LEFT_HAND).getId(), equipment.getEquipment(Equipment.RIGHT_HAND).getId(),
-				equipment.getEquipment(Equipment.CAPE_SLOT).getId(), equipment.getEquipment(Equipment.LEGS_SLOT).getId(), equipment.getEquipment(Equipment.GLOVES_SLOT).getId(),
-				equipment.getEquipment(Equipment.BOOTS_SLOT).getId(), eyeColor, skinColor, hairColor, hairStyle, name);
+		ItemStack currEquipment = null;
+		currEquipment = equipment.getEquipment(Equipment.HELMET_SLOT);
+		int helmetId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.CHEST_SLOT);
+		int chestId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.LEGS_SLOT);
+		int legsId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.GLOVES_SLOT);
+		int glovesId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.BOOTS_SLOT);
+		int bootsId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.CAPE_SLOT);
+		int capeId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.RIGHT_HAND);
+		int rightId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.LEFT_HAND);
+		int leftId = currEquipment == null ? -1 : currEquipment.getId();
+		return new ExtensivePlayerCharacterPacket(null, gender, getUniqueID(), getX(), getY(), getHealth(),
+				getMaxHealth(), getLevel(), helmetId, chestId, leftId, rightId, capeId, legsId, glovesId, bootsId,
+				eyeColor, skinColor, hairColor, hairStyle, name);
 	}
 
 	public byte getGender() {
@@ -165,7 +182,7 @@ public class PlayerCharacter extends Character implements Serializable {
 
 	@Override
 	protected void characterProcess() {
-		
+
 	}
 
 	@Override
@@ -181,12 +198,13 @@ public class PlayerCharacter extends Character implements Serializable {
 		}
 		CycleProcessManager.getInstance().addProcess(new CycleProcess() {
 			final long startTick = Main.getTickCount();
-			
+
 			@Override
 			public void end() {
 				isDead = false;
 				health = getMaxHealth();
-				setPosition(Config.GLOBAL_INSTANCE, Config.PLAYER_START_X, Config.PLAYER_START_Y, Config.PLAYER_START_Z);
+				setPosition(Config.GLOBAL_INSTANCE, Config.PLAYER_START_X, Config.PLAYER_START_Y,
+						Config.PLAYER_START_Z);
 			}
 
 			@Override
@@ -196,9 +214,9 @@ public class PlayerCharacter extends Character implements Serializable {
 
 			@Override
 			public void process() {
-				
+
 			}
-			
+
 		});
 	}
 
