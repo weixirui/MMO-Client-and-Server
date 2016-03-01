@@ -56,6 +56,10 @@ public class ExtensiveObjectPacket extends Packet {
 	public int getY() {
 		return y;
 	}
+	
+	public String getName() {
+		return name;
+	}
 
 	@Override
 	public int sizeOf() {
