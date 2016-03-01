@@ -3,10 +3,16 @@ package com.git.cs309.mmoserver.entity.characters.user;
 import java.io.Serializable;
 
 import com.git.cs309.mmoserver.Config;
+import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.cycle.CycleProcess;
+import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.Character;
 import com.git.cs309.mmoserver.entity.characters.CharacterManager;
 import com.git.cs309.mmoserver.items.ItemContainer;
+import com.git.cs309.mmoserver.items.ItemStack;
+import com.git.cs309.mmoserver.map.Map;
+import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
@@ -137,6 +143,35 @@ public class PlayerCharacter extends Character implements Serializable {
 	@Override
 	protected boolean canWalk() {
 		return true;
+	}
+
+	@Override
+	protected void onDeath() {
+		Map map = MapHandler.getInstance().getMapContainingPosition(instanceNumber, getX(), getY(), getZ());
+		for (ItemStack stack : inventory.removeAllAsList()) {
+			map.putItemStack(getX(), getY(), stack);
+		}
+		CycleProcessManager.getInstance().addProcess(new CycleProcess() {
+			final long startTick = Main.getTickCount();
+			
+			@Override
+			public void end() {
+				isDead = false;
+				health = getMaxHealth();
+				setPosition(Config.GLOBAL_INSTANCE, Config.PLAYER_START_X, Config.PLAYER_START_Y, Config.PLAYER_START_Z);
+			}
+
+			@Override
+			public boolean finished() {
+				return Main.getTickCount() - startTick >= Config.TICKS_BEFORE_PLAYER_RESPAWN;
+			}
+
+			@Override
+			public void process() {
+				
+			}
+			
+		});
 	}
 
 }

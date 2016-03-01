@@ -1,5 +1,6 @@
 package com.git.cs309.mmoserver.entity.characters.npc;
 
+import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.entity.EntityType;
 /**
  *
@@ -27,6 +28,7 @@ public class NPC extends Character {
 	private final int spawnZ;
 	private final int spawnY;
 	private final boolean autoRespawn;
+	protected transient volatile int walkDesperation = Config.NPC_WALKING_RATE;
 
 	public NPC(int x, int y, int z, final NPCDefinition definition, int instanceNumber) {
 		super(x, y, z, ClosedIDSystem.getTag(), definition.getID(), definition.getName());
@@ -48,6 +50,12 @@ public class NPC extends Character {
 		this.definition = definition;
 		this.instanceNumber = instanceNumber;
 		this.autoRespawn = autoRespawn;
+	}
+	
+	public void handleNearbyCharacter(Character character) {
+		if(definition.aggressive() && character.getEntityType() == EntityType.PLAYER) {
+			
+		}
 	}
 
 	@Override
@@ -100,10 +108,31 @@ public class NPC extends Character {
 	protected void characterProcess() {
 		
 	}
+	
+	@Override
+	public void handleWalking() {
+		super.handleWalking();
+		if (!walking && walkingQueue.isEmpty() && !inCombat && (int) (Math.random() * walkDesperation) == 1) {
+			int newX = (int) (Config.MAX_WALKING_DISTANCE - (Math.random() * Config.MAX_WALKING_DISTANCE * 2));
+			int newY = (int) (Config.MAX_WALKING_DISTANCE - (Math.random() * Config.MAX_WALKING_DISTANCE * 2));
+			walkTo(newX, newY);
+			if (walkingQueue.size() == 0) {
+				walkDesperation /= 2;
+				walkDesperation += 1;
+			} else {
+				walkDesperation = Config.NPC_WALKING_RATE;
+			}
+		}
+	}
 
 	@Override
 	protected boolean canWalk() {
 		return definition.canWalk();
+	}
+
+	@Override
+	protected void onDeath() {
+		//TODO Create items from drop manager
 	}
 
 }

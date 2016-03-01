@@ -12,6 +12,8 @@ import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.user.PlayerCharacter;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
+import com.git.cs309.mmoserver.items.GroundItemStack;
+import com.git.cs309.mmoserver.items.ItemStack;
 import com.git.cs309.mmoserver.packets.EntityUpdatePacket;
 import com.git.cs309.mmoserver.packets.NewMapPacket;
 import com.git.cs309.mmoserver.packets.Packet;
@@ -21,6 +23,7 @@ public final class Map {
 	private final int instanceNumber;
 	private final MapDefinition definition;
 	private volatile Entity[][] entityMap;
+	private volatile GroundItemStack[][] groundItems;
 	private volatile Set<Entity> entitySet = new HashSet<>();
 	private volatile Set<PlayerCharacter> playerSet = new HashSet<>();
 	private final int[][] pathingMap;
@@ -30,7 +33,9 @@ public final class Map {
 		this.definition = definition;
 		entityMap = new Entity[definition.getWidth()][definition.getHeight()];
 		pathingMap = new int[definition.getWidth()][definition.getHeight()];
+		groundItems = new GroundItemStack[definition.getWidth()][definition.getHeight()];
 		setMapToNulls();
+		setItemsToNulls();
 		MapHandler.getInstance().addMap(this);
 	}
 	
@@ -174,11 +179,47 @@ public final class Map {
 			pathingMap[globalToLocalX(oX)][globalToLocalY(oY)] = -1;
 		}
 	}
+	
+	public void putItemStack(final int x, final int y, final ItemStack items) {
+		assert containsPoint(x, y) && walkable(x, y);
+		GroundItemStack stack = getGroundItemStack(x, y);
+		if (stack == null) {
+			groundItems[x][y] = new GroundItemStack(x, y);
+			groundItems[x][y].addItemStack(items);
+		} else {
+			stack.addItemStack(items);
+		}
+		//TODO Send updated stack to players
+	}
+	
+	public ItemStack removeItemStack(final int x, final int y) {
+		assert containsPoint(x, y) && walkable(x, y);
+		GroundItemStack stack = getGroundItemStack(x, y);
+		if (stack == null) {
+			return null;
+		} else {
+			return stack.removeStack(0);
+		}
+	}
+	
+	public ItemStack removeItemStack(final int x, final int y, final int index) {
+		assert containsPoint(x, y) && walkable(x, y);
+		GroundItemStack stack = getGroundItemStack(x, y);
+		if (stack == null) {
+			return null;
+		} else {
+			return stack.removeStack(index);
+		}
+	}
+	
+	public GroundItemStack getGroundItemStack(final int x, final int y) {
+		assert containsPoint(x, y) && walkable(x, y);
+		return groundItems[x][y];
+	}
 
 	public void putEntity(final int x, final int y, final Entity entity) {
 		assert (containsPoint(x, y));
 		assert entity != null && !entitySet.contains(entity);
-		//TODO send actual map packet
 		sendEntityToPlayers(entity);
 		if (entity.getEntityType() == EntityType.PLAYER) {
 			UserManager.getUserForUserID(((PlayerCharacter) entity).getUniqueID()).getConnection().addOutgoingPacket(new NewMapPacket(null, definition.getMapName()));
@@ -233,6 +274,14 @@ public final class Map {
 			for (int j = 0; j < entityMap[i].length; j++) {
 				entityMap[i][j] = null;
 				pathingMap[i][j] = -1;
+			}
+		}
+	}
+	
+	private void setItemsToNulls() {
+		for (int i = 0; i < groundItems.length; i++) {
+			for (int j = 0; j < groundItems[i].length; j++) {
+				groundItems[i][j] = null;
 			}
 		}
 	}

@@ -30,6 +30,7 @@ public final class User implements Serializable {
 	private PlayerCharacter[] playerCharacters = new PlayerCharacter[5]; // Maximum characters per user
 	private String username;
 	private transient Rights userRights = Rights.PLAYER;
+	private transient int creatingCharacterIndex = -1;
 
 	public User() {
 		//For deserialization only
@@ -59,6 +60,7 @@ public final class User implements Serializable {
 	public void enterGame(int characterIndex) {
 		if (!playerCharacters[characterIndex].isCreated()) {
 			connection.addOutgoingPacket(new EventPacket(null, EventPacket.CREATE_CHARACTER));
+			creatingCharacterIndex = characterIndex;
 			return;
 		}
 		if (inGame) {

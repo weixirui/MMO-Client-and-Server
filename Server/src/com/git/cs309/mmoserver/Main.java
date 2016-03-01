@@ -233,7 +233,7 @@ public final class Main {
 			tickTimes += (System.currentTimeMillis() - start);
 			ticks++;
 			tickCount++;
-			if (ticks == Config.TICKS_PER_WALK / 2) { // For visual map, Config.TICKS_PER_WALK / 2
+			if (ticks == Config.TICKS_PER_MINUTE * Config.STATUS_PRINT_RATE) { // For visual map, Config.TICKS_PER_WALK / 2
 				System.out.println(" ");
 				System.out.println("Average tick consumption over " + Config.STATUS_PRINT_RATE + " minutes: "
 						+ String.format("%.3f", ((tickTimes / (float) (Config.MILLISECONDS_PER_TICK * ticks))) * 100.0f)
@@ -242,7 +242,7 @@ public final class Main {
 					process.printStatus();
 				}
 				System.out.println(" ");
-				MapHandler.getInstance().printMaps();
+				//MapHandler.getInstance().printMaps();
 				ticks = 0;
 				tickTimes = 0L;
 			}

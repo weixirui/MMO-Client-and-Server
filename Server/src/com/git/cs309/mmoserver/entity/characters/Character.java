@@ -5,8 +5,8 @@ import java.util.Queue;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.combat.CombatManager;
 import com.git.cs309.mmoserver.entity.Entity;
-import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.map.PathFinder;
 import com.git.cs309.mmoserver.map.PathFinder.Tile;
@@ -21,7 +21,9 @@ import com.git.cs309.mmoserver.util.CycleQueue;
  *         such as player, npcs, bosses, etc.
  */
 public abstract class Character extends Entity {
-
+	
+	public static final int NO_OPPONENT = -1;
+	
 	//Current health.
 	protected volatile int health;
 	protected volatile boolean isDead; //true is dead
@@ -29,7 +31,7 @@ public abstract class Character extends Entity {
 	protected transient volatile long walkingTick = 0;
 	protected transient volatile boolean walking = false;
 	protected transient volatile boolean inCombat = false;
-	protected transient volatile int walkDesperation = Config.NPC_WALKING_RATE;
+	protected transient volatile int opponentId = -1;
 
 	public Character() {
 		super();
@@ -52,6 +54,7 @@ public abstract class Character extends Entity {
 		if (health <= 0) {
 			isDead = true;
 		}
+		onDeath();
 	}
 
 	public void applyRegen(int regenAmount) {
@@ -63,6 +66,7 @@ public abstract class Character extends Entity {
 		} else {
 			health = getMaxHealth();
 		}
+		//TODO handle regen
 	}
 
 	@Override
@@ -88,15 +92,18 @@ public abstract class Character extends Entity {
 
 	public void kill() {
 		isDead = true;
+		onDeath();
 	}
 	
 	public final void walkTo(int x, int y) {
 		walkingQueue = PathFinder.getPathToPoint(MapHandler.getInstance().getMapContainingPosition(instanceNumber, getX(), getY(), getZ()), getX(), getY(), x, y);
 	}
 	
+	protected abstract void onDeath();
+	
 	protected abstract boolean canWalk();
 	
-	private final void handleWalking() {
+	protected void handleWalking() {
 		if (!canWalk()) {
 			return;
 		}
@@ -111,22 +118,26 @@ public abstract class Character extends Entity {
 		if (walking && walkingQueue.isEmpty()) {
 			walking = false;
 		}
-		if (getEntityType() == EntityType.NPC && !walking && walkingQueue.isEmpty() && !inCombat && (int) (Math.random() * walkDesperation) == 1) {
-			int newX = (int) (Config.MAX_WALKING_DISTANCE - (Math.random() * Config.MAX_WALKING_DISTANCE * 2));
-			int newY = (int) (Config.MAX_WALKING_DISTANCE - (Math.random() * Config.MAX_WALKING_DISTANCE * 2));
-			walkTo(newX, newY);
-			if (walkingQueue.size() == 0) {
-				walkDesperation /= 2;
-				walkDesperation += 1;
-			} else {
-				walkDesperation = Config.NPC_WALKING_RATE;
-			}
+	}
+	
+	public void setOponentId(final int opponentId) {
+		this.opponentId = opponentId;
+		if (opponentId == -1) {
+			inCombat = false;
+		} else {
+			inCombat = true;
 		}
 	}
 	
 	protected abstract void characterProcess();
 
 	public final void process() {
+		if (isDead()) {
+			return;
+		}
+		if (inCombat) {
+			CombatManager.handleCombat(this);
+		}
 		handleWalking();
 		characterProcess();
 	}
