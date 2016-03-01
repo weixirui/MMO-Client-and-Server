@@ -53,7 +53,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 		case NEW_MAP_PACKET:
 		case ERROR_PACKET:
 		case NULL_PACKET:
-		case PLAYER_CHARACTER_PACKET:
+		case EXTENSIVE_PLAYER_CHARACTER_PACKET:
 		case PLAYER_EQUIPMENT_PACKET:
 		case SELF_PACKET:
 		case SERVER_MODULE_STATUS_PACKET:

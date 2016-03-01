@@ -65,7 +65,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 			throw new RuntimeException("Handle new characters.");
 		case EXTENSIVE_OBJECT_PACKET:
 			throw new RuntimeException("Handle new objects here.");
-		case PLAYER_CHARACTER_PACKET:
+		case EXTENSIVE_PLAYER_CHARACTER_PACKET:
 			throw new RuntimeException("Handle new players here.");
 		case TEST_PACKET:
 			System.out.println("No code for test packet");

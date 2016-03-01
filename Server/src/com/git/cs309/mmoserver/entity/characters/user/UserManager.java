@@ -15,6 +15,7 @@ import java.util.Hashtable;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.connection.Connection;
+import com.git.cs309.mmoserver.packets.ErrorPacket;
 import com.git.cs309.mmoserver.packets.LoginPacket;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
 
@@ -116,6 +117,9 @@ public final class UserManager {
 		if (isLoggedIn(loginPacket.getUsername())) {
 			throw new UserAlreadyLoggedInException(
 					"The user \"" + loginPacket.getUsername() + "\" is already logged in.");
+		}
+		if (loginPacket.getUsername().length() > Config.MAX_NAME_LENGTH) {
+			((Connection)loginPacket.getConnection()).addOutgoingPacket(new ErrorPacket(null, ErrorPacket.NAME_TOO_LONG_ERROR, "That name is too long!"));
 		}
 		File userFile = getUserFile(loginPacket.getUsername());
 		User user;

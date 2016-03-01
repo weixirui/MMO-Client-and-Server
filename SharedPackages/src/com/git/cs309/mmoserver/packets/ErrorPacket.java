@@ -7,6 +7,7 @@ public class ErrorPacket extends Packet {
 	public static final int GENERAL_ERROR = 1;
 	public static final int LOGIN_ERROR = 2;
 	public static final int PERMISSION_ERROR = 3;
+	public static final int NAME_TOO_LONG_ERROR = 4;
 	private final int errorCode;
 	private final String errorMessage;
 
