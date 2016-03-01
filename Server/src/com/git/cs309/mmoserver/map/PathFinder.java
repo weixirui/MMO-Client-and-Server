@@ -10,11 +10,11 @@ public final class PathFinder {
 	public static final class Tile {
 		private final int x, y;
 
-		int getX() {
+		public int getX() {
 			return x;
 		}
 
-		int getY() {
+		public int getY() {
 			return y;
 		}
 
@@ -43,6 +43,9 @@ public final class PathFinder {
 		int[][] grid = map.getPathingMap();
 		int originX = (x1 - map.getXOrigin());
 		int originY = (y1 - map.getYOrigin());
+		if (grid[x2 - map.getXOrigin()][y2 - map.getXOrigin()] != -1) {
+			return new CycleQueue<Tile>(0);
+		}
 		grid[x2 - map.getXOrigin()][y2 - map.getXOrigin()] = -3;
 		grid[originX][originY] = 0;
 		boolean stop = false;
@@ -55,7 +58,7 @@ public final class PathFinder {
 		int eX2;
 		int eY2;
 		int step;
-		for (step = 0; step < Config.PATHIN_MAX_DISTANCE && !stop; step++) {
+		for (step = 0; !stop && step < Config.MAX_WALKING_DISTANCE ; step++) {
 			sX = originX - step;
 			sY = originY - step;
 			eX = originX + step;
@@ -98,7 +101,7 @@ public final class PathFinder {
 		int tY = 0;
 		double distance;
 		CycleQueue<Tile> walkingQueue = new CycleQueue<>(step + 1);
-		walkingQueue.add(new Tile(lX, lY));
+		walkingQueue.add(new Tile(x2, y2));
 		while (step > 0) {
 			closestDistance = grid.length * 2;
 			for (int x = lX - 1; x <= lX + 1; x++) {
@@ -115,7 +118,7 @@ public final class PathFinder {
 				}
 			}
 			assert closestDistance != grid.length * 2;
-			walkingQueue.add(new Tile(tX, tY));
+			walkingQueue.add(new Tile(tX + map.getXOrigin(), tY + map.getYOrigin()));
 			lX = tX;
 			lY = tY;
 			step--;

@@ -1,6 +1,5 @@
 package com.git.cs309.mmoserver.map;
 
-import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +13,7 @@ import com.git.cs309.mmoserver.entity.characters.user.PlayerCharacter;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
 import com.git.cs309.mmoserver.packets.EntityUpdatePacket;
+import com.git.cs309.mmoserver.packets.NewMapPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 
@@ -129,10 +129,14 @@ public final class Map {
 		assert entity != null;
 		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.MOVED, entity.getUniqueID(), dX, dY));
 		if (entity.getEntityType() != EntityType.PLAYER) {
-			entityMap[dX][dY] = entityMap[oX][oY];
-			entityMap[oX][oY] = null;
-			pathingMap[dX][dY] = -2;
-			pathingMap[oX][oY] = -1;
+			int cDX = dX - getXOrigin();
+			int cDY = dY - getYOrigin();
+			int cOX = oX - getXOrigin();
+			int cOY = oY - getYOrigin();
+			entityMap[cDX][cDY] = entityMap[cOX][cOY];
+			entityMap[cOX][cOY] = null;
+			pathingMap[cDX][cDY] = -2;
+			pathingMap[cOX][cOY] = -1;
 		}
 	}
 
@@ -142,6 +146,7 @@ public final class Map {
 		//TODO send actual map packet
 		sendEntityToPlayers(entity);
 		if (entity.getEntityType() == EntityType.PLAYER) {
+			UserManager.getUserForUserID(((PlayerCharacter) entity).getUniqueID()).getConnection().addOutgoingPacket(new NewMapPacket(null, definition.getMapName()));
 			sendEntitiesToPlayer((PlayerCharacter) entity);
 			entitySet.add(entity);
 			playerSet.add((PlayerCharacter) entity);
@@ -155,7 +160,9 @@ public final class Map {
 	public void removeEntity(final int x, final int y) {
 		assert (containsPoint(x, y));
 		Entity entity = getEntity(x, y);
-		assert entity != null;
+		if (entity == null) {
+			return;
+		}
 		if (entity.getEntityType() == EntityType.PLAYER)
 			playerSet.remove(entity);
 		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.REMOVED, entity.getUniqueID(), x, y));
@@ -222,21 +229,5 @@ public final class Map {
 				break;
 			}
 		}
-		EventQueue.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				for (Spawn spawn : definition.getSpawns()) {
-					switch (spawn.getType()) {
-					case Spawn.CHARACTER:
-						System.out.println("Pathing from pc spawn to "+spawn.getX()+", "+spawn.getY());
-						PathFinder.getPathToPoint(Map.this, 0, 0, spawn.getX(), spawn.getY());
-						System.out.println("");
-						break;
-					}
-				}
-			}
-			
-		});
 	}
 }

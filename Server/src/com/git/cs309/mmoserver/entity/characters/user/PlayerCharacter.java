@@ -130,9 +130,8 @@ public class PlayerCharacter extends Character implements Serializable {
 	}
 
 	@Override
-	public void process() {
-		// TODO Auto-generated method stub
-
+	protected void characterProcess() {
+		
 	}
 
 }

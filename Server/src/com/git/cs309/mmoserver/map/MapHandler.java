@@ -47,10 +47,12 @@ public final class MapHandler {
 	public final void moveEntity(final int oInstanceNumber, final int oX, final int oY, final int oZ,
 			final int dInstanceNumber, final int dX, final int dY, final int dZ) {
 		Map map = getMapContainingPosition(oInstanceNumber, oX, oY, oZ);
+		System.out.println(oX+" "+ oY + " " + dX + " " + dY);
+		System.out.println(map.getXOrigin()+", "+map.getYOrigin());
 		if (!map.equals(getMapContainingPosition(dInstanceNumber, dX, dY, dZ))) {
 			Map newMap = getMapContainingPosition(dInstanceNumber, dX, dY, dZ);
 			Entity e = map.getEntity(oX, oY);
-			map.putEntity(oX, oY, null);
+			map.removeEntity(oX, oY);
 			newMap.putEntity(dX, dY, e);
 			return;
 		}

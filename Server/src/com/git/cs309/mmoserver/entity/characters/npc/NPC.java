@@ -92,13 +92,13 @@ public class NPC extends Character {
 	}
 
 	@Override
-	public void process() {
-		//System.out.println("Processing " + this);
+	public String toString() {
+		return definition.getName() + ":" + getUniqueID();
 	}
 
 	@Override
-	public String toString() {
-		return definition.getName() + ":" + getUniqueID();
+	protected void characterProcess() {
+		
 	}
 
 }

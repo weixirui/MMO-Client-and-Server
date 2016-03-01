@@ -29,9 +29,11 @@ public final class NPCDefinition {
 	private final boolean autoRespawn;
 	//Time in minutes before NPC respawns
 	private final int respawnTimer;
+	//Will walk (false, will just stay in place)
+	private final boolean canWalk;
 
 	public NPCDefinition(final String name, final int id, final int maxHealth, final int strength, final int accuracy,
-			final int defence, final int level, final boolean autoRespawn, final int respawnTimer) {
+			final int defence, final int level, final boolean autoRespawn, final int respawnTimer, final boolean canWalk) {
 		this.name = name;
 		this.id = id;
 		this.maxHealth = maxHealth;
@@ -41,6 +43,7 @@ public final class NPCDefinition {
 		this.level = level;
 		this.autoRespawn = autoRespawn;
 		this.respawnTimer = respawnTimer;
+		this.canWalk = canWalk;
 		assert (id >= 0) && (maxHealth > 0) && (strength >= 0) && (accuracy >= 0 && accuracy <= 100) && (defence >= 0)
 				&& (level > 0);
 	}
@@ -79,5 +82,12 @@ public final class NPCDefinition {
 
 	public boolean isAutoRespawn() {
 		return autoRespawn;
+	}
+
+	/**
+	 * @return the canWalk
+	 */
+	public boolean isCanWalk() {
+		return canWalk;
 	}
 }
