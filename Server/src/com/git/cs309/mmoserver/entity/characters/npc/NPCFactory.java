@@ -85,6 +85,7 @@ public final class NPCFactory {
 				int id = Integer.MAX_VALUE;
 				boolean autoRespawn = true;
 				boolean canWalk = true;
+				boolean aggressive = false;
 				int respawnTimer = 1;
 				String name = "Null";
 				NodeList definitionNodes = baseNode.getChildNodes();
@@ -116,13 +117,16 @@ public final class NPCFactory {
 						case "walks":
 							canWalk = Boolean.parseBoolean(definitionNode.getTextContent());
 							break;
+						case "aggressive":
+							aggressive = Boolean.parseBoolean(definitionNode.getTextContent());
+							break;
 						}
 					} catch (NumberFormatException e) {
 						e.printStackTrace();
 					}
 				}
 				NPCDefinition definition = new NPCDefinition(WordUtils.capitalizeText(name), id, health, strength,
-						accuracy, defence, level, autoRespawn, respawnTimer, canWalk);
+						accuracy, defence, level, autoRespawn, respawnTimer, canWalk, aggressive);
 				definitionsByName.put(name.toLowerCase(), definition);
 				definitionsByID.put(id, definition);
 				break;

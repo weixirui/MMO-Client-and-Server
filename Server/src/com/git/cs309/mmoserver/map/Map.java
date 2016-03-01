@@ -58,7 +58,7 @@ public final class Map {
 
 	public Entity[] getEntities(final int x, final int y) {
 		assert (containsPoint(x, y));
-		Entity e = entityMap[x - getXOrigin()][y - getYOrigin()];
+		Entity e = entityMap[globalToLocalX(x)][globalToLocalY(y)];
 		if (e != null) {
 			return new Entity[] { e };
 		}
@@ -73,7 +73,7 @@ public final class Map {
 	
 	public boolean walkable(final int x, final int y) {
 		assert (containsPoint(x, y));
-		Entity e = entityMap[x - getXOrigin()][y - getYOrigin()];
+		Entity e = entityMap[globalToLocalX(x)][globalToLocalY(y)];
 		if (e != null) {
 			return e.canWalkThrough();
 		}
@@ -87,7 +87,7 @@ public final class Map {
 
 	public Entity getEntity(final int x, final int y) {
 		assert (containsPoint(x, y));
-		Entity e = entityMap[x - getXOrigin()][y - getYOrigin()];
+		Entity e = entityMap[globalToLocalX(x)][globalToLocalY(y)];
 		if (e != null) {
 			return e;
 		}
@@ -110,33 +110,68 @@ public final class Map {
 	public int getWidth() {
 		return definition.getWidth();
 	}
+	
+	public final int globalToLocalX(int x) {
+		return x - getXOrigin();
+	}
+	
+	public final int globalToLocalY(int y) {
+		return y - getYOrigin();
+	}
+	
+	public final int localToGlobalX(int x) {
+		return x + getXOrigin();
+	}
+	
+	public final int localToGlobalY(int y) {
+		return y + getYOrigin();
+	}
 
 	public final int getXOrigin() {
-		return definition.getxOrigin();
+		return definition.getXOrigin();
 	}
 
 	public final int getYOrigin() {
-		return definition.getyOrigin();
+		return definition.getYOrigin();
 	}
 
 	public int getZ() {
 		return definition.getZ();
 	}
+	
+	//For debug only
+	public void printMap() {
+		System.out.println(definition.getMapName());
+		for (int y = 0; y < entityMap[0].length; y++) {
+			for (int x = 0; x < entityMap.length; x++) {
+				boolean entity = false;
+				for (Entity e : entitySet) {
+					if (e.getX() == localToGlobalX(x) && e.getY() == localToGlobalY(y)) {
+						System.out.print(e.getName().charAt(0));
+						entity = true;
+						break;
+					}
+				}
+				if (entity) {
+					continue;
+				}
+				System.out.print(".");
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
 
 	public void moveEntity(final int oX, final int oY, final int dX, final int dY) {
-		assert containsPoint(oX, oY) && containsPoint(dX, dY);
+		assert containsPoint(oX, oY) && containsPoint(dX, dY) && walkable(dX, dY);
 		Entity entity = getEntity(oX, oY);
 		assert entity != null;
 		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.MOVED, entity.getUniqueID(), dX, dY));
 		if (entity.getEntityType() != EntityType.PLAYER) {
-			int cDX = dX - getXOrigin();
-			int cDY = dY - getYOrigin();
-			int cOX = oX - getXOrigin();
-			int cOY = oY - getYOrigin();
-			entityMap[cDX][cDY] = entityMap[cOX][cOY];
-			entityMap[cOX][cOY] = null;
-			pathingMap[cDX][cDY] = -2;
-			pathingMap[cOX][cOY] = -1;
+			entityMap[globalToLocalX(dX)][globalToLocalY(dY)] = entityMap[globalToLocalX(oX)][globalToLocalY(oY)];
+			entityMap[globalToLocalX(oX)][globalToLocalY(oY)] = null;
+			pathingMap[globalToLocalX(dX)][globalToLocalY(dY)] = -2;
+			pathingMap[globalToLocalX(oX)][globalToLocalY(oY)] = -1;
 		}
 	}
 
@@ -153,23 +188,21 @@ public final class Map {
 			return;
 		}
 		entitySet.add(entity);
-		entityMap[x - getXOrigin()][y - getYOrigin()] = entity;
-		pathingMap[x - getXOrigin()][y - getYOrigin()] = -2;
+		entityMap[globalToLocalX(x)][globalToLocalY(y)] = entity;
+		pathingMap[globalToLocalX(x)][globalToLocalY(y)] = -2;
 	}
 
 	public void removeEntity(final int x, final int y) {
 		assert (containsPoint(x, y));
 		Entity entity = getEntity(x, y);
-		if (entity == null) {
-			return;
-		}
+		assert entity != null;
 		if (entity.getEntityType() == EntityType.PLAYER)
 			playerSet.remove(entity);
 		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.REMOVED, entity.getUniqueID(), x, y));
 		entitySet.remove(entity);
 		if (entity.getEntityType() != EntityType.PLAYER) {
-			entityMap[x - getXOrigin()][y - getYOrigin()] = null;
-			pathingMap[x - getXOrigin()][y - getYOrigin()] = -1;
+			entityMap[globalToLocalX(x)][globalToLocalY(y)] = null;
+			pathingMap[globalToLocalX(x)][globalToLocalY(y)] = -1;
 		}
 		if (playerSet.size() == 0 && instanceNumber != Config.GLOBAL_INSTANCE) {
 			MapHandler.getInstance().removeMap(this);

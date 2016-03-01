@@ -65,6 +65,8 @@ public final class Main {
 
 	// Is server running.
 	private static volatile boolean running = true;
+	
+	private static boolean debug = true;
 
 	// Object that all TickProcess objects wait on for tick notification.
 	private static final Object TICK_NOTIFIER = new Object(); // To notify
@@ -77,6 +79,10 @@ public final class Main {
 	// new tick.
 	// Current server ticks count.
 	private static volatile long tickCount = 0; // Tick count.
+	
+	public static boolean isDebug() {
+		return debug;
+	}
 
 	/**
 	 * Can be used to register tick reliants so that server will know to wait
@@ -129,16 +135,15 @@ public final class Main {
 	 * @throws UnknownHostException
 	 */
 	public static void main(String[] args) throws UnknownHostException {
-		System.setOut(Logger.getOutPrintStream()); // Set System out to logger
-													// out
-		System.setErr(Logger.getErrPrintStream());
-		Runtime.getRuntime().addShutdownHook(new Thread() { // Add shutdown hook
-															// that autosaves
-															// users.
+		if (!debug) {
+			System.setOut(Logger.getOutPrintStream());
+			System.setErr(Logger.getErrPrintStream());
+		}
+		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
 				saveEverything();
-				System.out.println("Saved all users before going down.");
+				System.out.println("Saved everything before going down.");
 			}
 		});
 		ConnectionAcceptor.startAcceptor(43594);
@@ -228,7 +233,7 @@ public final class Main {
 			tickTimes += (System.currentTimeMillis() - start);
 			ticks++;
 			tickCount++;
-			if (ticks == Config.TICKS_PER_MINUTE * Config.STATUS_PRINT_RATE) {
+			if (ticks == Config.TICKS_PER_WALK / 2) { // For visual map, Config.TICKS_PER_WALK / 2
 				System.out.println(" ");
 				System.out.println("Average tick consumption over " + Config.STATUS_PRINT_RATE + " minutes: "
 						+ String.format("%.3f", ((tickTimes / (float) (Config.MILLISECONDS_PER_TICK * ticks))) * 100.0f)
@@ -237,6 +242,7 @@ public final class Main {
 					process.printStatus();
 				}
 				System.out.println(" ");
+				MapHandler.getInstance().printMaps();
 				ticks = 0;
 				tickTimes = 0L;
 			}

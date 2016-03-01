@@ -9,23 +9,16 @@
     <accuracy>70</accuracy>
     <strength>10</strength>
     <defence>10</defence>
+		<aggressive>true</aggressive>
   </npc>
   <npc>
     <name>Weapon Smith</name>
     <id>2</id>
-    <health>1</health>
-    <level>1</level>
-    <accuracy>0</accuracy>
-    <strength>0</strength>
-    <defence>0</defence>
+		<walks>false</walks>
   </npc>
   <npc>
     <name>Armor Smith</name>
     <id>3</id>
-    <health>1</health>
-    <level>1</level>
-    <accuracy>0</accuracy>
-    <strength>0</strength>
-    <defence>0</defence>
+		<walks>false</walks>
   </npc>
 </definitions>

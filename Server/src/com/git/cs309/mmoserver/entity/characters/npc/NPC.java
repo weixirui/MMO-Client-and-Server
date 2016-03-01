@@ -101,4 +101,9 @@ public class NPC extends Character {
 		
 	}
 
+	@Override
+	protected boolean canWalk() {
+		return definition.canWalk();
+	}
+
 }

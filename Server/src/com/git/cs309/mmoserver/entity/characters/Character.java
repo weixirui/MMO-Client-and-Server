@@ -6,6 +6,7 @@ import java.util.Queue;
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.entity.Entity;
+import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.map.PathFinder;
 import com.git.cs309.mmoserver.map.PathFinder.Tile;
@@ -28,6 +29,7 @@ public abstract class Character extends Entity {
 	protected transient volatile long walkingTick = 0;
 	protected transient volatile boolean walking = false;
 	protected transient volatile boolean inCombat = false;
+	protected transient volatile int walkDesperation = Config.NPC_WALKING_RATE;
 
 	public Character() {
 		super();
@@ -92,7 +94,12 @@ public abstract class Character extends Entity {
 		walkingQueue = PathFinder.getPathToPoint(MapHandler.getInstance().getMapContainingPosition(instanceNumber, getX(), getY(), getZ()), getX(), getY(), x, y);
 	}
 	
+	protected abstract boolean canWalk();
+	
 	private final void handleWalking() {
+		if (!canWalk()) {
+			return;
+		}
 		if (!walking && !walkingQueue.isEmpty()) {
 			walking = true;
 		}
@@ -104,10 +111,16 @@ public abstract class Character extends Entity {
 		if (walking && walkingQueue.isEmpty()) {
 			walking = false;
 		}
-		if (!walking && walkingQueue.isEmpty() && !inCombat && (int) (Math.random() * Config.NPC_WALKING_RATE) == 1) {
+		if (getEntityType() == EntityType.NPC && !walking && walkingQueue.isEmpty() && !inCombat && (int) (Math.random() * walkDesperation) == 1) {
 			int newX = (int) (Config.MAX_WALKING_DISTANCE - (Math.random() * Config.MAX_WALKING_DISTANCE * 2));
 			int newY = (int) (Config.MAX_WALKING_DISTANCE - (Math.random() * Config.MAX_WALKING_DISTANCE * 2));
 			walkTo(newX, newY);
+			if (walkingQueue.size() == 0) {
+				walkDesperation /= 2;
+				walkDesperation += 1;
+			} else {
+				walkDesperation = Config.NPC_WALKING_RATE;
+			}
 		}
 	}
 	

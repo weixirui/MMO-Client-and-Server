@@ -53,11 +53,11 @@ public final class MapDefinition implements Serializable {
 		return width;
 	}
 
-	public int getxOrigin() {
+	public int getXOrigin() {
 		return xOrigin;
 	}
 
-	public int getyOrigin() {
+	public int getYOrigin() {
 		return yOrigin;
 	}
 

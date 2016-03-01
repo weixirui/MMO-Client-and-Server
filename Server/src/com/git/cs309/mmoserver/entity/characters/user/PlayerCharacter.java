@@ -134,4 +134,9 @@ public class PlayerCharacter extends Character implements Serializable {
 		
 	}
 
+	@Override
+	protected boolean canWalk() {
+		return true;
+	}
+
 }

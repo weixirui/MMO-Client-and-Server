@@ -106,7 +106,7 @@ public final class PathFinder {
 			closestDistance = grid.length * 2;
 			for (int x = lX - 1; x <= lX + 1; x++) {
 				for (int y = lY - 1; y <= lY + 1; y++) {
-					if (x < 0 || x >= grid.length || y < 0 || y >= grid[x].length || grid[x][y] > step) {
+					if (x < 0 || x >= grid.length || y < 0 || y >= grid[x].length || grid[x][y] > step || grid[x][y] < 0) {
 						continue;
 					}
 					distance = MathUtils.distance(x, y, originX, originY);
@@ -117,7 +117,10 @@ public final class PathFinder {
 					}
 				}
 			}
-			assert closestDistance != grid.length * 2;
+			if (closestDistance == grid.length * 2) {
+				System.err.println("Failed to get path to "+x2+", "+y2);
+				return new CycleQueue<Tile>(0);
+			}
 			walkingQueue.add(new Tile(tX + map.getXOrigin(), tY + map.getYOrigin()));
 			lX = tX;
 			lY = tY;
