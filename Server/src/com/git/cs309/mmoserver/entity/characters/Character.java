@@ -48,6 +48,11 @@ public abstract class Character extends Entity {
 
 		});
 	}
+	
+	public void resetCombat() {
+		inCombat = false;
+		opponentId = NO_OPPONENT;
+	}
 
 	public void applyDamage(int damageAmount) {
 		health -= damageAmount;
@@ -122,7 +127,7 @@ public abstract class Character extends Entity {
 	
 	public void setOponentId(final int opponentId) {
 		this.opponentId = opponentId;
-		if (opponentId == -1) {
+		if (opponentId == NO_OPPONENT) {
 			inCombat = false;
 		} else {
 			inCombat = true;

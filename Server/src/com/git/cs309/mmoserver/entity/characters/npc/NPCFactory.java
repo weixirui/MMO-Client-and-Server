@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.git.cs309.mmoserver.Config;
+import com.git.cs309.mmoserver.combat.CombatStyle;
 import com.git.cs309.mmoserver.util.DefinitionMissingException;
 import com.git.cs309.mmoserver.util.WordUtils;
 
@@ -83,6 +84,7 @@ public final class NPCFactory {
 				int health = 1;
 				int level = 1;
 				int id = Integer.MAX_VALUE;
+				CombatStyle style = CombatStyle.NON_COMBAT;
 				boolean autoRespawn = true;
 				boolean canWalk = true;
 				boolean aggressive = false;
@@ -120,13 +122,26 @@ public final class NPCFactory {
 						case "aggressive":
 							aggressive = Boolean.parseBoolean(definitionNode.getTextContent());
 							break;
+						case "style":
+							switch (definitionNode.getTextContent().toLowerCase()) {
+							case "melee":
+								style = CombatStyle.MELEE;
+								break;
+							case "ranged":
+								style = CombatStyle.RANGED;
+								break;
+							case "magic":
+								style = CombatStyle.MAGIC;
+								break;
+							}
+							break;
 						}
 					} catch (NumberFormatException e) {
 						e.printStackTrace();
 					}
 				}
 				NPCDefinition definition = new NPCDefinition(WordUtils.capitalizeText(name), id, health, strength,
-						accuracy, defence, level, autoRespawn, respawnTimer, canWalk, aggressive);
+						accuracy, defence, level, autoRespawn, respawnTimer, canWalk, aggressive, style);
 				definitionsByName.put(name.toLowerCase(), definition);
 				definitionsByID.put(id, definition);
 				break;

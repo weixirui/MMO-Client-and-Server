@@ -119,16 +119,18 @@ public class NPC extends Character {
 	@Override
 	public void handleWalking() {
 		super.handleWalking();
-		if (!walking && walkingQueue.isEmpty() && !inCombat && (int) (Math.random() * walkDesperation) == 1) {
-			int newX = (int) (Config.MAX_WALKING_DISTANCE - (Math.random() * Config.MAX_WALKING_DISTANCE * 2));
-			int newY = (int) (Config.MAX_WALKING_DISTANCE - (Math.random() * Config.MAX_WALKING_DISTANCE * 2));
+		if (!walking && walkingQueue.isEmpty() && !inCombat && (int) (Math.random() * walkDesperation--) == 0) {
+			int newX = (int) (Config.MAX_WALKING_DISTANCE - (Math.random() * ((Config.MAX_WALKING_DISTANCE * 2) + 1)));
+			int newY = (int) (Config.MAX_WALKING_DISTANCE - (Math.random() * ((Config.MAX_WALKING_DISTANCE * 2) + 1)));
 			walkTo(newX, newY);
 			if (walkingQueue.size() == 0) {
 				walkDesperation /= 2;
-				walkDesperation += 1;
 			} else {
 				walkDesperation = Config.NPC_WALKING_RATE;
 			}
+		}
+		if (walkDesperation <= 0) {
+			walkDesperation = 1;
 		}
 	}
 

@@ -32,8 +32,8 @@ public final class PacketFactory {
 			return new ExtensiveObjectPacket(source, bytes);
 		case PacketType.EXTENSIVE_CHARACTER_PACKET_BYTE:
 			return new ExtensiveCharacterPacket(source, bytes);
-		case PacketType.PLAYER_CHARACTER_PACKET_BYTE:
-			return new PlayerCharacterPacket(source, bytes);
+		case PacketType.EXTENSIVE_PLAYER_CHARACTER_PACKET_BYTE:
+			return new ExtensivePlayerCharacterPacket(source, bytes);
 		case PacketType.CHARACTER_STATUS_PACKET_BYTE:
 			return new CharacterStatusPacket(source, bytes);
 		case PacketType.PLAYER_EQUIPMENT_PACKET_BYTE:

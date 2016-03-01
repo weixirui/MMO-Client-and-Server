@@ -4,7 +4,7 @@ public enum PacketType {
 
 	SIMPLE_REQUEST_PACKET((byte) 21), SELF_PACKET((byte) 11), MOVE_PACKET((byte) 20), NEW_MAP_PACKET(
 			(byte) 19), ITEM_CONTAINER_PACKET((byte) 18), PLAYER_EQUIPMENT_PACKET((byte) 17), CHARACTER_STATUS_PACKET(
-					(byte) 16), PLAYER_CHARACTER_PACKET((byte) 15), EXTENSIVE_CHARACTER_PACKET(
+					(byte) 16), EXTENSIVE_PLAYER_CHARACTER_PACKET((byte) 15), EXTENSIVE_CHARACTER_PACKET(
 							(byte) 14), EXTENSIVE_OBJECT_PACKET((byte) 12), ENTITY_UPDATE_PACKET(
 									(byte) 7), ENTITY_CLICK_PACKET((byte) 5), INTERFACE_CLICK_PACKET(
 											(byte) 12), USER_STATUS_PACKET((byte) 10), SERVER_MODULE_STATUS_PACKET(
@@ -28,7 +28,7 @@ public enum PacketType {
 	public static final byte INTERFACE_CLICK_PACKET_BYTE = 12;
 	public static final byte EXTENSIVE_OBJECT_PACKET_BYTE = 13;
 	public static final byte EXTENSIVE_CHARACTER_PACKET_BYTE = 14;
-	public static final byte PLAYER_CHARACTER_PACKET_BYTE = 15;
+	public static final byte EXTENSIVE_PLAYER_CHARACTER_PACKET_BYTE = 15;
 	public static final byte CHARACTER_STATUS_PACKET_BYTE = 16;
 	public static final byte PLAYER_EQUIPMENT_PACKET_BYTE = 17;
 	public static final byte ITEM_CONTAINER_PACKET_BYTE = 18;

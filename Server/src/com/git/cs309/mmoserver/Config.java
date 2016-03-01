@@ -29,9 +29,9 @@ public final class Config {
 
 	public static final int MILLISECONDS_PER_SECOND = 1000;
 
-	public static final int STATUS_PRINT_RATE = 10; // Minutes between status prints.
+	public static final int STATUS_PRINT_RATE = 1; // Minutes between status prints.
 
-	public static final int TICK_RATE = 50; // Ticks per second. Must divide evenly into 1000 for accurate results. (since it uses integer math, the resulting time calculations will be inaccurate)
+	public static final int TICK_RATE = 125; // Ticks per second. Must divide evenly into 1000 for accurate results. (since it uses integer math, the resulting time calculations will be inaccurate)
 	
 	//Desired tick delay
 	public static final long MILLISECONDS_PER_TICK = MILLISECONDS_PER_SECOND / TICK_RATE;
@@ -39,7 +39,7 @@ public final class Config {
 	//Speed at which movements in a walking queue are performed.
 	public static final long TICKS_PER_WALK = 400 / MILLISECONDS_PER_TICK;
 	
-	public static final int NPC_WALKING_RATE = TICK_RATE * 20; // 1 in ... 
+	public static final int NPC_WALKING_RATE = TICK_RATE * 60; // 1 in ... 
 
 	public static final String NPC_DEFINITION_PATH = "./data/cfg/NPCDefinitions.xml";
 

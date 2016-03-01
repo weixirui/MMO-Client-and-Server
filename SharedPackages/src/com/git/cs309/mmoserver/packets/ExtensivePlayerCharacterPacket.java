@@ -3,7 +3,7 @@ package com.git.cs309.mmoserver.packets;
 import com.git.cs309.mmoserver.connection.AbstractConnection;
 import com.git.cs309.mmoserver.util.BinaryOperations;
 
-public class PlayerCharacterPacket extends Packet {
+public class ExtensivePlayerCharacterPacket extends Packet {
 	public static final byte MALE = 0;
 	public static final byte FEMALE = 1;
 	public static final int NO_GEAR = 0; // No gear in the slot with this value
@@ -24,7 +24,7 @@ public class PlayerCharacterPacket extends Packet {
 	private final int boots;
 	private final String name;
 
-	public PlayerCharacterPacket(AbstractConnection source, final byte gender, final int uniqueID, final int x,
+	public ExtensivePlayerCharacterPacket(AbstractConnection source, final byte gender, final int uniqueID, final int x,
 			final int y, final int health, final int maxHealth, final int level, final int headPiece,
 			final int chestPiece, final int leftHand, final int rightHand, final int cape, final int leggings,
 			final int gloves, final int boots, final String name) {
@@ -47,7 +47,7 @@ public class PlayerCharacterPacket extends Packet {
 		this.name = name;
 	}
 
-	public PlayerCharacterPacket(AbstractConnection source, final byte[] bytes) {
+	public ExtensivePlayerCharacterPacket(AbstractConnection source, final byte[] bytes) {
 		super(source);
 		gender = bytes[1];
 		int[] ints = BinaryOperations.intArrayFromBytes(bytes, 2, 14);
@@ -122,7 +122,7 @@ public class PlayerCharacterPacket extends Packet {
 
 	@Override
 	public PacketType getPacketType() {
-		return PacketType.PLAYER_CHARACTER_PACKET;
+		return PacketType.EXTENSIVE_PLAYER_CHARACTER_PACKET;
 	}
 
 	public int getRightHand() {

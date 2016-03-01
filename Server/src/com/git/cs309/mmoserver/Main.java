@@ -252,9 +252,9 @@ public final class Main {
 				ticks = 0;
 				tickTimes = 0L;
 			}
-			//if (timeLeft < 0) {
-			//	System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
-			//}
+			if (timeLeft < 0) {
+				System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
+			}
 			if (timeLeft < 2) {
 				timeLeft = 2; // Must wait at least a little bit, so that
 								// threads can catch up and wait.
