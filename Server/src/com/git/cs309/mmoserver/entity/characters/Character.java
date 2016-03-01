@@ -88,6 +88,10 @@ public abstract class Character extends Entity {
 		isDead = true;
 	}
 	
+	public final void walkTo(int x, int y) {
+		walkingQueue = PathFinder.getPathToPoint(MapHandler.getInstance().getMapContainingPosition(instanceNumber, getX(), getY(), getZ()), getX(), getY(), x, y);
+	}
+	
 	private final void handleWalking() {
 		if (!walking && !walkingQueue.isEmpty()) {
 			walking = true;
@@ -103,7 +107,7 @@ public abstract class Character extends Entity {
 		if (!walking && walkingQueue.isEmpty() && !inCombat && (int) (Math.random() * Config.NPC_WALKING_RATE) == 1) {
 			int newX = (int) (Config.MAX_WALKING_DISTANCE - (Math.random() * Config.MAX_WALKING_DISTANCE * 2));
 			int newY = (int) (Config.MAX_WALKING_DISTANCE - (Math.random() * Config.MAX_WALKING_DISTANCE * 2));
-			walkingQueue = PathFinder.getPathToPoint(MapHandler.getInstance().getMapContainingPosition(instanceNumber, getX(), getY(), getZ()), getX(), getY(), newX, newY);
+			walkTo(newX, newY);
 		}
 	}
 	
