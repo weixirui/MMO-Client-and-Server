@@ -2,6 +2,7 @@ package com.git.cs309.mmoclient.packets;
 
 import javax.swing.JOptionPane;
 
+import com.git.cs309.mmoclient.gui.CharacterSelectionGUI;
 import com.git.cs309.mmoclient.gui.GameGUI;
 import com.git.cs309.mmoclient.gui.LoginGUI;
 import com.git.cs309.mmoserver.packets.AbstractPacketHandler;
@@ -28,8 +29,9 @@ public final class PacketHandler extends AbstractPacketHandler {
 		switch (packet.getPacketType()) {
 		case MESSAGE_PACKET:
 			MessagePacket messagePacket = (MessagePacket) packet;
-			throw new RuntimeException("Handle messages here.");
-			//break; Uncomment this after removing exception.
+			//TODO Implement properly
+			System.out.println("Got message: "+messagePacket.getMessage());
+			break;
 		case ERROR_PACKET:
 			ErrorPacket errorPacket = (ErrorPacket) packet;
 			switch (errorPacket.getErrorCode()) {
@@ -50,31 +52,24 @@ public final class PacketHandler extends AbstractPacketHandler {
 			switch (eventPacket.getEventCode()) {
 			case EventPacket.LOGIN_SUCCESS:
 				LoginGUI.getSingleton().setVisible(false);
-				throw new RuntimeException("Set your Game GUI to visible here."); // (Old Code) GameGUI.getSingleton().setVisible(true);
-				//break; YOU'RE gunna need to uncomment this once you remove the exception
+				CharacterSelectionGUI.getSingleton().setVisible(true);
+				break;
 			default:
 				System.err.println("No case for event code: "+eventPacket.getEventCode());
 				break;
 			}
-			break;
-		case ENTITY_UPDATE_PACKET:
-			//This packet means that something has happened to an entity that already exists.
-			throw new RuntimeException("Handle updating entities here");
-		case EXTENSIVE_CHARACTER_PACKET:
-			//This packet is telling the client that there is a new character that needs to be managed by the client.
-			throw new RuntimeException("Handle new characters.");
-		case EXTENSIVE_OBJECT_PACKET:
-			throw new RuntimeException("Handle new objects here.");
-		case PLAYER_CHARACTER_PACKET:
-			throw new RuntimeException("Handle new players here.");
-		case TEST_PACKET:
-			System.out.println("No code for test packet");
 			break;
 		case ADMIN_COMMAND_PACKET:
 			break;
 		case CHARACTER_STATUS_PACKET:
 			break;
 		case ENTITY_CLICK_PACKET:
+			break;
+		case ENTITY_UPDATE_PACKET:
+			break;
+		case EXTENSIVE_CHARACTER_PACKET:
+			break;
+		case EXTENSIVE_OBJECT_PACKET:
 			break;
 		case INTERFACE_CLICK_PACKET:
 			break;
@@ -88,16 +83,23 @@ public final class PacketHandler extends AbstractPacketHandler {
 			break;
 		case NULL_PACKET:
 			break;
+		case PLAYER_CHARACTER_PACKET:
+			break;
 		case PLAYER_EQUIPMENT_PACKET:
 			break;
 		case SELF_PACKET:
+			CharacterSelectionGUI.getSingleton().setVisible(false);
+			GameGUI.getSingleton().setVisible(true);
 			break;
 		case SERVER_MODULE_STATUS_PACKET:
+			break;
+		case SIMPLE_REQUEST_PACKET:
+			break;
+		case TEST_PACKET:
 			break;
 		case USER_STATUS_PACKET:
 			break;
 		default:
-			System.err.println("No case for packet type: "+packet.getPacketType());
 			break;
 		}
 	}

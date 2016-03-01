@@ -1,13 +1,8 @@
 package com.git.cs309.mmoclient.gui;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
-
 import javax.swing.*;
-import javax.swing.event.*;
-
 import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoserver.packets.LoginPacket;
 
