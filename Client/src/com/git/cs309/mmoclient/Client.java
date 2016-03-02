@@ -15,6 +15,8 @@ public final class Client {
 	private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
 	private static boolean debug = false;
 	
+	private static int selfId = -1;
+	
 	public static void main(String[] args) {
 		for (String arg : args) {
 			switch (arg.toLowerCase()) {
@@ -30,6 +32,14 @@ public final class Client {
 			return;
 		}
 		LoginGUI.getSingleton().setVisible(true);
+	}
+	
+	public static void setSelfId(int selfId) {
+		Client.selfId = selfId;
+	}
+	
+	public static int getSelfId() {
+		return selfId;
 	}
 	
 	public static boolean isDebug() {

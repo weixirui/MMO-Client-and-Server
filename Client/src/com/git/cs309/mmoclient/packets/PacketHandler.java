@@ -2,6 +2,7 @@ package com.git.cs309.mmoclient.packets;
 
 import javax.swing.JOptionPane;
 
+import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoclient.gui.characterselection.CharacterSelectionGUI;
 import com.git.cs309.mmoclient.gui.game.GameGUI;
 import com.git.cs309.mmoclient.gui.login.LoginGUI;
@@ -12,6 +13,7 @@ import com.git.cs309.mmoserver.packets.MessagePacket;
 import com.git.cs309.mmoserver.packets.NewCharacterDataPacket;
 import com.git.cs309.mmoserver.packets.EventPacket;
 import com.git.cs309.mmoserver.packets.Packet;
+import com.git.cs309.mmoserver.packets.SelfPacket;
 
 public final class PacketHandler extends AbstractPacketHandler {
 	
@@ -98,6 +100,8 @@ public final class PacketHandler extends AbstractPacketHandler {
 		case PLAYER_EQUIPMENT_PACKET:
 			break;
 		case SELF_PACKET:
+			SelfPacket selfPacket = (SelfPacket) packet;
+			Client.setSelfId(selfPacket.getUniqueID());
 			CharacterSelectionGUI.getSingleton().setVisible(false);
 			GameGUI.getSingleton().setVisible(true);
 			break;

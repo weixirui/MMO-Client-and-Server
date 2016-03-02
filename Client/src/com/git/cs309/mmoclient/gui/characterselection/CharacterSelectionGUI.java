@@ -33,7 +33,6 @@ public class CharacterSelectionGUI extends JFrame {
 	}
 	
 	public void updateComponents(CharacterSelectionDataPacket packet) {
-		System.out.println(packet.getIndex());
 		components[packet.getIndex()].updateSelectionCharacter(packet);
 		this.repaint();
 	}

@@ -25,7 +25,6 @@ public final class SelectionCharacter {
 		setHairStyle(packet.getHairStyle());
 		setName(packet.getName());
 		setHasCharacter(true);
-		System.out.println("Character "+index+" has name "+name);
 	}
 
 	/**
