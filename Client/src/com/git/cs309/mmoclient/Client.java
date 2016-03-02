@@ -8,7 +8,7 @@ import java.net.Socket;
 import javax.swing.JOptionPane;
 
 import com.git.cs309.mmoclient.connection.Connection;
-import com.git.cs309.mmoclient.gui.LoginGUI;
+import com.git.cs309.mmoclient.gui.login.LoginGUI;
 
 public final class Client {
 	private static volatile Connection connection;

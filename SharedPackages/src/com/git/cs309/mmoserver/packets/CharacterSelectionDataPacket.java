@@ -46,7 +46,7 @@ public class CharacterSelectionDataPacket extends Packet {
 		int index = 0;
 		bytes[index++] = getPacketType().getTypeByte();
 		bytes[index++] = gender;
-		for (byte b : BinaryOperations.toBytes(index, eyeColor, skinColor, hairColor, hairStyle)) {
+		for (byte b : BinaryOperations.toBytes(this.index, eyeColor, skinColor, hairColor, hairStyle)) {
 			bytes[index++] = b;
 		}
 		for (char c : name.toCharArray()) {

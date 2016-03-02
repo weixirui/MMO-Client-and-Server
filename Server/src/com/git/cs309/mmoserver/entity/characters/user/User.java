@@ -37,20 +37,6 @@ public final class User implements Serializable {
 
 	public User() {
 		//For deserialization only
-		EventQueue.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				for (PlayerCharacter character : playerCharacters) {
-					if (character.isCreated()) {
-						System.out.println(character.getName());
-					} else {
-						System.out.println("Not created");
-					}
-				}
-			}
-			
-		});
 	}
 
 	public User(final String username, final String password) {
@@ -98,6 +84,9 @@ public final class User implements Serializable {
 		if (inGame) {
 			System.err.println("User already in the game.");
 			return;
+		}
+		for (PlayerCharacter character : playerCharacters) {
+			System.out.println(character.getName());
 		}
 		connection.addOutgoingPacket(new SelfPacket(null, getUniqueID()));
 		connection.addOutgoingPacket(new MessagePacket(null, MessagePacket.GAME_CHAT, Config.ENTER_GAME_MESSAGE));

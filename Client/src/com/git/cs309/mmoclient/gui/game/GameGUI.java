@@ -1,4 +1,4 @@
-package com.git.cs309.mmoclient.gui;
+package com.git.cs309.mmoclient.gui.game;
 
 import java.awt.Toolkit;
 

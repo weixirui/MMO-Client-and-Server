@@ -19,6 +19,7 @@ public class SelectionCharacterComponent extends Component {
 	private final int index;
 	
 	public SelectionCharacterComponent(int index) {
+		System.out.println("Creating with index: "+index);
 		this.index = index;
 		character = new SelectionCharacter(index);
 		this.addMouseListener(new MouseAdapter() {
@@ -46,15 +47,7 @@ public class SelectionCharacterComponent extends Component {
 	}
 	
 	public void updateSelectionCharacter(CharacterSelectionDataPacket packet) {
-		character.setEyeColor(packet.getEyeColor());
-		character.setGender(packet.getGender());
-		character.setHairColor(packet.getHairColor());
-		character.setHairStyle(packet.getHairStyle());
-		character.setName(packet.getName());
-		System.out.println(packet.getName());
-		character.setSkinColor(packet.getSkinColor());
-		character.setHasCharacter(true);
-		this.repaint();
+		character.setCharacter(packet);
 	}
 	
 	@Override

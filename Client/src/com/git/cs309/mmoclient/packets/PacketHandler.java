@@ -2,9 +2,9 @@ package com.git.cs309.mmoclient.packets;
 
 import javax.swing.JOptionPane;
 
-import com.git.cs309.mmoclient.gui.CharacterSelectionGUI;
-import com.git.cs309.mmoclient.gui.GameGUI;
-import com.git.cs309.mmoclient.gui.LoginGUI;
+import com.git.cs309.mmoclient.gui.characterselection.CharacterSelectionGUI;
+import com.git.cs309.mmoclient.gui.game.GameGUI;
+import com.git.cs309.mmoclient.gui.login.LoginGUI;
 import com.git.cs309.mmoserver.packets.AbstractPacketHandler;
 import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
 import com.git.cs309.mmoserver.packets.ErrorPacket;
@@ -27,7 +27,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 
 	@Override
 	public void handlePacketBlock(Packet packet) {
-		packet.getConnection().getPacket(); // to remove packet, since it doesn't do it itself
+		packet = packet.getConnection().getPacket(); // to remove packet, since it doesn't do it itself
 		
 		System.out.println("Got packet: "+packet.getPacketType());
 		switch (packet.getPacketType()) {

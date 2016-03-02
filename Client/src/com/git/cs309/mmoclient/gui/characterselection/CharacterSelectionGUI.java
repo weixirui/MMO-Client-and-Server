@@ -1,11 +1,10 @@
-package com.git.cs309.mmoclient.gui;
+package com.git.cs309.mmoclient.gui.characterselection;
 
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
-import com.git.cs309.mmoclient.gui.characterselection.SelectionCharacterComponent;
 import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
 
 public class CharacterSelectionGUI extends JFrame {
@@ -34,6 +33,7 @@ public class CharacterSelectionGUI extends JFrame {
 	}
 	
 	public void updateComponents(CharacterSelectionDataPacket packet) {
+		System.out.println(packet.getIndex());
 		components[packet.getIndex()].updateSelectionCharacter(packet);
 		this.repaint();
 	}

@@ -1,4 +1,4 @@
-package com.git.cs309.mmoclient.gui;
+package com.git.cs309.mmoclient.gui.login;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
