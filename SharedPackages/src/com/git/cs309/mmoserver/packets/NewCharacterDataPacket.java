@@ -34,7 +34,7 @@ public class NewCharacterDataPacket extends Packet {
 		hairColor = ints[index++];
 		hairStyle = ints[index++];
 		char[] chars = new char[bytes.length - 18];
-		for (int i = 0, j = 18; j < bytes.length; j++) {
+		for (int i = 0, j = 18; j < bytes.length; j++, i++) {
 			chars[i] = (char) bytes[j];
 		}
 		name = String.valueOf(chars);
