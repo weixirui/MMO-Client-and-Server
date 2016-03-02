@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import com.git.cs309.mmoclient.Client;
+import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
 import com.git.cs309.mmoserver.packets.InterfaceClickPacket;
 
 public class SelectionCharacterComponent extends Component {
@@ -44,12 +45,24 @@ public class SelectionCharacterComponent extends Component {
 		});
 	}
 	
+	public void updateSelectionCharacter(CharacterSelectionDataPacket packet) {
+		character.setEyeColor(packet.getEyeColor());
+		character.setGender(packet.getGender());
+		character.setHairColor(packet.getHairColor());
+		character.setHairStyle(packet.getHairStyle());
+		character.setName(packet.getName());
+		System.out.println(packet.getName());
+		character.setSkinColor(packet.getSkinColor());
+		character.setHasCharacter(true);
+		this.repaint();
+	}
+	
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.drawRect(0, 0, getWidth(), getHeight());
 		if (character.hasCharacter()) {
-			g.drawString(character.getName(), getWidth() / 2, getHeight() / 2 );
+			g.drawString(character.getName(), getWidth() / 4, getHeight() / 4 );
 		}
 	}
 

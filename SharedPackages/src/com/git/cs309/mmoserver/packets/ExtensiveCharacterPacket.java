@@ -24,7 +24,7 @@ public class ExtensiveCharacterPacket extends Packet {
 		maxHealth = ints[5];
 		level = ints[6];
 		char[] chars = new char[bytes.length - 29];
-		for (int i = 28, j = 0; i < bytes.length; i++, j++) {
+		for (int i = 29, j = 0; i < bytes.length; i++, j++) {
 			chars[j] = (char) bytes[i];
 		}
 		characterName = String.valueOf(chars);

@@ -55,7 +55,7 @@ public class PlayerCharacter extends Character implements Serializable {
 		this.x = x;
 		this.y = y;
 		this.entityID = 0;
-		this.name = "Null";
+		this.name = "NAll";
 		deleteCharacter();
 	}
 
@@ -87,6 +87,7 @@ public class PlayerCharacter extends Character implements Serializable {
 	public void createCharacter(final String characterName, final byte gender, int eyeColor, int skinColor,
 			int hairColor, int hairStyle) {
 		name = characterName;
+		System.out.println("Creating character with name: "+name);
 		this.gender = gender;
 		this.created = true;
 		this.eyeColor = eyeColor;

@@ -6,6 +6,7 @@ import com.git.cs309.mmoclient.gui.CharacterSelectionGUI;
 import com.git.cs309.mmoclient.gui.GameGUI;
 import com.git.cs309.mmoclient.gui.LoginGUI;
 import com.git.cs309.mmoserver.packets.AbstractPacketHandler;
+import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
 import com.git.cs309.mmoserver.packets.ErrorPacket;
 import com.git.cs309.mmoserver.packets.MessagePacket;
 import com.git.cs309.mmoserver.packets.NewCharacterDataPacket;
@@ -26,8 +27,9 @@ public final class PacketHandler extends AbstractPacketHandler {
 
 	@Override
 	public void handlePacketBlock(Packet packet) {
-		System.out.println("Got packet");
 		packet.getConnection().getPacket(); // to remove packet, since it doesn't do it itself
+		
+		System.out.println("Got packet: "+packet.getPacketType());
 		switch (packet.getPacketType()) {
 		case MESSAGE_PACKET:
 			MessagePacket messagePacket = (MessagePacket) packet;
@@ -65,7 +67,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 			}
 			break;
 		case EXTENSIVE_PLAYER_CHARACTER_PACKET:
-			throw new RuntimeException("Handle new players here.");
+			break;
 		case TEST_PACKET:
 			System.out.println("No code for test packet");
 			break;
@@ -106,6 +108,8 @@ public final class PacketHandler extends AbstractPacketHandler {
 		case USER_STATUS_PACKET:
 			break;
 		case CHARACTER_SELECTION_DATA_PACKET:
+			CharacterSelectionGUI.getSingleton().updateComponents((CharacterSelectionDataPacket) packet); 
+			CharacterSelectionGUI.getSingleton().repaint();
 			break;
 		case NEW_CHARACTER_DATA_PACKET:
 			break;

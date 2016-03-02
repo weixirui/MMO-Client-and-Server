@@ -21,7 +21,7 @@ public class ExtensiveObjectPacket extends Packet {
 		x = ints[2];
 		y = ints[3];
 		char[] chars = new char[bytes.length - 17];
-		for (int i = 16, j = 0; i < bytes.length; i++, j++) {
+		for (int i = 17, j = 0; i < bytes.length; i++, j++) {
 			chars[j] = (char) bytes[i];
 		}
 		name = String.valueOf(chars);

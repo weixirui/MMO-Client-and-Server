@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 
 import com.git.cs309.mmoclient.gui.characterselection.SelectionCharacterComponent;
+import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
 
 public class CharacterSelectionGUI extends JFrame {
 
@@ -30,6 +31,11 @@ public class CharacterSelectionGUI extends JFrame {
 			components[i] = new SelectionCharacterComponent(i);
 			add(components[i]);
 		}
+	}
+	
+	public void updateComponents(CharacterSelectionDataPacket packet) {
+		components[packet.getIndex()].updateSelectionCharacter(packet);
+		this.repaint();
 	}
 
 }

@@ -142,13 +142,13 @@ public abstract class AbstractConnection extends Thread {
 						}
 						handlePacket(packet);
 					} catch (CorruptDataException | NegativeArraySizeException | ArrayIndexOutOfBoundsException e) { // Just general exception that might occur for bad packets.
-						System.err.println(e.getMessage());
+						e.printStackTrace();
 					} catch (EndOfStreamReachedException e) { // End of the stream was reached, meaning there's no more data, ever.
-						System.err.println(e.getMessage());
+						System.err.println("Error 2: "+e.getMessage());
 						closeRequested = true;
 						break;
 					} catch (IOException e) { // Should only be Connection reset
-						System.err.println(e.getMessage());
+						System.err.println("Error 3: "+e.getMessage());
 						closeRequested = true;
 						break;
 					}

@@ -1,5 +1,6 @@
 package com.git.cs309.mmoserver.entity.characters.user;
 
+import java.awt.EventQueue;
 import java.io.Serializable;
 
 import com.git.cs309.mmoserver.Config;
@@ -35,6 +36,20 @@ public final class User implements Serializable {
 
 	public User() {
 		//For deserialization only
+		EventQueue.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				for (PlayerCharacter character : playerCharacters) {
+					if (character.isCreated()) {
+						System.out.println(character.getName());
+					} else {
+						System.out.println("Not created");
+					}
+				}
+			}
+			
+		});
 	}
 
 	public User(final String username, final String password) {

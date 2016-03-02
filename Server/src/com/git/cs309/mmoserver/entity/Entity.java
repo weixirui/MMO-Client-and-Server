@@ -14,7 +14,7 @@ public abstract class Entity {
 	protected volatile transient boolean needsDisposal = false;
 
 	public Entity() {
-		instanceNumber = 0;
+		instanceNumber = Config.GLOBAL_INSTANCE;
 	}
 
 	public Entity(final int x, final int y, final int z, final IDTag idTag, final int entityID, final String name) {
