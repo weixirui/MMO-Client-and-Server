@@ -9,3 +9,5 @@ Server/data/logs/
 /Server/data/users/
 Server/data/users/
 *.user
+#ignore class files
+*.class
