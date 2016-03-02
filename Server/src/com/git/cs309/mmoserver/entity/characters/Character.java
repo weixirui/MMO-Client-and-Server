@@ -22,6 +22,11 @@ import com.git.cs309.mmoserver.util.CycleQueue;
  */
 public abstract class Character extends Entity {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4707730413469521334L;
+
 	public static final int NO_OPPONENT = -1;
 	
 	//Current health.

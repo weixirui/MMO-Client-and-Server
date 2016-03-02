@@ -8,7 +8,11 @@ import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
 
 public class GameObject extends Entity {
-	private final ObjectDefinition definition;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3289635025699381316L;
+	private transient final ObjectDefinition definition;
 
 	public GameObject(ObjectDefinition definition, int x, int y, int z, int instanceNumber) {
 		super(x, y, z, ClosedIDSystem.getTag(), z, definition.getObjectName());

@@ -30,11 +30,15 @@ import com.git.cs309.mmoserver.util.ClosedIDSystem;
  *         </p>
  */
 public class NPC extends Character {
-	private final NPCDefinition definition; // The NPC definition of this NPC
-	private final int spawnX;
-	private final int spawnZ;
-	private final int spawnY;
-	private final boolean autoRespawn;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7665018239684872294L;
+	private transient final NPCDefinition definition; // The NPC definition of this NPC
+	private transient final int spawnX;
+	private transient final int spawnZ;
+	private transient final int spawnY;
+	private transient final boolean autoRespawn;
 	protected transient volatile int walkDesperation = Config.NPC_WALKING_RATE;
 
 	public NPC(int x, int y, int z, final NPCDefinition definition, int instanceNumber) {

@@ -1,7 +1,5 @@
 package com.git.cs309.mmoserver.entity.characters.user;
 
-import java.io.Serializable;
-
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.cycle.CycleProcess;
@@ -27,7 +25,7 @@ import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
  *         their appearance will depend on their gender and their gear.
  *         </p>
  */
-public class PlayerCharacter extends Character implements Serializable {
+public class PlayerCharacter extends Character {
 	//Female state
 	public static final byte FEMALE = 1;
 	//Male state

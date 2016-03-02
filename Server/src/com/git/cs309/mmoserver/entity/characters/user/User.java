@@ -1,5 +1,6 @@
 package com.git.cs309.mmoserver.entity.characters.user;
 
+import java.awt.EventQueue;
 import java.io.Serializable;
 
 import com.git.cs309.mmoserver.Config;
@@ -83,6 +84,9 @@ public final class User implements Serializable {
 		if (inGame) {
 			System.err.println("User already in the game.");
 			return;
+		}
+		for (PlayerCharacter character : playerCharacters) {
+			System.out.println(character.getName());
 		}
 		connection.addOutgoingPacket(new SelfPacket(null, getUniqueID()));
 		connection.addOutgoingPacket(new MessagePacket(null, MessagePacket.GAME_CHAT, Config.ENTER_GAME_MESSAGE));
