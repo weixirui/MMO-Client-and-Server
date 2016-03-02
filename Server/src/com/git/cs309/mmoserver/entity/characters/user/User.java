@@ -8,6 +8,7 @@ import com.git.cs309.mmoserver.connection.AbstractConnection;
 import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
 import com.git.cs309.mmoserver.packets.EventPacket;
 import com.git.cs309.mmoserver.packets.MessagePacket;
+import com.git.cs309.mmoserver.packets.SelfPacket;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 import com.git.cs309.mmoserver.util.WordUtils;
@@ -98,6 +99,7 @@ public final class User implements Serializable {
 			System.err.println("User already in the game.");
 			return;
 		}
+		connection.addOutgoingPacket(new SelfPacket(null, getUniqueID()));
 		connection.addOutgoingPacket(new MessagePacket(null, MessagePacket.GAME_CHAT, Config.ENTER_GAME_MESSAGE));
 		playerCharacters[characterIndex].enterGame(idTag);
 		currentCharacter = characterIndex;
