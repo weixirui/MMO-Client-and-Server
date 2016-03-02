@@ -1,5 +1,6 @@
 package com.git.cs309.mmoserver.packets;
 
+import com.git.cs309.mmoserver.connection.Connection;
 import com.git.cs309.mmoserver.entity.characters.user.IllegalNamingException;
 import com.git.cs309.mmoserver.entity.characters.user.InvalidPasswordException;
 import com.git.cs309.mmoserver.entity.characters.user.UserAlreadyLoggedInException;
@@ -15,6 +16,7 @@ public final class LoginHandler {
 			} else {
 				loginPacket.getConnection()
 						.addOutgoingPacket(new EventPacket(loginPacket.getConnection(), EventPacket.LOGIN_SUCCESS));
+				((Connection)loginPacket.getConnection()).getUser().sendSelectionCharacters(loginPacket.getConnection());
 			}
 		} catch (UserAlreadyLoggedInException e) {
 			loginPacket.getConnection()
