@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.connection.AbstractConnection;
+import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
 import com.git.cs309.mmoserver.packets.EventPacket;
 import com.git.cs309.mmoserver.packets.MessagePacket;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
@@ -54,6 +55,14 @@ public final class User implements Serializable {
 	public void cleanUpCharacters() {
 		for (PlayerCharacter character : playerCharacters) {
 			character.cleanUp();
+		}
+	}
+	
+	public void sendSelectionCharacters(AbstractConnection connection) {
+		for (int i = 0; i < playerCharacters.length; i++) {
+			if (!playerCharacters[i].isCreated())
+				continue;
+			connection.addOutgoingPacket(new CharacterSelectionDataPacket(null, i, playerCharacters[i].getEyeColor(), playerCharacters[i].getSkinColor(), playerCharacters[i].getHairColor(), playerCharacters[i].getHairStyle(), playerCharacters[i].getGender(), playerCharacters[i].getName()));
 		}
 	}
 	
