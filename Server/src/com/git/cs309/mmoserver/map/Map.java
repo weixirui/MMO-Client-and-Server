@@ -243,9 +243,8 @@ public final class Map {
 		pathingMap[globalToLocalX(x)][globalToLocalY(y)] = -2;
 	}
 
-	public void removeEntity(final int x, final int y) {
+	public void removeEntity(final int x, final int y, final Entity entity) {
 		assert (containsPoint(x, y));
-		Entity entity = getEntity(x, y);
 		assert entity != null;
 		if (entity.getEntityType() == EntityType.PLAYER)
 			playerSet.remove(entity);

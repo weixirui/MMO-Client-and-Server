@@ -15,6 +15,7 @@ public class GameGUI extends JFrame {
 	
 	private GameGUI() {
 		setSize(Toolkit.getDefaultToolkit().getScreenSize());
+		add(ViewPanel.getInstance());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	

@@ -2,7 +2,7 @@ package com.git.cs309.mmoserver.packets;
 
 import com.git.cs309.mmoserver.connection.Connection;
 import com.git.cs309.mmoserver.entity.characters.user.User;
-
+@SuppressWarnings("unused")
 public final class InterfaceClickHandler {
 	public static final void handlePacket(final InterfaceClickPacket packet) {
 		User user = ((Connection) packet.getConnection()).getUser();

@@ -13,7 +13,6 @@ import com.git.cs309.mmoserver.map.Map;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.packets.ExtensivePlayerCharacterPacket;
 import com.git.cs309.mmoserver.packets.Packet;
-import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
 /**
  * 
@@ -117,9 +116,10 @@ public class PlayerCharacter extends Character {
 	 * @param idTag
 	 *            the User controlling this characters ID tag, ideally.
 	 */
-	public void enterGame(final IDTag idTag) {
+	public void enterGame(final User user) {
 		assert created;
-		setIDTag(idTag);
+		setIDTag(user.getIdTag());
+		user.getConnection().addOutgoingPacket(getExtensivePacket());
 		CharacterManager.getInstance().addCharacter(this);
 	}
 

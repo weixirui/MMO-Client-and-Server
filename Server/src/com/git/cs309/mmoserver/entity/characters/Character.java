@@ -114,7 +114,7 @@ public abstract class Character extends Entity {
 	protected abstract boolean canWalk();
 	
 	protected void handleWalking() {
-		if (!canWalk()) {
+		if (!canWalk() || walkingQueue == null) {
 			return;
 		}
 		if (!walking && !walkingQueue.isEmpty()) {

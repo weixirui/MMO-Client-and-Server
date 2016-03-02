@@ -1,6 +1,11 @@
 package com.git.cs309.mmoclient.entity;
 
 import java.awt.Component;
+import java.awt.Graphics;
+
+import com.git.cs309.mmoclient.Client;
+import com.git.cs309.mmoclient.Config;
+import com.git.cs309.mmoclient.gui.game.ViewPanel;
 
 public abstract class Entity extends Component {
 	
@@ -19,7 +24,11 @@ public abstract class Entity extends Component {
 		this.entityID = entityID;
 		this.uniqueId = uniqueId;
 		this.name = name;
+		ViewPanel.getInstance().repaint();
 	}
+	
+	@Override
+	public abstract void paint(Graphics g);
 
 	@Override
 	public boolean equals(Object other) {
@@ -44,6 +53,14 @@ public abstract class Entity extends Component {
 	public final int getUniqueID() {
 		return uniqueId;
 	}
+	
+	public int getPaintX() {
+		return ((x - Client.getSelf().getX()) * Config.DEFAULT_SPRITE_WIDTH) + (ViewPanel.getInstance().getWidth() / 2) - (Config.DEFAULT_SPRITE_WIDTH / 2);
+	}
+	
+	public int getPaintY() {
+		return ((y - Client.getSelf().getY()) * Config.DEFAULT_SPRITE_HEIGHT) + (ViewPanel.getInstance().getHeight() / 2) - (Config.DEFAULT_SPRITE_HEIGHT / 2);
+	}
 
 	public final int getX() {
 		return x;
@@ -57,5 +74,6 @@ public abstract class Entity extends Component {
 		//TODO handle walking
 		this.x = x;
 		this.y = y;
+		ViewPanel.getInstance().repaint();
 	}
 }

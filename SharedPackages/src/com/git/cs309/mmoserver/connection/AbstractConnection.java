@@ -81,7 +81,9 @@ public abstract class AbstractConnection extends Thread {
 			e.printStackTrace();
 		}
 		disconnected = true;
-		outgoingPackets.notifyAll(); // Make sure thread kills itself.
+		synchronized (outgoingPackets) {
+			outgoingPackets.notifyAll(); // Make sure thread kills itself.
+		}
 	}
 
 	@Override

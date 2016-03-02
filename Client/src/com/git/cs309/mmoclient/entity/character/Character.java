@@ -1,5 +1,10 @@
 package com.git.cs309.mmoclient.entity.character;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+
+import com.git.cs309.mmoclient.Config;
 import com.git.cs309.mmoclient.entity.Entity;
 
 /**
@@ -29,6 +34,14 @@ public abstract class Character extends Entity {
 
 	public Character(final int x, final int y, final int uniqueId, final int entityID, final String name) {
 		super(x, y, uniqueId, entityID, name);
+	}
+	
+	@Override
+	public void paint(Graphics g) {
+		g.setColor(Color.BLACK);
+		g.drawOval(getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT);
+		g.setFont(g.getFont().deriveFont(Font.BOLD, 18.0f));
+		g.drawString(""+getName().charAt(0), getPaintX() + (Config.DEFAULT_SPRITE_WIDTH / 2) - 5, getPaintY() + (Config.DEFAULT_SPRITE_HEIGHT / 2) + 5);
 	}
 	
 	public void resetCombat() {

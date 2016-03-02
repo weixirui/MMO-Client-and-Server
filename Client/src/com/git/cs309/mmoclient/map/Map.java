@@ -22,7 +22,12 @@ public final class Map {
 	}
 	
 	public void paint(Graphics g) {
-		
+		definition.paint(g);
+		synchronized (entitySet) {
+			for (Entity e : entitySet) {
+				e.paint(g);
+			}
+		}
 	}
 
 	@Override
@@ -120,15 +125,19 @@ public final class Map {
 	}
 
 	public void putEntity(final Entity entity) {
+		synchronized (entitySet) {
 		assert (containsPoint(entity.getX(), entity.getY()));
 		assert entity != null && !entitySet.contains(entity);
 		entitySet.add(entity);
+		}
 	}
 
 	public void removeEntity(final int x, final int y) {
+		synchronized (entitySet) {
 		assert (containsPoint(x, y));
 		Entity entity = getEntity(x, y);
 		assert entity != null;
 		entitySet.remove(entity);
+		}
 	}
 }

@@ -1,6 +1,5 @@
 package com.git.cs309.mmoserver.entity.characters.user;
 
-import java.awt.EventQueue;
 import java.io.Serializable;
 
 import com.git.cs309.mmoserver.Config;
@@ -37,6 +36,10 @@ public final class User implements Serializable {
 
 	public User() {
 		//For deserialization only
+	}
+	
+	protected IDTag getIdTag() {
+		return idTag;
 	}
 
 	public User(final String username, final String password) {
@@ -87,7 +90,7 @@ public final class User implements Serializable {
 		}
 		connection.addOutgoingPacket(new SelfPacket(null, getUniqueID()));
 		connection.addOutgoingPacket(new MessagePacket(null, MessagePacket.GAME_CHAT, Config.ENTER_GAME_MESSAGE));
-		playerCharacters[characterIndex].enterGame(idTag);
+		playerCharacters[characterIndex].enterGame(this);
 		currentCharacter = characterIndex;
 		inGame = true;
 	}

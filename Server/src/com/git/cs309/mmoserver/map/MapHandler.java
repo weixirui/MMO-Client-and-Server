@@ -65,7 +65,7 @@ public final class MapHandler {
 		if (!map.equals(getMapContainingPosition(dInstanceNumber, dX, dY, dZ))) {
 			Map newMap = getMapContainingPosition(dInstanceNumber, dX, dY, dZ);
 			Entity e = map.getEntity(oX, oY);
-			map.removeEntity(oX, oY);
+			map.removeEntity(oX, oY, e);
 			newMap.putEntity(dX, dY, e);
 			return;
 		}
@@ -78,17 +78,17 @@ public final class MapHandler {
 		if (map == null) {
 			return;
 		}
-		assert (map.getEntity(x, y) == null); // Cannot place an entity where there is already an entity
+		assert (map.getEntity(x, y) == null || (map.getEntity(x, y) != null && map.getEntity(x, y).canWalkThrough())); // Cannot place an entity where there is already an entity
 		map.putEntity(x, y, entity);
 	}
 
-	public final void removeEntityAtPosition(final int instanceNumber, final int x, final int y, final int z) {
+	public final void removeEntityAtPosition(final int instanceNumber, final int x, final int y, final int z, final Entity entity) {
 		Map map = getMapContainingPosition(instanceNumber, x, y, z);
 		if (map == null) {
 			return;
 		}
 		assert (map.getEntity(x, y) != null);
-		map.removeEntity(x, y);
+		map.removeEntity(x, y, entity);
 	}
 
 	final void addMap(Map map) {

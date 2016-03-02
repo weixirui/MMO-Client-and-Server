@@ -31,7 +31,13 @@ public final class MapDefinition implements Serializable {
 	}
 	
 	public void paint(Graphics g) {
-		//Paint background.
+		for (int x = 0; x < background.length; x++) {
+			for (int y = 0; y < background.length; y++) {
+				if (background[x][y] == null)
+					continue;
+				background[x][y].paint(g);
+			}
+		}
 	}
 
 	@Override
