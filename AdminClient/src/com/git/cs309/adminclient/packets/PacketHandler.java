@@ -95,7 +95,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 			break;
 		case NULL_PACKET:
 			break;
-		case PLAYER_CHARACTER_PACKET:
+		case EXTENSIVE_PLAYER_CHARACTER_PACKET:
 			break;
 		case PLAYER_EQUIPMENT_PACKET:
 			break;
