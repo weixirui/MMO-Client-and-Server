@@ -10,6 +10,7 @@ public final class SelectionCharacter {
 	private int hairColor;
 	private int hairStyle;
 	private boolean hasCharacter = false;
+	private String name;
 	
 	public SelectionCharacter(final int index) {
 		this.index = index;
@@ -22,6 +23,7 @@ public final class SelectionCharacter {
 		setSkinColor(packet.getSkinColor());
 		setHairColor(packet.getHairColor());
 		setHairStyle(packet.getHairStyle());
+		setName(packet.getName());
 		setHasCharacter(true);
 	}
 
@@ -114,5 +116,19 @@ public final class SelectionCharacter {
 	 */
 	public void setEyeColor(int eyeColor) {
 		this.eyeColor = eyeColor;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 }

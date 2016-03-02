@@ -49,6 +49,7 @@ public class SelectionCharacterComponent extends Component {
 		g.setColor(Color.BLACK);
 		g.drawRect(0, 0, getWidth(), getHeight());
 		if (character.hasCharacter()) {
+			g.drawString(character.getName(), getWidth() / 2, getHeight() / 2 );
 		}
 	}
 

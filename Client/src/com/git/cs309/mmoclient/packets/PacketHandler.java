@@ -26,6 +26,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 
 	@Override
 	public void handlePacketBlock(Packet packet) {
+		System.out.println("Got packet");
 		packet.getConnection().getPacket(); // to remove packet, since it doesn't do it itself
 		switch (packet.getPacketType()) {
 		case MESSAGE_PACKET:
