@@ -75,7 +75,7 @@ public final class MapParser {
 				fileReader.close();
 				throw new RuntimeException(file.getName() + " contains number format exception on line " + lineNumber);
 			}
-			if (line.contains(":=")) { // Spawn chars
+			if (line.contains(":=") && !line.contains("z := ")) { // Spawn chars
 				try {
 					SpawnCharacter sc = spawnCharacterFromLine(line);
 					spawnChars.put(sc.character, sc);
@@ -100,7 +100,7 @@ public final class MapParser {
 				}
 				switch (thisSpawn.type) {
 				case BACKGROUND:
-					backgroundTiles.add(new Tile(x, y, thisSpawn.name));
+					backgroundTiles.add(new Tile(x + xOrigin, y + yOrigin, thisSpawn.name));
 					break;
 				}
 			}

@@ -29,6 +29,10 @@ public class GameObject extends Entity {
 	public ObjectDefinition getDefinition() {
 		return definition;
 	}
+	
+	public boolean isServerOnly() {
+		return definition.isServerOnly();
+	}
 
 	@Override
 	public EntityType getEntityType() {

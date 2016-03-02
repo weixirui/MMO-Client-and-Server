@@ -54,6 +54,8 @@ public abstract class Entity extends Component {
 	}
 
 	public final void setPosition(final int x, final int y) {
-		//TODO Handle moving.
+		//TODO handle walking
+		this.x = x;
+		this.y = y;
 	}
 }

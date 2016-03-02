@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.git.cs309.mmoclient.Config;
+import com.git.cs309.mmoserver.packets.ExtensiveCharacterPacket;
 import com.git.cs309.mmoserver.util.WordUtils;
 
 public final class NPCFactory {
@@ -31,6 +32,14 @@ public final class NPCFactory {
 		} catch (SAXException | IOException | ParserConfigurationException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public synchronized final NPC createNPC(ExtensiveCharacterPacket packet) {
+		NPCDefinition definition = definitionsByName.get(packet.getCharacterName().toLowerCase());
+		if (definition == null) {
+			throw new RuntimeException("No definition for NPC: "+packet.getCharacterName());
+		}
+		return new NPC(packet, definition);
 	}
 
 	public synchronized final void loadDefinitions() throws SAXException, IOException, ParserConfigurationException {

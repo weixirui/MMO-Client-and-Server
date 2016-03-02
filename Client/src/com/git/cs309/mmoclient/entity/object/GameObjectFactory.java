@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.git.cs309.mmoclient.Config;
+import com.git.cs309.mmoserver.packets.ExtensiveObjectPacket;
 import com.git.cs309.mmoserver.util.WordUtils;
 
 public final class GameObjectFactory {
@@ -32,20 +33,12 @@ public final class GameObjectFactory {
 		}
 	}
 
-	public synchronized final GameObject createGameObject(final int id, final int x, final int y, final int uniqueId) {
-		ObjectDefinition definition = definitionsByID.get(id);
+	public synchronized final GameObject createGameObject(ExtensiveObjectPacket packet) {
+		ObjectDefinition definition = definitionsByName.get(packet.getName().toLowerCase());
 		if (definition == null) {
-			throw new RuntimeException("No definition for object with ID: " + id);
+			throw new RuntimeException("No definition for object with name: " + packet.getName());
 		}
-		return new GameObject(definition, x, y, uniqueId);
-	}
-
-	public synchronized final GameObject createGameObject(final String name, final int x, final int y, final int uniqueId) {
-		ObjectDefinition definition = definitionsByName.get(name.toLowerCase());
-		if (definition == null) {
-			throw new RuntimeException("No definition for object with name: " + name);
-		}
-		return new GameObject(definition, x, y, uniqueId);
+		return new GameObject(packet, definition);
 	}
 
 	public synchronized final void loadDefinitions() throws SAXException, IOException, ParserConfigurationException {
@@ -60,7 +53,6 @@ public final class GameObjectFactory {
 			case "object":
 				int id = Integer.MAX_VALUE;
 				String name = "Null";
-				boolean walkable = false;
 				NodeList definitionNodes = baseNode.getChildNodes();
 				for (int j = 0; j < definitionNodes.getLength(); j++) {
 					Node definitionNode = definitionNodes.item(j);
@@ -72,15 +64,12 @@ public final class GameObjectFactory {
 						case "id":
 							id = Integer.parseInt(definitionNode.getTextContent());
 							break;
-						case "walkable":
-							walkable = true;
-							break;
 						}
 					} catch (NumberFormatException e) {
 						e.printStackTrace();
 					}
 				}
-				ObjectDefinition definition = new ObjectDefinition(WordUtils.capitalizeText(name), id, walkable);
+				ObjectDefinition definition = new ObjectDefinition(WordUtils.capitalizeText(name), id);
 				definitionsByName.put(definition.getObjectName().toLowerCase(), definition);
 				definitionsByID.put(definition.getObjectID(), definition);
 				break;

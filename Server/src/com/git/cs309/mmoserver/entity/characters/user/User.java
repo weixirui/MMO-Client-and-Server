@@ -85,9 +85,6 @@ public final class User implements Serializable {
 			System.err.println("User already in the game.");
 			return;
 		}
-		for (PlayerCharacter character : playerCharacters) {
-			System.out.println(character.getName());
-		}
 		connection.addOutgoingPacket(new SelfPacket(null, getUniqueID()));
 		connection.addOutgoingPacket(new MessagePacket(null, MessagePacket.GAME_CHAT, Config.ENTER_GAME_MESSAGE));
 		playerCharacters[characterIndex].enterGame(idTag);

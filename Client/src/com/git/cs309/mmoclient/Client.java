@@ -8,7 +8,9 @@ import java.net.Socket;
 import javax.swing.JOptionPane;
 
 import com.git.cs309.mmoclient.connection.Connection;
+import com.git.cs309.mmoclient.entity.character.player.Self;
 import com.git.cs309.mmoclient.gui.login.LoginGUI;
+import com.git.cs309.mmoclient.map.Map;
 
 public final class Client {
 	private static volatile Connection connection;
@@ -16,6 +18,8 @@ public final class Client {
 	private static boolean debug = false;
 	
 	private static int selfId = -1;
+	private static Map currentMap = null;
+	private static Self self = null;
 	
 	public static void main(String[] args) {
 		for (String arg : args) {
@@ -40,6 +44,22 @@ public final class Client {
 	
 	public static int getSelfId() {
 		return selfId;
+	}
+	
+	public static Self getSelf() {
+		return self;
+	}
+	
+	public static void setSelf(Self self) {
+		Client.self = self;
+	}
+	
+	public static void setMap(Map map) {
+		Client.currentMap = map;
+	}
+	
+	public static Map getMap() {
+		return currentMap;
 	}
 	
 	public static boolean isDebug() {

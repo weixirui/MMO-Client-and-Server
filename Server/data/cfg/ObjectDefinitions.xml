@@ -16,5 +16,5 @@
   <object>
     <name>Boundary</name>
     <id>3</id>
-  </object>
+    <serveronly></serveronly></object>
 </definitions>

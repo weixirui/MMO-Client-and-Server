@@ -1,5 +1,6 @@
 package com.git.cs309.mmoclient.map;
 
+import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -24,8 +25,13 @@ public final class MapDefinition implements Serializable {
 		this.height = height;
 		background = new Tile[width][height];
 		for (Tile tile : backgroundTiles) {
-			background[tile.getX() - xOrigin][tile.getY() - yOrigin] = tile;
+			background[tile.getX() - xOrigin]
+					[tile.getY() - yOrigin] = tile;
 		}
+	}
+	
+	public void paint(Graphics g) {
+		//Paint background.
 	}
 
 	@Override

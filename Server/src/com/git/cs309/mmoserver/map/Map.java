@@ -12,6 +12,7 @@ import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.user.PlayerCharacter;
 import com.git.cs309.mmoserver.entity.characters.user.User;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
+import com.git.cs309.mmoserver.entity.objects.GameObject;
 import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
 import com.git.cs309.mmoserver.items.GroundItemStack;
 import com.git.cs309.mmoserver.items.ItemStack;
@@ -277,6 +278,9 @@ public final class Map {
 		Connection userConnection = (Connection) UserManager.getUserForUserID(player.getUniqueID()).getConnection();
 		assert userConnection != null;
 		for (Entity e : entitySet) {
+			if (e.getEntityType() == EntityType.OBJECT && ((GameObject)e).isServerOnly()) {
+				continue;
+			}
 			userConnection.addOutgoingPacket(e.getExtensivePacket());
 		}
 	}

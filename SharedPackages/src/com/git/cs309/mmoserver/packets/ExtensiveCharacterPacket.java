@@ -76,6 +76,10 @@ public class ExtensiveCharacterPacket extends Packet {
 	public int getY() {
 		return y;
 	}
+	
+	public int getLevel() {
+		return level;
+	}
 
 	@Override
 	public int sizeOf() {

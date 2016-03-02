@@ -2,6 +2,7 @@ package com.git.cs309.mmoclient.entity.character.npc;
 
 import com.git.cs309.mmoclient.entity.EntityType;
 import com.git.cs309.mmoclient.entity.character.Character;
+import com.git.cs309.mmoserver.packets.ExtensiveCharacterPacket;
 
 /**
  * 
@@ -20,10 +21,17 @@ public class NPC extends Character {
 	private static final long serialVersionUID = 7665018239684872294L;
 	private transient final NPCDefinition definition; // The NPC definition of this NPC
 
-	public NPC(int x, int y, final NPCDefinition definition, final int uniqueId) {
-		super(x, y, uniqueId, definition.getID(), definition.getName());
+	public NPC(ExtensiveCharacterPacket packet, final NPCDefinition definition) {
+		super(packet.getX(), 
+				packet.getY(), 
+				packet.getUniqueID(), 
+				definition.getID(),
+				definition.getName());
 		assert definition != null;
 		this.definition = definition;
+		this.setMaxHealth(packet.getMaxHealth());
+		this.setHealth(packet.getHealth());
+		this.setLevel(packet.getLevel());
 	}
 
 	@Override

@@ -19,12 +19,12 @@ public final class MapFactory {
 		loadDefinitions();
 	}
 
-	public synchronized final Map createMap(final String mapName, final int instanceNumber) {
+	public synchronized final Map createMap(final String mapName) {
 		MapDefinition definition = mapDefinitions.get(mapName.toLowerCase());
 		if (definition == null) {
 			throw new RuntimeException("No map definition for map name: " + mapName);
 		}
-		return new Map(definition, instanceNumber);
+		return new Map(definition);
 	}
 
 	public synchronized void loadDefinitions() {

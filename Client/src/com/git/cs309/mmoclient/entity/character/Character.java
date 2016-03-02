@@ -39,6 +39,14 @@ public abstract class Character extends Entity {
 	public void setHealth(int health) {
 		this.health = health;
 	}
+	
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
+	}
+	
+	public void setLevel(int level) {
+		this.level = level;
+	}
 
 	public int getHealth() {
 		return health;
