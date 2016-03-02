@@ -11,3 +11,6 @@ Server/data/users/
 *.user
 #ignore class files
 *.class
+#ignore those awful Mac files
+._.DS_Store
+.DS_Store
