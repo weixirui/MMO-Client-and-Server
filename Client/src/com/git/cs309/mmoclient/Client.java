@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import com.git.cs309.mmoclient.connection.Connection;
 import com.git.cs309.mmoclient.entity.character.player.Self;
+import com.git.cs309.mmoclient.gui.game.ViewPanel;
 import com.git.cs309.mmoclient.gui.login.LoginGUI;
 import com.git.cs309.mmoclient.map.Map;
 
@@ -20,6 +21,8 @@ public final class Client {
 	private static int selfId = -1;
 	private static Map currentMap = null;
 	private static Self self = null;
+	public static int lastClickX = 0;
+	public static int lastClickY = 0;
 	
 	public static void main(String[] args) {
 		for (String arg : args) {
@@ -40,6 +43,26 @@ public final class Client {
 	
 	public static void setSelfId(int selfId) {
 		Client.selfId = selfId;
+	}
+	
+	public static int mouseXToGameX(int x) {
+		int x1 = x - (ViewPanel.getInstance().getWidth() / 2);
+		if (x1 < 0) {
+			x1 -= Config.DEFAULT_SPRITE_WIDTH / 2;
+		} else {
+			x1 += Config.DEFAULT_SPRITE_WIDTH /2;
+		}
+		return ((x1) / Config.DEFAULT_SPRITE_WIDTH) + Client.getSelf().getX();
+	}
+	
+	public static int mouseYToGameY(int y) {
+		int y1 = y- (ViewPanel.getInstance().getHeight() / 2);
+		if (y1 < 0) {
+			y1 -= Config.DEFAULT_SPRITE_HEIGHT / 2;
+		} else {
+			y1 += Config.DEFAULT_SPRITE_HEIGHT / 2;
+		}
+		return ((y1) / Config.DEFAULT_SPRITE_HEIGHT) + Client.getSelf().getY();
 	}
 	
 	public static int getSelfId() {

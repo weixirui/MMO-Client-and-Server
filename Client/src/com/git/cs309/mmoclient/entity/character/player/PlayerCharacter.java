@@ -39,6 +39,7 @@ public class PlayerCharacter extends Character {
 		this.skinColor = packet.getSkinColor();
 		this.hairColor = packet.getHairColor();
 		this.hairStyle = packet.getHairStyle();
+		this.level = packet.getLevel();
 	}
 
 	public int getEyeColor() {

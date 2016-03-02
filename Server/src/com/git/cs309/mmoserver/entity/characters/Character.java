@@ -31,7 +31,7 @@ public abstract class Character extends Entity {
 	
 	//Current health.
 	protected volatile int health;
-	protected volatile boolean isDead; //true is dead
+	protected transient volatile boolean isDead = false; //true is dead
 	protected transient volatile Queue<Tile> walkingQueue = new CycleQueue<>(0);
 	protected transient volatile long walkingTick = 0;
 	protected transient volatile boolean walking = false;

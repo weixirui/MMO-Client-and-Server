@@ -19,6 +19,7 @@ import com.git.cs309.mmoserver.items.ItemStack;
 import com.git.cs309.mmoserver.packets.EntityUpdatePacket;
 import com.git.cs309.mmoserver.packets.NewMapPacket;
 import com.git.cs309.mmoserver.packets.Packet;
+import com.git.cs309.mmoserver.util.MathUtils;
 import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 
 public final class Map {
@@ -171,10 +172,11 @@ public final class Map {
 
 	public void moveEntity(final int oX, final int oY, final int dX, final int dY) {
 		assert containsPoint(oX, oY) && containsPoint(dX, dY) && walkable(dX, dY);
+		assert ((int) MathUtils.distance(oX, oY, dX, dY)) <= 1;
 		Entity entity = getEntity(oX, oY);
 		assert entity != null;
 		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.MOVED, entity.getUniqueID(), dX, dY));
-		if (entity.getEntityType() != EntityType.PLAYER) {
+		if (entity.getEntityType() != EntityType.PLAYER && entity.getEntityType() != EntityType.NPC) {
 			entityMap[globalToLocalX(dX)][globalToLocalY(dY)] = entityMap[globalToLocalX(oX)][globalToLocalY(oY)];
 			entityMap[globalToLocalX(oX)][globalToLocalY(oY)] = null;
 			pathingMap[globalToLocalX(dX)][globalToLocalY(dY)] = -2;

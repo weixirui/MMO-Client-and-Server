@@ -2,6 +2,8 @@ package com.git.cs309.mmoclient.entity;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoclient.Config;
@@ -25,6 +27,12 @@ public abstract class Entity extends Component {
 		this.uniqueId = uniqueId;
 		this.name = name;
 		ViewPanel.getInstance().repaint();
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				System.out.println("Clicked: "+name);
+			}
+		});
 	}
 	
 	@Override
