@@ -93,6 +93,20 @@ public final class Map {
 		return true;
 	}
 
+	public Entity getEntity(final int uniqueId, final int x, final int y) {
+		assert (containsPoint(x, y));
+		Entity e = entityMap[globalToLocalX(x)][globalToLocalY(y)];
+		if (e != null && e.getUniqueID() == uniqueId) {
+			return e;
+		}
+		for (Entity entity : entitySet) {
+			if (entity.getX() == x && entity.getY() == y && entity.getUniqueID() == uniqueId) {
+				return entity;
+			}
+		}
+		return null;
+	}
+	
 	public Entity getEntity(final int x, final int y) {
 		assert (containsPoint(x, y));
 		Entity e = entityMap[globalToLocalX(x)][globalToLocalY(y)];
@@ -170,10 +184,10 @@ public final class Map {
 		System.out.println();
 	}
 
-	public void moveEntity(final int oX, final int oY, final int dX, final int dY) {
+	public void moveEntity(final int uniqueId, final int oX, final int oY, final int dX, final int dY) {
 		assert containsPoint(oX, oY) && containsPoint(dX, dY) && walkable(dX, dY);
 		assert ((int) MathUtils.distance(oX, oY, dX, dY)) <= 1;
-		Entity entity = getEntity(oX, oY);
+		Entity entity = getEntity(uniqueId, oX, oY);
 		assert entity != null;
 		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.MOVED, entity.getUniqueID(), dX, dY));
 		if (entity.getEntityType() != EntityType.PLAYER && entity.getEntityType() != EntityType.NPC) {

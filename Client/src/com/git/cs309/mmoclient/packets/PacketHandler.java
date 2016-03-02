@@ -96,6 +96,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 			if (entityUpdate.getUniqueID() == Client.getSelfId()) {
 				switch (entityUpdate.getArgs()) {
 				case EntityUpdatePacket.MOVED:
+					System.out.println("You moved.");
 					Client.getSelf().setPosition(entityUpdate.getX(), entityUpdate.getY());
 					break;
 				}

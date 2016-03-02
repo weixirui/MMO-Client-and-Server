@@ -94,14 +94,14 @@ public abstract class Entity implements Serializable {
 	}
 
 	public final void setPosition(final int x, final int y, final int z) {
-		MapHandler.getInstance().moveEntity(instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		MapHandler.getInstance().moveEntity(getUniqueID(), instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
 	public final void setPosition(final int instanceNumber, final int x, final int y, final int z) {
-		MapHandler.getInstance().moveEntity(this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		MapHandler.getInstance().moveEntity(getUniqueID(), this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
 		this.instanceNumber = instanceNumber;
 		this.x = x;
 		this.y = y;

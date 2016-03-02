@@ -59,17 +59,17 @@ public final class MapHandler {
 		}
 	}
 
-	public final void moveEntity(final int oInstanceNumber, final int oX, final int oY, final int oZ,
+	public final void moveEntity(final int uniqueId, final int oInstanceNumber, final int oX, final int oY, final int oZ,
 			final int dInstanceNumber, final int dX, final int dY, final int dZ) {
 		Map map = getMapContainingPosition(oInstanceNumber, oX, oY, oZ);
 		if (!map.equals(getMapContainingPosition(dInstanceNumber, dX, dY, dZ))) {
 			Map newMap = getMapContainingPosition(dInstanceNumber, dX, dY, dZ);
-			Entity e = map.getEntity(oX, oY);
+			Entity e = map.getEntity(uniqueId, oX, oY);
 			map.removeEntity(oX, oY, e);
 			newMap.putEntity(dX, dY, e);
 			return;
 		}
-		map.moveEntity(oX, oY, dX, dY);
+		map.moveEntity(uniqueId, oX, oY, dX, dY);
 	}
 
 	public final void putEntityAtPosition(final int instanceNumber, final int x, final int y, final int z,
