@@ -15,6 +15,7 @@ import com.git.cs309.mmoserver.util.EndOfStreamReachedException;
 import com.git.cs309.mmoserver.util.StreamUtils;
 
 public abstract class AbstractConnection extends Thread {
+	public static final int MAX_RETRIES = 100;
 	protected final OutputStream output;
 	protected final InputStream input;
 	protected final Socket socket;
@@ -23,6 +24,7 @@ public abstract class AbstractConnection extends Thread {
 	protected volatile boolean closeRequested = false;
 	protected volatile Queue<Packet> incommingPackets = new CycleQueue<>(500); // Making this volatile should allow for other threads to access it properly, as well as be changed by this thread properly.
 	protected volatile Queue<Packet> outgoingPackets = new CycleQueue<>(500);
+	protected volatile int retriesLeft = MAX_RETRIES;
 
 	protected volatile Thread outgoingThread = new Thread() {
 		@Override
@@ -143,11 +145,20 @@ public abstract class AbstractConnection extends Thread {
 							incommingPackets.add(packet);
 						}
 						handlePacket(packet);
+						retriesLeft = MAX_RETRIES;
 					} catch (CorruptDataException | NegativeArraySizeException | ArrayIndexOutOfBoundsException e) { // Just general exception that might occur for bad packets.
 						e.printStackTrace();
 					} catch (EndOfStreamReachedException e) { // End of the stream was reached, meaning there's no more data, ever.
-						System.err.println("Error 2: "+e.getMessage());
-						closeRequested = true;
+						if (--retriesLeft == 0) {
+							System.err.println("Error 2: "+e.getMessage());
+							closeRequested = true;
+						} else {
+							System.out.println("Retrying..");
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e1) {
+							}
+						}
 						break;
 					} catch (IOException e) { // Should only be Connection reset
 						System.err.println("Error 3: "+e.getMessage());

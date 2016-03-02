@@ -21,6 +21,7 @@ public final class StreamUtils {
 			}
 		}
 		if (totalEOFChars == buffer.length) {
+			System.err.println("EOS in lenbuffer");
 			throw new EndOfStreamReachedException("The end of the stream has been reached.");
 		}
 		int size = (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | (buffer[3]);
@@ -42,8 +43,8 @@ public final class StreamUtils {
 				totalEOFChars++;
 			}
 		}
-		// >> 1 is equivalent to integer divide by two.
-		if (totalEOFChars > buffer.length >> 1) { // Mostly EOF characters.
+		if (totalEOFChars > buffer.length) {
+			System.err.println("EOS in bytebuffer");
 			throw new EndOfStreamReachedException("The end of the stream has been reached.");
 		}
 		if (total % 0x7F != checksum) {
