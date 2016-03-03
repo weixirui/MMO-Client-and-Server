@@ -3,10 +3,17 @@ package com.git.cs309.mmoserver.map;
 import java.util.Queue;
 
 import com.git.cs309.mmoserver.Config;
+import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.util.CycleQueue;
 import com.git.cs309.mmoserver.util.MathUtils;
 
 public final class PathFinder {
+	
+	public static final int START = 0;
+	public static final int EMPTY = -1;
+	public static final int CANT_WALK = -2;
+	public static final int DESTINATION = -3;
+	
 	public static final class Tile {
 		private final int x, y;
 
@@ -43,11 +50,11 @@ public final class PathFinder {
 		int[][] grid = map.getPathingMap();
 		int originX = (x1 - map.getXOrigin());
 		int originY = (y1 - map.getYOrigin());
-		if (grid[x2 - map.getXOrigin()][y2 - map.getXOrigin()] != -1) {
+		if (grid[x2 - map.getXOrigin()][y2 - map.getXOrigin()] != EMPTY) {
 			return new CycleQueue<Tile>(0);
 		}
-		grid[x2 - map.getXOrigin()][y2 - map.getXOrigin()] = -3;
-		grid[originX][originY] = 0;
+		grid[x2 - map.getXOrigin()][y2 - map.getXOrigin()] = DESTINATION;
+		grid[originX][originY] = START;
 		boolean stop = false;
 		int sX;
 		int sY;
@@ -77,11 +84,11 @@ public final class PathFinder {
 							if (x3 - 1 < 0 || y3 - 1 < 0 || x3 >= grid.length || y3 >= grid[x3].length) {
 								continue;
 							}
-							if (grid[x3][y3] == -3) {
+							if (grid[x3][y3] == DESTINATION) {
 								stop = true;
 								continue;
 							}
-							if (grid[x3][y3] != -1) {
+							if (grid[x3][y3] != EMPTY) {
 								continue;
 							}
 							grid[x3][y3] = step + 1;
@@ -91,6 +98,9 @@ public final class PathFinder {
 			}
 		}
 		if (!stop) {
+			if (Main.isDebug()) {
+				System.err.println("Error: Returned walking queue the algorithm never reached the destination.");
+			}
 			return new CycleQueue<Tile>(0); //Empty List
 		}
 		step -= 1;
@@ -118,6 +128,9 @@ public final class PathFinder {
 				}
 			}
 			if (closestDistance == grid.length * 2) {
+				if (Main.isDebug()) {
+					System.err.println("Error: Returned walking queue because no tile was found in step");
+				}
 				return new CycleQueue<Tile>(0);
 			}
 			walkingQueue.add(new Tile(tX + map.getXOrigin(), tY + map.getYOrigin()));

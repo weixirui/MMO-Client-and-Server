@@ -7,15 +7,25 @@ import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.cycle.CycleProcess;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
+import com.git.cs309.mmoserver.entity.Entity;
+import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.map.Map;
+import com.git.cs309.mmoserver.packets.GroundItemsPacket;
+import com.git.cs309.mmoserver.packets.Packet;
+import com.git.cs309.mmoserver.util.ClosedIDSystem;
 
-public final class GroundItemStack {
+public final class GroundItemStack extends Entity {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2111922970196910069L;
 	private final List<ItemStack> groundItems;
-	private final int x, y;
 	private final Map map;
 
 	public GroundItemStack(int x, int y, Map map) {
+		super (x, y, map.getZ(), ClosedIDSystem.getTag(), Entity.GROUND_ITEM_STATIC_ID, "GroundItemStack");
 		groundItems = new ArrayList<ItemStack>();
+		this.instanceNumber = map.getInstanceNumber();
 		this.x = x;
 		this.y = y;
 		this.map = map;
@@ -43,6 +53,7 @@ public final class GroundItemStack {
 			}
 
 		});
+		map.itemStackChanged(x, y);
 	}
 
 	public void addItemStack(ItemStack stack, boolean despawns) {
@@ -68,6 +79,7 @@ public final class GroundItemStack {
 				}
 
 			});
+		map.itemStackChanged(x, y);
 	}
 
 	public ItemStack getStack(int index) {
@@ -77,7 +89,9 @@ public final class GroundItemStack {
 
 	public ItemStack removeStack(int index) {
 		assert index < groundItems.size() && index >= 0;
-		return groundItems.remove(index);
+		ItemStack stack = groundItems.remove(index);
+		map.itemStackChanged(x, y);
+		return stack;
 	}
 
 	public List<ItemStack> getStack() {
@@ -88,17 +102,22 @@ public final class GroundItemStack {
 		return groundItems.size();
 	}
 
-	/**
-	 * @return the x
-	 */
-	public int getX() {
-		return x;
+	@Override
+	public boolean canWalkThrough() {
+		return true;
 	}
 
-	/**
-	 * @return the y
-	 */
-	public int getY() {
-		return y;
+	@Override
+	public EntityType getEntityType() {
+		return EntityType.GROUND_ITEM;
+	}
+
+	@Override
+	public Packet getExtensivePacket() {
+		int[] itemIds = new int[groundItems.size()];
+		for (int i = 0; i < groundItems.size(); i++) {
+			itemIds[i] = groundItems.get(i).getId();
+		}
+		return new GroundItemsPacket(null, getX(), getY(), itemIds);
 	}
 }

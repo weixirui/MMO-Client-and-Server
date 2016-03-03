@@ -18,12 +18,6 @@ public final class MapHandler {
 	private MapHandler() {
 		//Nothing here, since can't load maps because of semantics
 	}
-	
-	public final void printMaps() {
-		for (Map m : maps) {
-			m.printMap();
-		}
-	}
 
 	public final Entity getEntityAtPosition(final int instanceNumber, final int x, final int y, final int z) {
 		Map map = getMapContainingPosition(instanceNumber, x, y, z);
@@ -107,8 +101,7 @@ public final class MapHandler {
 	}
 
 	final void removeMap(Map map) {
-		assert maps.contains(map);
-		maps.remove(map);
-		map.cleanUp();
+		if (maps.contains(map))
+			maps.remove(map);
 	}
 }

@@ -7,7 +7,6 @@ import java.util.Set;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
-import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.util.TickProcess;
 

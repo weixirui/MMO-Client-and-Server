@@ -25,7 +25,6 @@ import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 public final class Map {
 	private final int instanceNumber;
 	private final MapDefinition definition;
-	private volatile Entity[][] entityMap;
 	private volatile GroundItemStack[][] groundItems;
 	private volatile Set<Entity> entitySet = new HashSet<>();
 	private volatile Set<PlayerCharacter> playerSet = new HashSet<>();
@@ -34,7 +33,6 @@ public final class Map {
 	public Map(final MapDefinition definition, final int instanceNumber) {
 		this.instanceNumber = instanceNumber;
 		this.definition = definition;
-		entityMap = new Entity[definition.getWidth()][definition.getHeight()];
 		pathingMap = new int[definition.getWidth()][definition.getHeight()];
 		groundItems = new GroundItemStack[definition.getWidth()][definition.getHeight()];
 		setMapToNulls();
@@ -66,10 +64,6 @@ public final class Map {
 
 	public Entity[] getEntities(final int x, final int y) {
 		assert (containsPoint(x, y));
-		Entity e = entityMap[globalToLocalX(x)][globalToLocalY(y)];
-		if (e != null) {
-			return new Entity[] { e };
-		}
 		List<Entity> entities = new ArrayList<>();
 		for (Entity entity : entitySet) {
 			if (entity.getX() == x && entity.getY() == y) {
@@ -81,44 +75,27 @@ public final class Map {
 	
 	public boolean walkable(final int x, final int y) {
 		assert (containsPoint(x, y));
-		Entity e = entityMap[globalToLocalX(x)][globalToLocalY(y)];
-		if (e != null) {
-			return e.canWalkThrough();
-		}
-		for (Entity entity : entitySet) {
-			if (entity.getX() == x && entity.getY() == y && !entity.canWalkThrough()) {
-				return false;
-			}
-		}
-		return true;
+		return pathingMap[x][y] == PathFinder.EMPTY;
 	}
 
 	public Entity getEntity(final int uniqueId, final int x, final int y) {
 		assert (containsPoint(x, y));
-		Entity e = entityMap[globalToLocalX(x)][globalToLocalY(y)];
-		if (e != null && e.getUniqueID() == uniqueId) {
-			return e;
-		}
 		for (Entity entity : entitySet) {
 			if (entity.getX() == x && entity.getY() == y && entity.getUniqueID() == uniqueId) {
 				return entity;
 			}
 		}
-		return null;
+		throw new RuntimeException("No entity at position ("+x+", "+y+") with ID: "+uniqueId);
 	}
 	
 	public Entity getEntity(final int x, final int y) {
 		assert (containsPoint(x, y));
-		Entity e = entityMap[globalToLocalX(x)][globalToLocalY(y)];
-		if (e != null) {
-			return e;
-		}
 		for (Entity entity : entitySet) {
 			if (entity.getX() == x && entity.getY() == y) {
 				return entity;
 			}
 		}
-		return null;
+		throw new RuntimeException("No entity at position ("+x+", "+y+")");
 	}
 
 	public int getHeight() {
@@ -160,29 +137,6 @@ public final class Map {
 	public int getZ() {
 		return definition.getZ();
 	}
-	
-	//For debug only
-	public void printMap() {
-		System.out.println(definition.getMapName());
-		for (int y = 0; y < entityMap[0].length; y++) {
-			for (int x = 0; x < entityMap.length; x++) {
-				boolean entity = false;
-				for (Entity e : entitySet) {
-					if (e.getX() == localToGlobalX(x) && e.getY() == localToGlobalY(y)) {
-						System.out.print(e.getName().charAt(0));
-						entity = true;
-						break;
-					}
-				}
-				if (entity) {
-					continue;
-				}
-				System.out.print(".");
-			}
-			System.out.println();
-		}
-		System.out.println();
-	}
 
 	public void moveEntity(final int uniqueId, final int oX, final int oY, final int dX, final int dY) {
 		assert containsPoint(oX, oY) && containsPoint(dX, dY) && walkable(dX, dY);
@@ -190,11 +144,9 @@ public final class Map {
 		Entity entity = getEntity(uniqueId, oX, oY);
 		assert entity != null;
 		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.MOVED, entity.getUniqueID(), dX, dY));
-		if (entity.getEntityType() != EntityType.PLAYER && entity.getEntityType() != EntityType.NPC) {
-			entityMap[globalToLocalX(dX)][globalToLocalY(dY)] = entityMap[globalToLocalX(oX)][globalToLocalY(oY)];
-			entityMap[globalToLocalX(oX)][globalToLocalY(oY)] = null;
-			pathingMap[globalToLocalX(dX)][globalToLocalY(dY)] = -2;
-			pathingMap[globalToLocalX(oX)][globalToLocalY(oY)] = -1;
+		if (!entity.canWalkThrough()) {
+			pathingMap[globalToLocalX(dX)][globalToLocalY(dY)] = PathFinder.CANT_WALK;
+			pathingMap[globalToLocalX(oX)][globalToLocalY(oY)] = PathFinder.EMPTY;
 		}
 	}
 	
@@ -207,7 +159,7 @@ public final class Map {
 		} else {
 			stack.addItemStack(items);
 		}
-		//TODO Send updated stack to players
+		itemStackChanged(x, y);
 	}
 	
 	public ItemStack removeItemStack(final int x, final int y) {
@@ -217,7 +169,7 @@ public final class Map {
 			return null;
 		} else {
 			ItemStack item = stack.removeStack(0);
-			//TODO Send updated stack to player.
+			itemStackChanged(x, y);
 			return item;
 		}
 	}
@@ -229,13 +181,15 @@ public final class Map {
 			return null;
 		} else {
 			ItemStack item = stack.removeStack(index);
-			//TODO Send updated stack to player.
+			itemStackChanged(x, y);
 			return item;
 		}
 	}
 	
 	public void itemStackChanged(final int x, final int y) {
-		//TODO send updated stack to players
+		GroundItemStack stack = getGroundItemStack(x, y);
+		assert stack != null;
+		sendPacketToPlayers(stack.getExtensivePacket());
 	}
 	
 	public GroundItemStack getGroundItemStack(final int x, final int y) {
@@ -255,8 +209,8 @@ public final class Map {
 			return;
 		}
 		entitySet.add(entity);
-		entityMap[globalToLocalX(x)][globalToLocalY(y)] = entity;
-		pathingMap[globalToLocalX(x)][globalToLocalY(y)] = -2;
+		if (!entity.canWalkThrough())
+			pathingMap[globalToLocalX(x)][globalToLocalY(y)] = PathFinder.CANT_WALK;
 	}
 
 	public void removeEntity(final int x, final int y, final Entity entity) {
@@ -266,12 +220,24 @@ public final class Map {
 			playerSet.remove(entity);
 		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.REMOVED, entity.getUniqueID(), x, y));
 		entitySet.remove(entity);
-		if (entity.getEntityType() != EntityType.PLAYER) {
-			entityMap[globalToLocalX(x)][globalToLocalY(y)] = null;
-			pathingMap[globalToLocalX(x)][globalToLocalY(y)] = -1;
+		if (!entity.canWalkThrough() && getEntities(x, y).length == 0) {
+			pathingMap[globalToLocalX(x)][globalToLocalY(y)] = PathFinder.EMPTY;
 		}
 		if (playerSet.size() == 0 && instanceNumber != Config.GLOBAL_INSTANCE) {
+			cleanUp();
 			MapHandler.getInstance().removeMap(this);
+		}
+	}
+	
+	private void cleanUp() {
+		assert (playerSet.size() == 0);
+		for (Entity e : entitySet) {
+			e.cleanUp();
+		}
+		for (GroundItemStack[] array : groundItems) {
+			for (GroundItemStack stack : array) {
+				stack.cleanUp();
+			}
 		}
 	}
 
@@ -305,9 +271,8 @@ public final class Map {
 	}
 
 	private void setMapToNulls() {
-		for (int i = 0; i < entityMap.length; i++) {
-			for (int j = 0; j < entityMap[i].length; j++) {
-				entityMap[i][j] = null;
+		for (int i = 0; i < pathingMap.length; i++) {
+			for (int j = 0; j < pathingMap[i].length; j++) {
 				pathingMap[i][j] = -1;
 			}
 		}
@@ -318,13 +283,6 @@ public final class Map {
 			for (int j = 0; j < groundItems[i].length; j++) {
 				groundItems[i][j] = null;
 			}
-		}
-	}
-
-	protected void cleanUp() {
-		assert (playerSet.size() == 0);
-		for (Entity e : entitySet) {
-			e.cleanUp();
 		}
 	}
 
