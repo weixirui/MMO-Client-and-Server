@@ -60,6 +60,7 @@ public final class GameObjectFactory {
 				int id = Integer.MAX_VALUE;
 				String name = "Null";
 				boolean walkable = false;
+				boolean serverOnly = false;
 				NodeList definitionNodes = baseNode.getChildNodes();
 				for (int j = 0; j < definitionNodes.getLength(); j++) {
 					Node definitionNode = definitionNodes.item(j);
@@ -74,12 +75,15 @@ public final class GameObjectFactory {
 						case "walkable":
 							walkable = true;
 							break;
+						case "serveronly":
+							serverOnly = true;
+							break;
 						}
 					} catch (NumberFormatException e) {
 						e.printStackTrace();
 					}
 				}
-				ObjectDefinition definition = new ObjectDefinition(WordUtils.capitalizeText(name), id, walkable);
+				ObjectDefinition definition = new ObjectDefinition(WordUtils.capitalizeText(name), id, walkable, serverOnly);
 				definitionsByName.put(definition.getObjectName().toLowerCase(), definition);
 				definitionsByID.put(definition.getObjectID(), definition);
 				break;

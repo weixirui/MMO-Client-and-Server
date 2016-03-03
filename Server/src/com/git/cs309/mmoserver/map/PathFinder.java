@@ -118,7 +118,6 @@ public final class PathFinder {
 				}
 			}
 			if (closestDistance == grid.length * 2) {
-				System.err.println("Failed to get path to "+x2+", "+y2);
 				return new CycleQueue<Tile>(0);
 			}
 			walkingQueue.add(new Tile(tX + map.getXOrigin(), tY + map.getYOrigin()));

@@ -58,7 +58,7 @@ public class ExtensivePlayerCharacterPacket extends Packet {
 	public ExtensivePlayerCharacterPacket(AbstractConnection source, final byte[] bytes) {
 		super(source);
 		gender = bytes[1];
-		int[] ints = BinaryOperations.intArrayFromBytes(bytes, 2, 14);
+		int[] ints = BinaryOperations.intArrayFromBytes(bytes, 2, 18);
 		int index = 0;
 		uniqueID = ints[index++];
 		x = ints[index++];

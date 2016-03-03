@@ -58,18 +58,26 @@ public final class MapHandler {
 			map.loadSpawns();
 		}
 	}
+	
+	public final Map createInstanceMap(int instanceNumber, String mapName) {
+		Map map = MapFactory.getInstance().createMap(mapName, instanceNumber);
+		if (map == null) {
+			throw new RuntimeException("No map definition for map name \""+mapName+"\"");
+		}
+		return map;
+	}
 
-	public final void moveEntity(final int oInstanceNumber, final int oX, final int oY, final int oZ,
+	public final void moveEntity(final int uniqueId, final int oInstanceNumber, final int oX, final int oY, final int oZ,
 			final int dInstanceNumber, final int dX, final int dY, final int dZ) {
 		Map map = getMapContainingPosition(oInstanceNumber, oX, oY, oZ);
 		if (!map.equals(getMapContainingPosition(dInstanceNumber, dX, dY, dZ))) {
 			Map newMap = getMapContainingPosition(dInstanceNumber, dX, dY, dZ);
-			Entity e = map.getEntity(oX, oY);
-			map.removeEntity(oX, oY);
+			Entity e = map.getEntity(uniqueId, oX, oY);
+			map.removeEntity(oX, oY, e);
 			newMap.putEntity(dX, dY, e);
 			return;
 		}
-		map.moveEntity(oX, oY, dX, dY);
+		map.moveEntity(uniqueId, oX, oY, dX, dY);
 	}
 
 	public final void putEntityAtPosition(final int instanceNumber, final int x, final int y, final int z,
@@ -78,17 +86,17 @@ public final class MapHandler {
 		if (map == null) {
 			return;
 		}
-		assert (map.getEntity(x, y) == null); // Cannot place an entity where there is already an entity
+		assert (map.getEntity(x, y) == null || (map.getEntity(x, y) != null && map.getEntity(x, y).canWalkThrough())); // Cannot place an entity where there is already an entity
 		map.putEntity(x, y, entity);
 	}
 
-	public final void removeEntityAtPosition(final int instanceNumber, final int x, final int y, final int z) {
+	public final void removeEntityAtPosition(final int instanceNumber, final int x, final int y, final int z, final Entity entity) {
 		Map map = getMapContainingPosition(instanceNumber, x, y, z);
 		if (map == null) {
 			return;
 		}
 		assert (map.getEntity(x, y) != null);
-		map.removeEntity(x, y);
+		map.removeEntity(x, y, entity);
 	}
 
 	final void addMap(Map map) {

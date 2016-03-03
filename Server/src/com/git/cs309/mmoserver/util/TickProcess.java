@@ -91,6 +91,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 				setChanged();
 				notifyObservers();
 			} catch (Exception e) {
+				System.out.println("Here");
 				e.printStackTrace();
 				break;
 			}

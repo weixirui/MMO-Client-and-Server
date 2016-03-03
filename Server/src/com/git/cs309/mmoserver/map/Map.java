@@ -12,12 +12,14 @@ import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.user.PlayerCharacter;
 import com.git.cs309.mmoserver.entity.characters.user.User;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
+import com.git.cs309.mmoserver.entity.objects.GameObject;
 import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
 import com.git.cs309.mmoserver.items.GroundItemStack;
 import com.git.cs309.mmoserver.items.ItemStack;
 import com.git.cs309.mmoserver.packets.EntityUpdatePacket;
 import com.git.cs309.mmoserver.packets.NewMapPacket;
 import com.git.cs309.mmoserver.packets.Packet;
+import com.git.cs309.mmoserver.util.MathUtils;
 import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 
 public final class Map {
@@ -91,6 +93,20 @@ public final class Map {
 		return true;
 	}
 
+	public Entity getEntity(final int uniqueId, final int x, final int y) {
+		assert (containsPoint(x, y));
+		Entity e = entityMap[globalToLocalX(x)][globalToLocalY(y)];
+		if (e != null && e.getUniqueID() == uniqueId) {
+			return e;
+		}
+		for (Entity entity : entitySet) {
+			if (entity.getX() == x && entity.getY() == y && entity.getUniqueID() == uniqueId) {
+				return entity;
+			}
+		}
+		return null;
+	}
+	
 	public Entity getEntity(final int x, final int y) {
 		assert (containsPoint(x, y));
 		Entity e = entityMap[globalToLocalX(x)][globalToLocalY(y)];
@@ -168,12 +184,13 @@ public final class Map {
 		System.out.println();
 	}
 
-	public void moveEntity(final int oX, final int oY, final int dX, final int dY) {
+	public void moveEntity(final int uniqueId, final int oX, final int oY, final int dX, final int dY) {
 		assert containsPoint(oX, oY) && containsPoint(dX, dY) && walkable(dX, dY);
-		Entity entity = getEntity(oX, oY);
+		assert ((int) MathUtils.distance(oX, oY, dX, dY)) <= 1;
+		Entity entity = getEntity(uniqueId, oX, oY);
 		assert entity != null;
 		sendPacketToPlayers(new EntityUpdatePacket(null, EntityUpdatePacket.MOVED, entity.getUniqueID(), dX, dY));
-		if (entity.getEntityType() != EntityType.PLAYER) {
+		if (entity.getEntityType() != EntityType.PLAYER && entity.getEntityType() != EntityType.NPC) {
 			entityMap[globalToLocalX(dX)][globalToLocalY(dY)] = entityMap[globalToLocalX(oX)][globalToLocalY(oY)];
 			entityMap[globalToLocalX(oX)][globalToLocalY(oY)] = null;
 			pathingMap[globalToLocalX(dX)][globalToLocalY(dY)] = -2;
@@ -242,9 +259,8 @@ public final class Map {
 		pathingMap[globalToLocalX(x)][globalToLocalY(y)] = -2;
 	}
 
-	public void removeEntity(final int x, final int y) {
+	public void removeEntity(final int x, final int y, final Entity entity) {
 		assert (containsPoint(x, y));
-		Entity entity = getEntity(x, y);
 		assert entity != null;
 		if (entity.getEntityType() == EntityType.PLAYER)
 			playerSet.remove(entity);
@@ -277,6 +293,9 @@ public final class Map {
 		Connection userConnection = (Connection) UserManager.getUserForUserID(player.getUniqueID()).getConnection();
 		assert userConnection != null;
 		for (Entity e : entitySet) {
+			if (e.getEntityType() == EntityType.OBJECT && ((GameObject)e).isServerOnly()) {
+				continue;
+			}
 			userConnection.addOutgoingPacket(e.getExtensivePacket());
 		}
 	}

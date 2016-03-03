@@ -8,6 +8,7 @@ public final class CombatManager {
 		
 	}
 	
+	@SuppressWarnings("unused")
 	private static final boolean hasLineOfSight(Character attacker, Character target) {
 		//TODO Check for obstructing objects between attacker and target
 		return true;
