@@ -68,7 +68,7 @@ public final class Config {
 
 	public static final int PLAYER_START_Z = 0;
 	
-	public static final int MAX_WALKING_DISTANCE = 10;
+	public static final int MAX_WALKING_DISTANCE = 40;
 
 	public static final int REGEN_AMOUNT = 1;
 

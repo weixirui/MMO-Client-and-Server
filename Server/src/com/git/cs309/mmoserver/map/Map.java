@@ -49,7 +49,7 @@ public final class Map {
 	}
 
 	public boolean containsPoint(final int x, final int y) {
-		return getXOrigin() + getWidth() >= x && x >= getXOrigin() && getYOrigin() + getHeight() >= y
+		return getXOrigin() + getWidth() > x && x >= getXOrigin() && getYOrigin() + getHeight() > y
 				&& y >= getYOrigin();
 	}
 

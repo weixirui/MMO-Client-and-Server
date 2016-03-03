@@ -36,7 +36,7 @@ public final class Tile {
 	}
 	
 	public int getPaintY() {
-		return ((y - Client.getSelf().getY()) * Config.DEFAULT_SPRITE_HEIGHT) + (ViewPanel.getInstance().getHeight() / 2) - (Config.DEFAULT_SPRITE_HEIGHT / 2);
+		return ((y - Client.getSelf().getY() - 1) * Config.DEFAULT_SPRITE_HEIGHT) + (ViewPanel.getInstance().getHeight() / 2) - (Config.DEFAULT_SPRITE_HEIGHT / 2);
 	}
 
 	/**

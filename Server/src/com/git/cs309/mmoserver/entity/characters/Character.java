@@ -7,6 +7,7 @@ import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.combat.CombatManager;
 import com.git.cs309.mmoserver.entity.Entity;
+import com.git.cs309.mmoserver.map.Map;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.map.PathFinder;
 import com.git.cs309.mmoserver.map.PathFinder.Tile;
@@ -106,7 +107,9 @@ public abstract class Character extends Entity {
 	}
 	
 	public final void walkTo(int x, int y) {
-		walkingQueue = PathFinder.getPathToPoint(MapHandler.getInstance().getMapContainingPosition(instanceNumber, getX(), getY(), getZ()), getX(), getY(), x, y);
+		Map map = MapHandler.getInstance().getMapContainingPosition(instanceNumber, getX(), getY(), getZ());
+		if (map.containsPoint(x, y))
+			walkingQueue = PathFinder.getPathToPoint(map, getX(), getY(), x, y);
 	}
 	
 	protected abstract void onDeath();

@@ -84,7 +84,9 @@ public final class ClosedIDSystem {
 	 *            tag to return.
 	 */
 	private static void returnTag(final IDTag tag) {
-		assert (!TAG_STACK.contains(tag)); // Cannot contain two copies of the same ID, as that breaks the point of this class.
+		if (TAG_STACK.contains(tag)) {
+			return;
+		}
 		tag.inUse = false; // set inUse flag to false.
 		TAG_STACK.add(tag);
 	}
