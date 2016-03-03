@@ -12,6 +12,11 @@ public abstract class Entity implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -4167955698214994437L;
+	
+	public static final int PLAYER_STATIC_ID = 0;
+	
+	public static final int GROUND_ITEM_STATIC_ID = 1;
+	
 	protected transient IDTag idTag; // Unique identifier
 	protected volatile int x = 0, y = 0, z = 0; // Coordinates
 	protected int entityID = -1;

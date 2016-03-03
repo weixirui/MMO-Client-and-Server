@@ -2,7 +2,7 @@ package com.git.cs309.mmoserver.packets;
 
 public enum PacketType {
 
-	NEW_CHARACTER_DATA_PACKET((byte) 23), CHARACTER_SELECTION_DATA_PACKET((byte) 22), SIMPLE_REQUEST_PACKET((byte) 21), SELF_PACKET((byte) 11), MOVE_PACKET((byte) 20), NEW_MAP_PACKET(
+	GROUND_ITEM_PACKET((byte) 24), NEW_CHARACTER_DATA_PACKET((byte) 23), CHARACTER_SELECTION_DATA_PACKET((byte) 22), SIMPLE_REQUEST_PACKET((byte) 21), SELF_PACKET((byte) 11), MOVE_PACKET((byte) 20), NEW_MAP_PACKET(
 			(byte) 19), ITEM_CONTAINER_PACKET((byte) 18), PLAYER_EQUIPMENT_PACKET((byte) 17), CHARACTER_STATUS_PACKET(
 					(byte) 16), EXTENSIVE_PLAYER_CHARACTER_PACKET((byte) 15), EXTENSIVE_CHARACTER_PACKET(
 							(byte) 14), EXTENSIVE_OBJECT_PACKET((byte) 13), ENTITY_UPDATE_PACKET(
@@ -13,7 +13,7 @@ public enum PacketType {
 																	(byte) 3), LOGIN_PACKET((byte) 2), MESSAGE_PACKET(
 																			(byte) 1), NULL_PACKET((byte) 0);
 
-	//Currently unused bytes: 24-255
+	//Currently unused bytes: 25-255
 	public static final byte NULL_PACKET_BYTE = 0;
 	public static final byte MESSAGE_PACKET_BYTE = 1;
 	public static final byte LOGIN_PACKET_BYTE = 2;
@@ -38,9 +38,10 @@ public enum PacketType {
 	public static final byte SIMPLE_REQUEST_PACKET_BYTE = 21;
 	public static final byte CHARACTER_SELECTION_DATA_PACKET_BYTE = 22;
 	public static final byte NEW_CHARACTER_DATA_PACKET_BYTE = 23;
+	public static final byte GROUND_ITEM_PACKET_BYTE = 24;
 	//Packets needing implementation:
 	/*
-	 * ItemContainerPacket
+	 * None! 
 	 */
 	private final byte typeByte;
 

@@ -54,6 +54,8 @@ public final class PacketFactory {
 			return new NewCharacterDataPacket(source, bytes);
 		case PacketType.INTERFACE_CLICK_PACKET_BYTE:
 			return new InterfaceClickPacket(source, bytes);
+		case PacketType.GROUND_ITEM_PACKET_BYTE:
+			return new GroundItemsPacket(source, bytes);
 		default:
 			System.out.println("No case for type byte: " + bytes[0]);
 			return null;
