@@ -58,6 +58,14 @@ public final class MapHandler {
 			map.loadSpawns();
 		}
 	}
+	
+	public final Map createInstanceMap(int instanceNumber, String mapName) {
+		Map map = MapFactory.getInstance().createMap(mapName, instanceNumber);
+		if (map == null) {
+			throw new RuntimeException("No map definition for map name \""+mapName+"\"");
+		}
+		return map;
+	}
 
 	public final void moveEntity(final int uniqueId, final int oInstanceNumber, final int oX, final int oY, final int oZ,
 			final int dInstanceNumber, final int dX, final int dY, final int dZ) {
