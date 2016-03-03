@@ -98,9 +98,6 @@ public final class PathFinder {
 			}
 		}
 		if (!stop) {
-			if (Main.isDebug()) {
-				System.err.println("Error: Returned walking queue the algorithm never reached the destination.");
-			}
 			return new CycleQueue<Tile>(0); //Empty List
 		}
 		step -= 1;

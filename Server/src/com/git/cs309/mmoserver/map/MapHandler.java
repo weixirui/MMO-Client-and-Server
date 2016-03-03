@@ -80,7 +80,6 @@ public final class MapHandler {
 		if (map == null) {
 			return;
 		}
-		assert (map.getEntity(x, y) == null || (map.getEntity(x, y) != null && map.getEntity(x, y).canWalkThrough())); // Cannot place an entity where there is already an entity
 		map.putEntity(x, y, entity);
 	}
 

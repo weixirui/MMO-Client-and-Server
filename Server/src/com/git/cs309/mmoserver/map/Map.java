@@ -75,7 +75,7 @@ public final class Map {
 	
 	public boolean walkable(final int x, final int y) {
 		assert (containsPoint(x, y));
-		return pathingMap[x][y] == PathFinder.EMPTY;
+		return pathingMap[globalToLocalX(x)][globalToLocalY(y)] == PathFinder.EMPTY;
 	}
 
 	public Entity getEntity(final int uniqueId, final int x, final int y) {
