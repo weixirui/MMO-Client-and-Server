@@ -50,7 +50,10 @@ public final class Tile {
 		switch (getSpriteName()) {
 		case "grass":
 			g.setColor(new Color(0x00, 0x7F, 0x00));
-		break;
+			break;
+		case "road":
+			g.setColor(new Color(255, 230, 204));
+			break;
 		}
 		g.fillRect(getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT);
 	}
