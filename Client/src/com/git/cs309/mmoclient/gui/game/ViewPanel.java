@@ -13,6 +13,8 @@ import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoclient.Config;
 import com.git.cs309.mmoclient.entity.Entity;
 import com.git.cs309.mmoclient.entity.character.Character;
+import com.git.cs309.mmoclient.graphics.Sprite;
+import com.git.cs309.mmoclient.graphics.SpriteDatabase;
 import com.git.cs309.mmoclient.entity.EntityType;
 import com.git.cs309.mmoserver.packets.MovePacket;
 
@@ -65,8 +67,8 @@ public class ViewPanel extends JPanel {
 	    Graphics offscreenGraphics = offscreenImage.getGraphics();
 		if (Client.getSelf() == null || Client.getMap() == null)
 			return;
-		offscreenGraphics.setColor(WATER_COLOR);
-		offscreenGraphics.fillRect(0, 0, getWidth(), getHeight());
+		Sprite water = SpriteDatabase.getInstance().getSprite("waterbg");
+		offscreenGraphics.drawImage(water.getImage(), 0, 0, getWidth(), getHeight(), null);
 		Client.getMap().paint(offscreenGraphics);
 		Client.getSelf().paint(offscreenGraphics);
 		offscreenGraphics.setColor(Color.RED);

@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import com.git.cs309.mmoclient.connection.Connection;
 import com.git.cs309.mmoclient.entity.character.player.Self;
+import com.git.cs309.mmoclient.graphics.SpriteDatabase;
 import com.git.cs309.mmoclient.gui.game.ViewPanel;
 import com.git.cs309.mmoclient.gui.login.LoginGUI;
 import com.git.cs309.mmoclient.map.Map;
@@ -32,6 +33,7 @@ public final class Client {
 				break;
 			}
 		}
+		SpriteDatabase.getInstance();
 		try {
 			connection = new Connection(new Socket(debug ? "localhost" : "proj-309-21.cs.iastate.edu", 43594));
 		} catch (IOException e) {

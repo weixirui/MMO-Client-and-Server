@@ -36,14 +36,6 @@ public abstract class Character extends Entity {
 		super(x, y, uniqueId, entityID, name);
 	}
 	
-	@Override
-	public void paint(Graphics g) {
-		g.setColor(Color.BLACK);
-		g.drawOval(getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT);
-		g.setFont(g.getFont().deriveFont(Font.BOLD, 18.0f));
-		g.drawString(""+getName().charAt(0), getPaintX() + (Config.DEFAULT_SPRITE_WIDTH / 2) - 5, getPaintY() + (Config.DEFAULT_SPRITE_HEIGHT / 2) + 5);
-	}
-	
 	public void resetCombat() {
 		inCombat = false;
 		opponentId = NO_OPPONENT;

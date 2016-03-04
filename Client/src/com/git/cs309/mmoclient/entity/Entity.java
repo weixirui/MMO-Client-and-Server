@@ -1,12 +1,16 @@
 package com.git.cs309.mmoclient.entity;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoclient.Config;
+import com.git.cs309.mmoclient.graphics.Sprite;
+import com.git.cs309.mmoclient.graphics.SpriteDatabase;
 import com.git.cs309.mmoclient.gui.game.ViewPanel;
 
 public abstract class Entity extends Component {
@@ -35,8 +39,22 @@ public abstract class Entity extends Component {
 		});
 	}
 	
+	public Sprite getSprite() {
+		return SpriteDatabase.getInstance().getSprite(getName());
+	}
+	
 	@Override
-	public abstract void paint(Graphics g);
+	public void paint(Graphics g) {
+		Sprite sprite = SpriteDatabase.getInstance().getSprite(getName());
+		if (sprite != null) {
+			g.drawImage(sprite.getImage(), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+		} else {
+			g.setColor(Color.BLACK);
+			g.drawRect(getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT);
+			g.setFont(g.getFont().deriveFont(Font.BOLD, 18.0f));
+			g.drawString(""+getName().charAt(0), getPaintX() + (Config.DEFAULT_SPRITE_WIDTH / 2) - 5, getPaintY() + (Config.DEFAULT_SPRITE_HEIGHT / 2) + 5);
+		}
+	}
 
 	@Override
 	public boolean equals(Object other) {

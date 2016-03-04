@@ -9,7 +9,9 @@ public final class Config {
 	
 	public static final String MAP_CONFIG_FOLDER = "./data/map/";
 	
-	public static final int DEFAULT_SPRITE_WIDTH = 32;
+	public static final String SPRITE_FOLDER = "./data/sprites/";
 	
-	public static final int DEFAULT_SPRITE_HEIGHT = 32;
+	public static final int DEFAULT_SPRITE_WIDTH = 64;
+	
+	public static final int DEFAULT_SPRITE_HEIGHT = 64;
 }
