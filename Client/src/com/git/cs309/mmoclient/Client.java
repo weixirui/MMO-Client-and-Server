@@ -22,8 +22,6 @@ public final class Client {
 	private static int selfId = -1;
 	private static Map currentMap = null;
 	private static Self self = null;
-	public static int lastClickX = 0;
-	public static int lastClickY = 0;
 	
 	public static void main(String[] args) {
 		for (String arg : args) {

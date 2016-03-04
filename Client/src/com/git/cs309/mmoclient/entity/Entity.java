@@ -45,9 +45,15 @@ public abstract class Entity extends Component {
 	
 	@Override
 	public void paint(Graphics g) {
-		Sprite sprite = SpriteDatabase.getInstance().getSprite(getName());
+		Sprite sprite = getSprite();
 		if (sprite != null) {
-			g.drawImage(sprite.getImage(), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+			int spriteWidth = sprite.getImage().getWidth(null);
+			int spriteHeight = sprite.getImage().getWidth(null);
+			if ((spriteWidth * spriteHeight) > (Config.DEFAULT_SPRITE_WIDTH * Config.DEFAULT_SPRITE_HEIGHT)) {
+				g.drawImage(sprite.getImage(), getPaintX() - ((sprite.getImage().getWidth(null) - Config.DEFAULT_SPRITE_WIDTH) / 2), getPaintY() - ((sprite.getImage().getHeight(null) - Config.DEFAULT_SPRITE_HEIGHT) / 2), sprite.getImage().getWidth(null), sprite.getImage().getHeight(null), null);
+			} else {
+				g.drawImage(sprite.getImage(), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+			}
 		} else {
 			g.setColor(Color.BLACK);
 			g.drawRect(getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT);

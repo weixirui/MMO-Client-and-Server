@@ -120,8 +120,8 @@ public class PlayerCharacter extends Character {
 	public void enterGame(final User user) {
 		assert created;
 		setIDTag(user.getIdTag());
-		user.getConnection().addOutgoingPacket(getExtensivePacket());
 		CharacterManager.getInstance().addCharacter(this);
+		user.getConnection().addOutgoingPacket(getExtensivePacket());
 	}
 
 	/**

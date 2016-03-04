@@ -9,6 +9,7 @@ import com.git.cs309.mmoclient.entity.character.player.Self;
 import com.git.cs309.mmoclient.entity.object.GameObjectFactory;
 import com.git.cs309.mmoclient.gui.characterselection.CharacterSelectionGUI;
 import com.git.cs309.mmoclient.gui.game.GameGUI;
+import com.git.cs309.mmoclient.gui.interfaces.ChatBox;
 import com.git.cs309.mmoclient.gui.login.LoginGUI;
 import com.git.cs309.mmoclient.map.MapFactory;
 import com.git.cs309.mmoserver.packets.AbstractPacketHandler;
@@ -43,8 +44,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 		switch (packet.getPacketType()) {
 		case MESSAGE_PACKET:
 			MessagePacket messagePacket = (MessagePacket) packet;
-			//TODO Implement properly
-			System.out.println("Got message: "+messagePacket.getMessage());
+			ChatBox.getInstance().addMessage(messagePacket.getMessage());
 			break;
 		case ERROR_PACKET:
 			ErrorPacket errorPacket = (ErrorPacket) packet;
@@ -82,6 +82,8 @@ public final class PacketHandler extends AbstractPacketHandler {
 			if (extensivePlayerCharacterPacket.getUniqueID() == Client.getSelfId()) {
 				Self self = new Self(extensivePlayerCharacterPacket);
 				Client.setSelf(self);
+				Client.getMap()
+				.putEntity(self);
 			} else {
 				Client.getMap().putEntity(new PlayerCharacter(extensivePlayerCharacterPacket));
 			}

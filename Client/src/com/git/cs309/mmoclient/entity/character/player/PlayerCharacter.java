@@ -2,6 +2,8 @@ package com.git.cs309.mmoclient.entity.character.player;
 
 import com.git.cs309.mmoclient.entity.EntityType;
 import com.git.cs309.mmoclient.entity.character.Character;
+import com.git.cs309.mmoclient.graphics.Sprite;
+import com.git.cs309.mmoclient.graphics.SpriteDatabase;
 import com.git.cs309.mmoserver.packets.ExtensivePlayerCharacterPacket;
 
 /**
@@ -40,6 +42,11 @@ public class PlayerCharacter extends Character {
 		this.hairColor = packet.getHairColor();
 		this.hairStyle = packet.getHairStyle();
 		this.level = packet.getLevel();
+	}
+	
+	@Override
+	public Sprite getSprite() {
+		return SpriteDatabase.getInstance().getSprite("tempplayer");
 	}
 
 	public int getEyeColor() {
