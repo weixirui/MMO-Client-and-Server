@@ -1,11 +1,13 @@
 package com.git.cs309.mmoclient.gui.game;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -74,6 +76,8 @@ public class ViewPanel extends JPanel {
 				ViewPanel.this.repaint();
 			}
 		});
+		Component chatBox = ChatBox.getInstance();
+		ChatBox.getInstance().setLocation(0, getHeight() - chatBox.getHeight());
 	}
 	
 	public void addInterface(GameInterface newInterface) {

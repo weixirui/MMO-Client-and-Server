@@ -67,7 +67,7 @@ public final class Main {
 	// Is server running.
 	private static volatile boolean running = true;
 	
-	private static boolean debug = true;
+	private static boolean debug = false;
 
 	// Object that all TickProcess objects wait on for tick notification.
 	private static final Object TICK_NOTIFIER = new Object(); // To notify

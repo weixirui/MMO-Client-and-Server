@@ -3,6 +3,7 @@ package com.git.cs309.mmoclient.gui.interfaces;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -35,6 +36,7 @@ public final class ChatBox extends JPanel {
 		this.setBackground(background);
 		this.setSize(500, 200);
 		setLayout(new BorderLayout());
+		chatArea.setEditable(false);
 		chatArea.setBackground(background);
 		chatArea.setForeground(Color.YELLOW);
 		messageArea.setBackground(background);
