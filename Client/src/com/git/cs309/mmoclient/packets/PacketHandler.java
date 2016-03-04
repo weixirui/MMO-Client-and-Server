@@ -70,7 +70,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 				CharacterSelectionGUI.getSingleton().setVisible(true);
 				break;
 			case EventPacket.CREATE_CHARACTER:
-				packet.getConnection().addOutgoingPacket(new NewCharacterDataPacket(null, 0, 0, 0, 0, NewCharacterDataPacket.MALE, "Bob"));
+				packet.getConnection().addOutgoingPacket(new NewCharacterDataPacket(null, 0, 0, 0, 0, NewCharacterDataPacket.MALE, JOptionPane.showInputDialog("Enter a name for this character:")));
 				break;
 			default:
 				System.err.println("No case for event code: "+eventPacket.getEventCode());
