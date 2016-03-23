@@ -8,6 +8,7 @@ import com.git.cs309.mmoserver.packets.LoginPacket;
 import com.git.cs309.mmoserver.packets.MessagePacket;
 import com.git.cs309.mmoserver.util.StreamUtils;
 
+@SuppressWarnings("unused")
 public class Client {
 	//Just a basic client for various server/client interaction testing.
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
@@ -17,7 +18,7 @@ public class Client {
 	private final Socket socket;
 
 	private Client() throws UnknownHostException, IOException, InterruptedException {
-		socket = new Socket("proj-309-21.cs.iastate.edu", 43594);
+		socket = new Socket("localhost", 43594);
 		//while (true) {
 		LoginPacket packet = new LoginPacket(null, "Clowbn", "Clown");
 		StreamUtils.writeBlockToStream(socket.getOutputStream(), packet.toBytes());

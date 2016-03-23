@@ -4,38 +4,49 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.SocketException;
+import java.util.Queue;
 
 import com.git.cs309.mmoserver.packets.Packet;
+import com.git.cs309.mmoserver.packets.PacketFactory;
+import com.git.cs309.mmoserver.util.CorruptDataException;
+import com.git.cs309.mmoserver.util.CycleQueue;
+import com.git.cs309.mmoserver.util.EndOfStreamReachedException;
 import com.git.cs309.mmoserver.util.StreamUtils;
 
 public abstract class AbstractConnection extends Thread {
+	public static final int MAX_RETRIES = 100;
 	protected final OutputStream output;
 	protected final InputStream input;
 	protected final Socket socket;
 	protected final String ip;
 	protected volatile boolean disconnected = false;
-	protected volatile Packet packet; // Making this volatile should allow for other threads to access it properly, as well as be changed by this thread properly.
-	protected volatile List<Packet> outgoingPackets = new ArrayList<>(10);
+	protected volatile boolean closeRequested = false;
+	protected volatile Queue<Packet> incommingPackets = new CycleQueue<>(500); // Making this volatile should allow for other threads to access it properly, as well as be changed by this thread properly.
+	protected volatile Queue<Packet> outgoingPackets = new CycleQueue<>(500);
+	protected volatile int retriesLeft = MAX_RETRIES;
 
 	protected volatile Thread outgoingThread = new Thread() {
 		@Override
 		public void run() {
-			while (!disconnected && !socket.isClosed()) {
-				while (!disconnected && outgoingPackets.size() > 0) {
+			setName(AbstractConnection.this + "'s Output Thread");
+			while (!isClosed()) {
+				synchronized (outgoingPackets) {
+					while (!disconnected && outgoingPackets.size() > 0) {
+						try {
+							StreamUtils.writeBlockToStream(output, outgoingPackets.remove().toBytes());
+						} catch (SocketException e) {
+							System.err.println("Connection disconnected while writing to stream");
+							closeRequested = true;
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
 					try {
-						StreamUtils.writeBlockToStream(output, outgoingPackets.remove(0).toBytes());
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				try {
-					synchronized (outgoingPackets) {
 						outgoingPackets.wait();
+					} catch (InterruptedException e) {
+						//Don't care if it gets interrupted.
 					}
-				} catch (InterruptedException e) {
-					//Don't care if it gets interrupted.
 				}
 			}
 		}
@@ -72,7 +83,9 @@ public abstract class AbstractConnection extends Thread {
 			e.printStackTrace();
 		}
 		disconnected = true;
-		outgoingPackets.notifyAll(); // Make sure thread kills itself.
+		synchronized (outgoingPackets) {
+			outgoingPackets.notifyAll(); // Make sure thread kills itself.
+		}
 	}
 
 	@Override
@@ -90,15 +103,83 @@ public abstract class AbstractConnection extends Thread {
 
 	//Since packet is volatile, shouldn't need synchronized method block.
 	public Packet getPacket() {
-		return packet;
+		synchronized (incommingPackets) {
+			if (incommingPackets.isEmpty()) {
+				return null;
+			}
+			return incommingPackets.remove();
+		}
+	}
+
+	public abstract void handlePacket(Packet packet);
+
+	public boolean isClosed() {
+		return socket.isClosed() || closeRequested;
 	}
 
 	public boolean isDisconnected() {
 		return disconnected;
 	}
 
+	public abstract void iterationStartBlock();
+
+	public abstract int maxPacketsPerIteration();
+
+	public abstract void postRun();
+
 	@Override
-	public abstract void run(); // Force run implementation.
+	public final void run() {
+		int packetsThisTick;
+		//ConnectionManager singleton to wait on.
+		while (!isClosed()) {
+			iterationStartBlock();
+			synchronized (incommingPackets) {
+				incommingPackets.clear();
+			}
+			packetsThisTick = 0;
+			try {
+				do {
+					try {
+						Packet packet = PacketFactory.buildPacket(StreamUtils.readBlockFromStream(input), this);
+						synchronized (incommingPackets) {
+							incommingPackets.add(packet);
+						}
+						handlePacket(packet);
+						retriesLeft = MAX_RETRIES;
+					} catch (CorruptDataException | NegativeArraySizeException | ArrayIndexOutOfBoundsException e) { // Just general exception that might occur for bad packets.
+						e.printStackTrace();
+					} catch (EndOfStreamReachedException e) { // End of the stream was reached, meaning there's no more data, ever.
+						if (--retriesLeft == 0) {
+							System.err.println("Error 2: "+e.getMessage());
+							closeRequested = true;
+						} else {
+							System.out.println("Retrying..");
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e1) {
+							}
+						}
+						break;
+					} catch (IOException e) { // Should only be Connection reset
+						System.err.println("Error 3: "+e.getMessage());
+						closeRequested = true;
+						break;
+					}
+					if (++packetsThisTick == maxPacketsPerIteration()) {
+						System.out.println(
+								this + " exceeded the maximum packets per tick limit. Packets: " + packetsThisTick);
+						closeRequested = true;
+						break;
+					}
+				} while (!isClosed() && input.available() > 0);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		postRun();
+		close();
+		disconnected = true;
+	}
 
 	@Override
 	public String toString() {

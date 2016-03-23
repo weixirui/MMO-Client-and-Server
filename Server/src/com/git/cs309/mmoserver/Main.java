@@ -1,17 +1,37 @@
 package com.git.cs309.mmoserver;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.git.cs309.mmoserver.characters.CharacterManager;
-import com.git.cs309.mmoserver.characters.npc.NPCManager;
-import com.git.cs309.mmoserver.characters.user.UserManager;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 import com.git.cs309.mmoserver.connection.ConnectionAcceptor;
 import com.git.cs309.mmoserver.connection.ConnectionManager;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
+import com.git.cs309.mmoserver.entity.characters.CharacterManager;
+import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
+import com.git.cs309.mmoserver.entity.characters.npc.dropsystem.DropSystem;
+import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
+import com.git.cs309.mmoserver.entity.characters.user.UserManager;
+import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
 import com.git.cs309.mmoserver.io.Logger;
+import com.git.cs309.mmoserver.items.ItemFactory;
+import com.git.cs309.mmoserver.map.MapFactory;
+import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.util.TickProcess;
+
+/*
+ * TODO Section:
+ * Implement party system
+ * Fix Maps so that more than one Entity can exist on same tile
+ * Add more packet outputs for various things
+ * Add more packets to output MORE various things
+ * Add and send map packet, which tells client player is in new map
+ */
 
 /**
  * 
@@ -44,18 +64,26 @@ import com.git.cs309.mmoserver.util.TickProcess;
  */
 public final class Main {
 
+	// Is server running.
+	private static volatile boolean running = true;
+	
+	private static boolean debug = false;
+
+	// Object that all TickProcess objects wait on for tick notification.
+	private static final Object TICK_NOTIFIER = new Object(); // To notify
+
 	// List of TickProcess objects currently running. They add themselves to
 	// this list when instantiated.
 	private static final List<TickProcess> TICK_RELIANT_LIST = new ArrayList<>();
 
-	// Is server running.
-	private static volatile boolean running = true;
-	// Object that all TickProcess objects wait on for tick notification.
-	private static final Object TICK_NOTIFIER = new Object(); // To notify
-																// threads of
-																// new tick.
-																// Current server ticks count.
+	// threads of
+	// new tick.
+	// Current server ticks count.
 	private static volatile long tickCount = 0; // Tick count.
+	
+	public static boolean isDebug() {
+		return debug;
+	}
 
 	/**
 	 * Can be used to register tick reliants so that server will know to wait
@@ -90,19 +118,6 @@ public final class Main {
 	}
 
 	/**
-	 * Initializes handler and managers, to ensure they're ready to handle
-	 * activity.
-	 */
-	private static void initialize() {
-		NPCManager.initialize();
-		// These next few lines are just making reference to the classes. They
-		// handle initialization on first reference.
-		ConnectionManager.getSingleton();
-		CycleProcessManager.getSingleton();
-		CharacterManager.getSingleton();
-	}
-
-	/**
 	 * Getter for running state.
 	 * 
 	 * @return running state
@@ -111,6 +126,9 @@ public final class Main {
 		return running;
 	}
 
+	//Turns out that using the default system loader will just re-reference already loaded classes. Would need to create and use a different classloader
+	//Will do, if I can find time to do something ridiculous like that. Keeping them like this for time being (not singletons, that is)
+
 	/**
 	 * Main method, duh.
 	 * 
@@ -118,22 +136,74 @@ public final class Main {
 	 * @throws UnknownHostException
 	 */
 	public static void main(String[] args) throws UnknownHostException {
-		System.setOut(Logger.getOutPrintStream()); // Set System out to logger
-													// out
-		System.setErr(Logger.getErrPrintStream());
-		Runtime.getRuntime().addShutdownHook(new Thread() { // Add shutdown hook
-															// that autosaves
-															// users.
+		if (!debug) {
+			System.setOut(Logger.getOutPrintStream());
+			System.setErr(Logger.getErrPrintStream());
+		}
+		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				UserManager.saveAllUsers();
-				System.out.println("Saved all users before going down.");
+				saveEverything();
+				System.out.println("Saved everything before going down.");
 			}
 		});
-		initialize(); // Call initialize block, which will initialize things
-						// that should be initialized before starting server.
-		System.out.println("Starting server...");
 		ConnectionAcceptor.startAcceptor(43594);
+		while (true) {
+			runServer();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// Don't care tooo much if it gets interrupted.
+			}
+			System.out.println("Restarting server...");
+		}
+	}
+
+	/**
+	 * Requests program termination.
+	 */
+	public static void requestExit() {
+		running = false;
+	}
+
+	/**
+	 * Initializes handler and managers, to ensure they're ready to handle
+	 * activity.
+	 */
+	private static void loadAndStartClasses() {
+		ModerationHandler.loadModerations();
+		try {
+			NPCFactory.getInstance().loadDefinitions();
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		try {
+			GameObjectFactory.getInstance().loadDefinitions();
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		try {
+			ItemFactory.getInstance().loadDefinitions();
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		try {
+			DropSystem.getInstance().loadDrops();
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		MapFactory.getInstance();
+		MapHandler.getInstance().loadMaps();
+		ConnectionManager.getInstance();
+		CycleProcessManager.getInstance();
+		CharacterManager.getInstance();
+	}
+
+	private static void runServer() {
+		running = true;
+		loadAndStartClasses(); // Call initialize block, which will initialize things
+		// that should be initialized before starting server.
+		System.out.println("Starting server...");
 		int ticks = 0;
 		long tickTimes = 0L;
 		while (running) {
@@ -169,16 +239,23 @@ public final class Main {
 			tickTimes += (System.currentTimeMillis() - start);
 			ticks++;
 			tickCount++;
-			if (ticks == Config.TICKS_PER_MINUTE * 5) {
-				System.out.println("Average tick consumption over 5 minutes: "
-						+ String.format("%.3f", (tickTimes / (float) (Config.MILLISECONDS_PER_TICK * ticks))) + "%.");
+			if (ticks == Config.TICKS_PER_MINUTE * Config.STATUS_PRINT_RATE) { // For visual map, Config.TICKS_PER_WALK / 2
+				System.out.println(" ");
+				System.out.println("Average tick consumption over " + Config.STATUS_PRINT_RATE + " minutes: "
+						+ String.format("%.3f", ((tickTimes / (float) (Config.MILLISECONDS_PER_TICK * ticks))) * 100.0f)
+						+ "%.");
+				for (TickProcess process : TICK_RELIANT_LIST) {
+					process.printStatus();
+				}
+				System.out.println(" ");
+				//MapHandler.getInstance().printMaps();
 				ticks = 0;
 				tickTimes = 0L;
 			}
+			if (timeLeft < 0) {
+				System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
+			}
 			if (timeLeft < 2) {
-				if (timeLeft < 0) {
-					System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
-				}
 				timeLeft = 2; // Must wait at least a little bit, so that
 								// threads can catch up and wait.
 			}
@@ -189,14 +266,14 @@ public final class Main {
 			}
 		}
 		System.out.println("Server going down...");
+		saveEverything();
+		System.out.println("Saved all users before going down.");
+		System.out.println("");
+		System.out.println("");
 	}
 
-	/**
-	 * Requests program termination.
-	 */
-	public static void requestExit() {
-		// For now we can just have it set running to false, but later on it
-		// should check to see which part failed, and recover if it can.
-		running = false;
+	private static void saveEverything() {
+		UserManager.saveAllUsers();
+		ModerationHandler.saveModerations();
 	}
 }

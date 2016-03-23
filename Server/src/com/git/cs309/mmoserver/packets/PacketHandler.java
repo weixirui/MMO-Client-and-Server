@@ -1,9 +1,7 @@
 package com.git.cs309.mmoserver.packets;
 
-import com.git.cs309.mmoserver.characters.user.InvalidPasswordException;
-import com.git.cs309.mmoserver.characters.user.UserAlreadyLoggedInException;
-import com.git.cs309.mmoserver.characters.user.UserManager;
-import com.git.cs309.mmoserver.connection.ConnectionManager;
+import com.git.cs309.mmoserver.connection.Connection;
+import com.git.cs309.mmoserver.entity.characters.user.User;
 
 /**
  * 
@@ -12,50 +10,75 @@ import com.git.cs309.mmoserver.connection.ConnectionManager;
  *         Packet handler. Handles packets. Can also interpret this as a packet
  *         distributer, if the need arises for packets to be handled elsewhere.
  */
-public final class PacketHandler {
-	public static void handlePacket(final Packet packet) {
+public final class PacketHandler extends AbstractPacketHandler {
+	private static final PacketHandler INSTANCE = new PacketHandler();
+
+	public static final PacketHandler getInstance() {
+		return INSTANCE;
+	}
+
+	private PacketHandler() {
+
+	}
+
+	@Override
+	public void handlePacketBlock(Packet packet) {
 		switch (packet.getPacketType()) { // Case for each type of packet.
 		case MESSAGE_PACKET:
-			ConnectionManager.sendPacketToAllConnections(packet);
+			MessageHandler.handlePacket((MessagePacket) packet);
 			break;
 		case LOGIN_PACKET:
-			LoginPacket loginPacket = (LoginPacket) packet;
-			try {
-				if (!UserManager.logIn(loginPacket)) {
-					System.err.println("Failed to log in user \"" + loginPacket.getUsername() + "\".");
-					loginPacket.getConnection().addOutgoingPacket(
-							new ErrorPacket(loginPacket.getConnection(), ErrorPacket.LOGIN_ERROR, "Login failed."));
-				} else {
-					loginPacket.getConnection()
-							.addOutgoingPacket(new EventPacket(loginPacket.getConnection(), EventPacket.LOGIN_SUCCESS));
-				}
-			} catch (UserAlreadyLoggedInException e) {
-				System.err.println(e.getMessage());
-				loginPacket.getConnection()
-						.addOutgoingPacket(new ErrorPacket(loginPacket.getConnection(), ErrorPacket.LOGIN_ERROR,
-								"User with username \"" + loginPacket.getUsername() + "\" is already logged in."));
-			} catch (InvalidPasswordException e) {
-				System.err.println(e.getMessage());
-				loginPacket.getConnection()
-						.addOutgoingPacket(new ErrorPacket(loginPacket.getConnection(), ErrorPacket.LOGIN_ERROR,
-								"Password for user \"" + loginPacket.getUsername() + "\" does not match."));
-			}
+			LoginHandler.handlePacket((LoginPacket) packet);
 			break;
+//		case TEST_PACKET:
+//			TestPacket testPacket = (TestPacket) packet;
+//			switch (testPacket.getTest()) {
+//			case 0:
+//				throw new RuntimeException("Just a test.");s
+//			}
+//			break;
+		case ADMIN_COMMAND_PACKET:
+			CommandHandler.handlePacket(packet);
+			break;
+		case MOVE_PACKET:
+			MoveHandler.handlePacket((MovePacket) packet);
+			break;
+		case ENTITY_CLICK_PACKET:
+			EntityClickHandler.handlePacket((EntityClickPacket) packet);
+			break;
+		case INTERFACE_CLICK_PACKET:
+			InterfaceClickHandler.handlePacket((InterfaceClickPacket) packet);
+			break;
+		case SIMPLE_REQUEST_PACKET:
+			RequestHandler.handlePacket((SimpleRequestPacket) packet);
+			break;
+		//These next few packets shouldn't occur on the server-side, since they're meant for the client.
+		case NEW_MAP_PACKET:
 		case ERROR_PACKET:
-			ErrorPacket errorPacket = (ErrorPacket) packet;
-			System.out.println("Recieved error packet from connection \"" + packet.getConnection().getIP() + "\".");
-			System.out.println("Error code: " + errorPacket.getErrorCode());
-			System.out.println("Error message: " + errorPacket.getErrorMessage());
+		case NULL_PACKET:
+		case EXTENSIVE_PLAYER_CHARACTER_PACKET:
+		case PLAYER_EQUIPMENT_PACKET:
+		case SELF_PACKET:
+		case SERVER_MODULE_STATUS_PACKET:
+		case USER_STATUS_PACKET:
+		case CHARACTER_STATUS_PACKET:
+		case ENTITY_UPDATE_PACKET:
+		case EVENT_PACKET:
+		case EXTENSIVE_CHARACTER_PACKET:
+		case EXTENSIVE_OBJECT_PACKET:
+		case ITEM_CONTAINER_PACKET:
 			break;
 		case TEST_PACKET:
-			TestPacket testPacket = (TestPacket) packet;
-			switch (testPacket.getTest()) {
-			case 0:
-				throw new RuntimeException("Just a test.");
-			}
+			break;
+		case CHARACTER_SELECTION_DATA_PACKET:
+			break;
+		case NEW_CHARACTER_DATA_PACKET:
+			NewCharacterDataPacket data = (NewCharacterDataPacket) packet;
+			User user = ((Connection) data.getConnection()).getUser();
+			user.createCharacter(data.getName(), data.getGender(), data.getEyeColor(), data.getSkinColor(), data.getHairColor(), data.getHairStyle());
 			break;
 		default:
-			System.out.println("No case for type: " + packet.getPacketType()); // If you get this message, then you NEED to add a case for the missing type.
+			break;
 		}
 	}
 }

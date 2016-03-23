@@ -16,9 +16,9 @@ import com.git.cs309.mmoserver.packets.ErrorPacket;
  *         sockets into Connection containers.
  */
 public final class ConnectionAcceptor implements Runnable {
-	private static final ConnectionAcceptor SINGLETON = new ConnectionAcceptor();
 	private static Thread connectionAcceptorThread;
 	private static int port = 6667; // A default port.
+	private static final ConnectionAcceptor SINGLETON = new ConnectionAcceptor();
 
 	public static ConnectionAcceptor getSingleton() {
 		return SINGLETON;
@@ -39,22 +39,6 @@ public final class ConnectionAcceptor implements Runnable {
 
 	private ConnectionAcceptor() {
 		// Can only be instantiated internally.
-	}
-	
-	private void addConnection(Connection connection) throws IOException {
-		if (ConnectionManager.ipConnected(connection.getIP())) { // Is a socket with same IP already connected?
-			connection.forceOutgoingPacket(new ErrorPacket(null, ErrorPacket.GENERAL_ERROR,
-					"Failed to connect because your ip is already logged in.")); // Send error packet.
-			connection.close(); // Close connection.
-			return;
-		}
-		if (ConnectionManager.full()) { // Are we at max connections?
-			connection.forceOutgoingPacket(new ErrorPacket(null, ErrorPacket.GENERAL_ERROR,
-					"Failed to connect because server is full.")); // Send error packet
-			connection.close(); // Close
-			return;
-		}
-		ConnectionManager.addConnection(connection); // Made it to end, so add to manager.
 	}
 
 	/**
@@ -92,5 +76,24 @@ public final class ConnectionAcceptor implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void addConnection(Connection connection) throws IOException {
+		//For now, allowing multiple connections from same IP
+		/*
+		 * if (Main.getConnectionManager().ipConnected(connection.getIP())) { //
+		 * Is a socket with same IP already connected?
+		 * connection.forceOutgoingPacket(new ErrorPacket(null,
+		 * ErrorPacket.GENERAL_ERROR,
+		 * "Failed to connect because your ip is already logged in.")); // Send
+		 * error packet. connection.close(); // Close connection. return; }
+		 */
+		if (ConnectionManager.getInstance().full()) { // Are we at max connections?
+			connection.forceOutgoingPacket(
+					new ErrorPacket(null, ErrorPacket.GENERAL_ERROR, "Failed to connect because server is full.")); // Send error packet
+			connection.close(); // Close
+			return;
+		}
+		ConnectionManager.getInstance().addConnection(connection); // Made it to end, so add to manager.
 	}
 }

@@ -18,8 +18,18 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *         if a condition is met.
  */
 public final class CycleProcessManager extends TickProcess {
-	private static final CycleProcessManager SINGLETON = new CycleProcessManager();
-	private static final Set<CycleProcess> PROCESSES = new HashSet<>(); // Set of processes.
+	private static final CycleProcessManager INSTANCE = new CycleProcessManager();
+
+	public static final CycleProcessManager getInstance() {
+		return INSTANCE;
+	}
+
+	private final Set<CycleProcess> processes = new HashSet<>(); // Set of processes.
+
+	//Private so that only this class can access constructor.
+	private CycleProcessManager() {
+		super("CycleProcessManager");
+	}
 
 	/**
 	 * Add a new process for execution.
@@ -27,33 +37,34 @@ public final class CycleProcessManager extends TickProcess {
 	 * @param process
 	 *            new process
 	 */
-	public static void addProcess(final CycleProcess process) {
-		synchronized (PROCESSES) {
-			PROCESSES.add(process);
+	public void addProcess(final CycleProcess process) {
+		synchronized (processes) {
+			processes.add(process);
 		}
 	}
 
-	public static CycleProcessManager getSingleton() {
-		return SINGLETON;
+	@Override
+	public void ensureSafeClose() {
+		//Not needed
 	}
 
-	//Private so that only this class can access constructor.
-	private CycleProcessManager() {
-		super("CycleProcessManager");
+	@Override
+	public void printStatus() {
+		println("Total cycle processes: " + processes.size());
 	}
 
 	@Override
 	protected synchronized void tickTask() {
 		List<CycleProcess> removalList = new ArrayList<>(); // List of objects to remove after finished processing. Because of for-each loop, concurrent modification would occur if they were removed during loop.
-		synchronized (PROCESSES) {
-			for (CycleProcess process : PROCESSES) {
+		synchronized (processes) {
+			for (CycleProcess process : processes) {
 				process.process();
 				if (process.finished()) { // Check if process is finished.
 					process.end();
 					removalList.add(process);
 				}
 			}
-			PROCESSES.removeAll(removalList);
+			processes.removeAll(removalList);
 		}
 	}
 }

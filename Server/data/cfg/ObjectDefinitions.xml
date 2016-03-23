@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<definitions>
+  <object>
+    <name>Tree</name>
+    <id>0</id>
+  </object>
+  <object>
+    <name>Rock</name>
+    <id>1</id>
+  </object>
+  <object>
+    <name>Dungeon Entrance</name>
+    <id>2</id>
+  </object>
+  <object>
+    <name>Boundary</name>
+    <id>3</id>
+    <serveronly></serveronly></object>
+</definitions>

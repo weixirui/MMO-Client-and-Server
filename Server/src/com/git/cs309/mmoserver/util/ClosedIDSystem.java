@@ -22,6 +22,7 @@ import com.git.cs309.mmoserver.Config;
  *         system is if the tags aren't returned, so make sure they are. I even
  *         wrote a custom data type to house the tags so that removal doesn't
  *         take O(n) time, where n is the number of items in queue.
+ *         </p>
  * 
  */
 public final class ClosedIDSystem {
@@ -83,7 +84,9 @@ public final class ClosedIDSystem {
 	 *            tag to return.
 	 */
 	private static void returnTag(final IDTag tag) {
-		assert (!TAG_STACK.contains(tag)); // Cannot contain two copies of the same ID, as that breaks the point of this class.
+		if (TAG_STACK.contains(tag)) {
+			return;
+		}
 		tag.inUse = false; // set inUse flag to false.
 		TAG_STACK.add(tag);
 	}

@@ -41,8 +41,13 @@ public class LoginPacket extends Packet {
 	}
 
 	@Override
+	public int sizeOf() {
+		return username.length() + password.length() + 9;
+	}
+
+	@Override
 	public byte[] toBytes() {
-		byte[] bytes = new byte[username.length() + password.length() + 9]; // 2xIntLengths + 1 byte identifier
+		byte[] bytes = new byte[sizeOf()]; // 2xIntLengths + 1 byte identifier
 		int index = 0;
 		bytes[index++] = getPacketType().getTypeByte();
 		bytes[index++] = (byte) (username.length() >> 24);

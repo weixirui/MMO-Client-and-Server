@@ -8,6 +8,9 @@ public class MessagePacket extends Packet {
 	public static final byte LOCAL_CHAT = 1;
 	public static final byte GLOBAL_CHAT = 2;
 	public static final byte PRIVATE_CHAT = 3;
+	public static final byte ERROR_CHAT = 5;
+	public static final byte GAME_CHAT = 6;
+	public static final byte SERVER_ANNOUNCEMENT = 7;
 	private final byte messageCode;
 	private final String message;
 
@@ -41,8 +44,13 @@ public class MessagePacket extends Packet {
 	}
 
 	@Override
+	public int sizeOf() {
+		return message.length() + 2;
+	}
+
+	@Override
 	public byte[] toBytes() {
-		byte[] bytes = new byte[message.length() + 2];
+		byte[] bytes = new byte[sizeOf()];
 		int index = 0;
 		bytes[index++] = getPacketType().getTypeByte();
 		bytes[index++] = messageCode;

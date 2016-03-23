@@ -6,6 +6,8 @@ public class ErrorPacket extends Packet {
 
 	public static final int GENERAL_ERROR = 1;
 	public static final int LOGIN_ERROR = 2;
+	public static final int PERMISSION_ERROR = 3;
+	public static final int NAME_TOO_LONG_ERROR = 4;
 	private final int errorCode;
 	private final String errorMessage;
 
@@ -40,8 +42,13 @@ public class ErrorPacket extends Packet {
 	}
 
 	@Override
+	public int sizeOf() {
+		return 5 + errorMessage.length();
+	}
+
+	@Override
 	public byte[] toBytes() {
-		byte[] bytes = new byte[5 + errorMessage.length()]; // 4 bytes error code, 1 byte packet type, rest errorMessage
+		byte[] bytes = new byte[sizeOf()]; // 4 bytes error code, 1 byte packet type, rest errorMessage
 		int index = 0;
 		bytes[index++] = getPacketType().getTypeByte();
 		bytes[index++] = (byte) (errorCode >> 24);
